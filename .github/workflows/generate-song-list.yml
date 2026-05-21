@@ -113,8 +113,55 @@ jobs:
 
           if [ "$merged" = "True" ]; then
             echo "✅ 歌曲清单已更新并合并到 dev 分支"
+            # 删除自动创建的分支
+            git push origin --delete "$branch" 2>/dev/null && echo "✅ 已删除分支 $branch" || echo "⚠️ 无法删除分支 $branch"
           else
             echo "❌ PR 合并失败"
             echo "$merge_response"
+            # 删除失败的分支
+            git push origin --delete "$branch" 2>/dev/null
             exit 1
+          fi
+
+      # 步骤4：同步 dev 到 main（因为 GITHUB_TOKEN 产生的 PR 合并不会触发 pull_request 事件）
+      - name: Sync dev to main
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 检查 dev 和 main 是否有差异
+          git fetch origin main
+          CHANGES=$(git diff --name-only origin/main..origin/dev 2>/dev/null)
+          
+          if [ -z "$CHANGES" ]; then
+            echo "dev 和 main 已同步，无需操作"
+            exit 0
+          fi
+          
+          echo "需要同步的文件: $CHANGES"
+          
+          # 创建从 dev 到 main 的 PR
+          sync_response=$(curl -s -X POST             -H "Authorization: token $GITHUB_TOKEN"             -H "Accept: application/vnd.github+json"             "https://api.github.com/repos/${{ github.repository }}/pulls"             -d '{"title":"sync: 同步歌曲清单到 main","body":"自动同步 dev 分支到 main 分支（歌曲清单更新）","head":"dev","base":"main"}')
+          
+          sync_pr_num=$(echo "$sync_response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('number',''))" 2>/dev/null)
+          
+          if [ -z "$sync_pr_num" ]; then
+            echo "⚠️ 同步 PR 创建失败（可能 dev 和 main 已同步）"
+            echo "$sync_response"
+            exit 0
+          fi
+          
+          echo "同步 PR #$sync_pr_num 已创建"
+          
+          # 合并 PR
+          sleep 3
+          sync_merge=$(curl -s -X PUT             -H "Authorization: token $GITHUB_TOKEN"             -H "Accept: application/vnd.github+json"             "https://api.github.com/repos/${{ github.repository }}/pulls/$sync_pr_num/merge"             -d '{"merge_method":"merge"}')
+          
+          sync_merged=$(echo "$sync_merge" | python3 -c "import sys,json; print(json.load(sys.stdin).get('merged',False))" 2>/dev/null)
+          
+          if [ "$sync_merged" = "True" ]; then
+            echo "✅ 已同步到 main 分支"
+          else
+            echo "❌ 同步到 main 失败"
+            echo "$sync_merge"
           fi
