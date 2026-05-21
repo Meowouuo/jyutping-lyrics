@@ -57,7 +57,7 @@
             { paragraphBreak: true },
             { chars: ["仍","然","自","由","自","我"], jp: ["jing4","jin4","zi6","jau4","zi6","ngo5"] },
             { chars: ["永","远","高","唱","我","歌"], jp: ["wing5","jyun5","gou1","coeng3","ngo5","go1"] },
-            { chars: ["走","遍","千","里"], jp: ["zau2", "pin3", "cin1", "leoi5"] },
+            { chars: ["走","遍","千","里"], jp: ["zau2", "pin3", "cin1", "lei5"] },
             { paragraphBreak: true },
             { chars: ["原","谅","我","这","一","生","不","羁","放","纵","爱","自","由"], jp: ["jyun4","loeng6","ngo5","ze5","jat1","saang1","bat1","gei1","fong3","zung3","ngoi3","zi6","jau4"] },
             { chars: ["也","会","怕","有","一","天","会","跌","倒"], jp: ["jaa5","wui5","paa3","jau5","jat1","tin1","wui5","dit3","dou2"] },
