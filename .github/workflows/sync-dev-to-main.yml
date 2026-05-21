@@ -81,17 +81,53 @@ jobs:
           git checkout main
           git pull origin main
           
-          # 生成 songFiles.js
-          echo "// 歌曲清单（自动生成，请勿手动修改）" > songFiles.js
-          echo "const songFiles = [" > songFiles.js
-          count=0
-          while IFS= read -r f; do
-              echo "    '"'"'$f'"'"'," >> songFiles.js
-              count=$((count + 1))
-          done < <(find lyrics -maxdepth 1 -name '*.js' -type f | sort)
-          echo "];" >> songFiles.js
-          
-          echo "生成完成，共 $count 首歌曲"
+          # 生成 songFiles.js（包含元数据的新格式）
+          python3 << 'SCRIPT'
+          import os, re
+
+          lyrics_dir = 'lyrics'
+          song_list = []
+
+          for filename in sorted(os.listdir(lyrics_dir)):
+              if not filename.endswith('.js'):
+                  continue
+              filepath = os.path.join(lyrics_dir, filename)
+              with open(filepath, 'r') as f:
+                  c = f.read()
+
+              def extract(field):
+                  match = re.search(rf'{field}:\s*(.*?)(?:,|\n)', c)
+                  if match:
+                      val = match.group(1).strip()
+                      if val.startswith('"') and val.endswith('"'):
+                          return val[1:-1]
+                      return val
+                  return ''
+
+              title = extract('title')
+              artist = extract('artist')
+              if title and artist:
+                  song_list.append({
+                      'id': int(extract('id') or 0),
+                      'title': title,
+                      'artist': artist,
+                      'lyricist': extract('lyricist'),
+                      'composer': extract('composer'),
+                      'file': f'lyrics/{filename}'
+                  })
+
+          song_list.sort(key=lambda x: x['id'])
+
+          lines = ['// 歌曲清单（自动生成，请勿手动修改）', 'const songFiles = [']
+          for s in song_list:
+              lines.append(f'    {{ id: {s["id"]}, title: "{s["title"]}", artist: "{s["artist"]}", lyricist: "{s["lyricist"]}", composer: "{s["composer"]}", file: "{s["file"]}" }},')
+          lines.append('];')
+
+          with open('songFiles.js', 'w') as f:
+              f.write('\n'.join(lines) + '\n')
+
+          print(f"生成完成，共 {len(song_list)} 首歌曲")
+          SCRIPT
           
           # 检查是否有变更
           if git diff --quiet songFiles.js; then

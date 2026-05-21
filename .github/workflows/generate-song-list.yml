@@ -52,17 +52,56 @@ jobs:
       # 注意：使用 while read 处理包含空格的文件名
       - name: Scan lyrics directory and generate manifest
         run: |
-          echo "// 歌曲清单（自动生成，请勿手动修改）" > songFiles.js
-          echo "const songFiles = [" >> songFiles.js
-          count=0
-          while IFS= read -r f; do
-              echo "    '$f'," >> songFiles.js
-              count=$((count + 1))
-          done < <(find lyrics -maxdepth 1 -name '*.js' -type f | sort)
-          echo "];" >> songFiles.js
+          python3 << 'SCRIPT'
+          import os, re, json
 
-          echo "生成完成，共 $count 首歌曲"
-          cat songFiles.js
+          lyrics_dir = 'lyrics'
+          song_list = []
+
+          for filename in sorted(os.listdir(lyrics_dir)):
+              if not filename.endswith('.js'):
+                  continue
+              filepath = os.path.join(lyrics_dir, filename)
+              with open(filepath, 'r') as f:
+                  content = f.read()
+
+              def extract(field):
+                  match = re.search(rf'{field}:\s*(.*?)(?:,|\n)', content)
+                  if match:
+                      val = match.group(1).strip()
+                      if val.startswith('"') and val.endswith('"'):
+                          return val[1:-1]
+                      return val
+                  return ''
+
+              title = extract('title')
+              artist = extract('artist')
+              lyricist = extract('lyricist')
+              composer = extract('composer')
+              song_id = extract('id')
+
+              if title and artist:
+                  song_list.append({
+                      'id': int(song_id) if song_id else 0,
+                      'title': title,
+                      'artist': artist,
+                      'lyricist': lyricist,
+                      'composer': composer,
+                      'file': f'lyrics/{filename}'
+                  })
+
+          song_list.sort(key=lambda x: x['id'])
+
+          lines = ['// 歌曲清单（自动生成，请勿手动修改）', 'const songFiles = [']
+          for s in song_list:
+              lines.append(f'    {{ id: {s["id"]}, title: "{s["title"]}", artist: "{s["artist"]}", lyricist: "{s["lyricist"]}", composer: "{s["composer"]}", file: "{s["file"]}" }},')
+          lines.append('];')
+
+          with open('songFiles.js', 'w') as f:
+              f.write('\n'.join(lines) + '\n')
+
+          print(f"生成完成，共 {len(song_list)} 首歌曲")
+          SCRIPT
 
       # 步骤3：检测清单文件是否有变更，如有变更则创建 PR 并通过 API 合并
       # songFiles.js 是自动生成的文件，创建 PR 后立即通过 API 自动合并
