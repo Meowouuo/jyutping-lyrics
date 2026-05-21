@@ -103,8 +103,8 @@ async function showInstallPrompt() {
 
 /**
  * 动态更新 PWA 主题色
- * 根据系统主题（日间/夜间）动态更新 theme-color meta 标签
- * 使 PWA 窗口标题栏颜色与网页主题保持一致
+ * 根据当前网页主题（日间/夜间）动态更新 theme-color meta 标签
+ * 使 PWA 窗口标题栏颜色与网页背景色保持一致
  */
 function updatePWAThemeColor() {
     // 获取 theme-color meta 标签
@@ -114,31 +114,41 @@ function updatePWAThemeColor() {
         return;
     }
 
-    // 检测系统主题偏好
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // 获取当前网页的实际背景色（从 CSS 变量中读取）
+    const computedStyle = getComputedStyle(document.documentElement);
+    const bgColor = computedStyle.getPropertyValue('--bg-primary').trim();
 
-    // 根据主题设置对应的颜色
-    // 浅色主题使用蓝色 (#1890ff)，深色主题使用深蓝色 (#096dd9)
-    const themeColor = isDarkMode ? '#096dd9' : '#1890ff';
-
-    // 更新 meta 标签
-    themeColorMeta.setAttribute('content', themeColor);
-    console.log(`[PWA] 主题色已更新为: ${themeColor} (${isDarkMode ? '深色' : '浅色'}模式)`);
+    if (bgColor) {
+        // 将网页背景色设置为 PWA 主题色
+        themeColorMeta.setAttribute('content', bgColor);
+        console.log(`[PWA] 主题色已更新为: ${bgColor}`);
+    }
 }
 
 /**
  * 初始化主题色监听
- * 监听系统主题变化，自动更新 PWA 主题色
+ * 监听网页主题切换，自动更新 PWA 主题色
  */
 function initThemeColorListener() {
-    // 初始更新一次
-    updatePWAThemeColor();
+    // 初始更新一次（等待主题模块加载完成）
+    // 延迟执行确保 CSS 变量已生效
+    setTimeout(updatePWAThemeColor, 100);
 
-    // 监听系统主题变化
+    // 监听系统主题变化（用于"跟随系统"模式）
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    mediaQuery.addEventListener('change', (event) => {
-        console.log(`[PWA] 系统主题变化: ${event.matches ? '深色' : '浅色'}模式`);
-        updatePWAThemeColor();
+    mediaQuery.addEventListener('change', () => {
+        // 延迟执行，等待 ThemeModule 更新 CSS 变量
+        setTimeout(updatePWAThemeColor, 100);
+    });
+
+    // 监听网页主题手动切换（日间/夜间/跟随系统）
+    // 通过 MutationObserver 监听 html 元素的 style 属性变化
+    const observer = new MutationObserver(() => {
+        setTimeout(updatePWAThemeColor, 50);
+    });
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['style', 'class', 'data-theme']
     });
 }
 
