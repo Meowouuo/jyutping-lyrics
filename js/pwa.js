@@ -98,6 +98,51 @@ async function showInstallPrompt() {
 }
 
 /* ============================================================
+ * PWA 主题色动态更新
+ * ============================================================ */
+
+/**
+ * 动态更新 PWA 主题色
+ * 根据系统主题（日间/夜间）动态更新 theme-color meta 标签
+ * 使 PWA 窗口标题栏颜色与网页主题保持一致
+ */
+function updatePWAThemeColor() {
+    // 获取 theme-color meta 标签
+    const themeColorMeta = document.getElementById('themeColorMeta');
+    if (!themeColorMeta) {
+        console.log('[PWA] 未找到 theme-color meta 标签');
+        return;
+    }
+
+    // 检测系统主题偏好
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // 根据主题设置对应的颜色
+    // 浅色主题使用蓝色 (#1890ff)，深色主题使用深蓝色 (#096dd9)
+    const themeColor = isDarkMode ? '#096dd9' : '#1890ff';
+
+    // 更新 meta 标签
+    themeColorMeta.setAttribute('content', themeColor);
+    console.log(`[PWA] 主题色已更新为: ${themeColor} (${isDarkMode ? '深色' : '浅色'}模式)`);
+}
+
+/**
+ * 初始化主题色监听
+ * 监听系统主题变化，自动更新 PWA 主题色
+ */
+function initThemeColorListener() {
+    // 初始更新一次
+    updatePWAThemeColor();
+
+    // 监听系统主题变化
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', (event) => {
+        console.log(`[PWA] 系统主题变化: ${event.matches ? '深色' : '浅色'}模式`);
+        updatePWAThemeColor();
+    });
+}
+
+/* ============================================================
  * 模块初始化
  * ============================================================ */
 
@@ -105,6 +150,7 @@ async function showInstallPrompt() {
 document.addEventListener('DOMContentLoaded', () => {
     registerServiceWorker();
     initInstallPrompt();
+    initThemeColorListener();
 });
 
 // 导出公共 API（供其他模块使用）
