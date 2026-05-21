@@ -48,6 +48,7 @@ const songFiles = [
     'lyrics/杨千嬅.js',
     'lyrics/樱花树下.js',
     'lyrics/欢乐今宵.js',
+    'lyrics/沙龙.js',
     'lyrics/河童.js',
     'lyrics/海阔天空.js',
     'lyrics/游乐场.js',
