@@ -58,7 +58,7 @@
             { chars: ["太","清","楚"], jp: ["taai3","cing1","co2"] },
             { chars: ["想","继","续","装","傻"], jp: ["soeng2","gai3","zuk6","zong1","so4"] },
             { chars: ["却","又","无","力","受","折","磨"], jp: ["koek3","jau6","mou4","lik6","sau6","zit3","mo4"] },
-            { chars: ["心","里","羡","慕","有","些","人"], jp: ["sam1","lei5","sin6","mou6","jau5","se1","jan4"] },
+            { chars: ["心","里","羡","慕","有","些","人"], jp: ["sam1", "leoi5", "sin6", "mou6", "jau5", "se1", "jan4"] },
             { chars: ["盲","目","到","不","计","后","果"], jp: ["maang4","muk6","dou3","bat1","gai3","hau6","gwo2"] },
             { paragraphBreak: true },
             { chars: ["我","就","回","去"], jp: ["ngo5","zau6","wui4","heoi3"] },

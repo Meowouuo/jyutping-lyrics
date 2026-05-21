@@ -14,7 +14,7 @@
         lyrics: [
             { chars: ["缺","氧","到","似","有","幻","象"," ","乏","力","地","躺","于","地","上"], jp: ["kyut3","joeng5","dou3","ci5","jau5","waan6","zoeng6","","fat6","lik6","dei6","tong2","jyu1","dei6","soeng6"] },
             { chars: ["合","上","双","眼","用","皮","肤","感","应","无","常"], jp: ["hap6","soeng6","soeng1","ngaan5","jung6","pei4","fu1","gam2","jing3","mou4","soeng4"] },
-            { chars: ["这","里","有","过","你"," ","未","及","步","离","场"], jp: ["ze5","lei5","jau5","gwo3","nei5","","mei6","kap6","bou6","lei4","coeng4"] },
+            { chars: ["这","里","有","过","你"," ","未","及","步","离","场"], jp: ["ze5", "leoi5", "jau5", "gwo3", "nei5", "", "mei6", "kap6", "bou6", "lei4", "coeng4"] },
             { chars: ["被","你","的","气","味"," ","筑","起","了","围","墙"], jp: ["bei6","nei5","dik1","hei3","mei6","","zuk1","hei2","liu5","wai4","coeng4"] },
             { paragraphBreak: true },
             { chars: ["从","头","再","呼","吸"," ","残","存","那","种","美"], jp: ["cung4","tau4","zoi3","fu1","kap1","","caan4","cyun4","naa5","zung2","mei5"] },

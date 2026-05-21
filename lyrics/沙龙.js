@@ -38,7 +38,7 @@
             { chars: ["光","圈","爱","漫","游"], jp: ["gwong1","hyun1","ngoi3","maan6","jau4"] },
             { chars: ["眼","睛","等","色","诱"], jp: ["ngaan5","zing1","dang2","sik1","jau5"] },
             { chars: ["有","人","性"], jp: ["jau5","jan4","sing3"] },
-            { chars: ["镜","头","里","总","有","丰","收"], jp: ["geng3","tau4","lei5","zung2","jau5","fung1","sau1"] },
+            { chars: ["镜","头","里","总","有","丰","收"], jp: ["geng3", "tau4", "leoi5", "zung2", "jau5", "fung1", "sau1"] },
             { paragraphBreak: true },
             { chars: ["虽","则","那"], jp: ["seoi1","zak1","naa5"] },
             { chars: ["即","影","即","有","售","罄"], jp: ["zik1","jing2","zik1","jau5","sau6","hing3"] },

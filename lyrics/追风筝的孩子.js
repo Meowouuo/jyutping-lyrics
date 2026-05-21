@@ -40,7 +40,7 @@
             { chars: ["灰", "飞", "的", "初", "吻", "至", "少", "感", "动", "一", "两", "秒"], jp: ["fui1", "fei1", "dik1", "co1", "man5", "zi3", "siu2", "gam2", "dung6", "jat1", "loeng5", "miu5"] },
             { paragraphBreak: true },
             { chars: ["断","了","线","那","风","筝"], jp: ["dyun6","liu5","sin3","naa5","fung1","zang1"] },
-            { chars: ["到","哪","里","落","地","生","根"], jp: ["dou3","naa5","lei5","lok6","dei6","sang1","gan1"] },
+            { chars: ["到","哪","里","落","地","生","根"], jp: ["dou3", "naa5", "leoi5", "lok6", "dei6", "sang1", "gan1"] },
             { chars: ["爱","过","你","仍","然","是","福","份"], jp: ["ngoi3","gwo3","nei5","jing4","jin4","si6","fuk1","fan6"] },
             { paragraphBreak: true },
             { chars: ["风","筝","飞","不","出","叹","息","桥"], jp: ["fung1","zang1","fei1","bat1","ceot1","taan3","sik1","kiu4"] },

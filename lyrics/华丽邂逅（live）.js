@@ -33,7 +33,7 @@
             { chars: ["两","部","火","箭"], jp: ["loeng5","bou6","fo2","zin3"] },
             { chars: ["其","实","与","你","有","权"], jp: ["kei4","sat6","jyu5","nei5","jau5","kyun4"] },
             { chars: ["永","远","未","谋","面"], jp: ["wing5","jyun5","mei6","mau4","min6"] },
-            { chars: ["年","月","里","平","白","错","过"], jp: ["nin4","jyut6","lei5","ping4","baak6","co3","gwo3"] },
+            { chars: ["年","月","里","平","白","错","过"], jp: ["nin4", "jyut6", "leoi5", "ping4", "baak6", "co3", "gwo3"] },
             { chars: ["某","个","友","谊","或","爱","恋"], jp: ["mau5","go3","jau5","ji4","waak6","ngoi3","lyun2"] },
             { paragraphBreak: true },
             { chars: ["浮","游","在","无","限","宇","宙"], jp: ["fau4","jau4","zoi6","mou4","haan6","jyu5","zau6"] },

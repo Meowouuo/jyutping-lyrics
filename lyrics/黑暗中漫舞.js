@@ -27,7 +27,7 @@
             { chars: ["为","何","未","能","待","我","差","到","让","我","去","憎","你"], jp: ["wai4","ho4","mei6","nang4","doi6","ngo5","caa1","dou3","joeng6","ngo5","heoi3","zang1","nei5"] },
             { chars: ["捱","到","这","伤","口","激","发","士","气"," ","左","脚","高","举","到","白","发","齐","眉"], jp: ["ngaai4","dou3","ze5","soeng1","hau2","gik1","faat3","si6","hei3","","zo2","goek3","gou1","geoi2","dou3","baak6","faat3","cai4","mei4"] },
             { chars: ["为","何","未","能","待","我","好","到","没","法","舍","得","你"], jp: ["wai4","ho4","mei6","nang4","doi6","ngo5","hou2","dou3","mut6","faat3","se3","dak1","nei5"] },
-            { chars: ["顽","固","的","车","軚","追","了","万","里"," ","先","发","现","一","早","泄","光","气"], jp: ["waan4","gu3","dik1","ce1","taai5","zeoi1","liu5","maan6","lei5","","sin1","faat3","jin6","jat1","zou2","sit3","gwong1","hei3"] },
+            { chars: ["顽","固","的","车","軚","追","了","万","里"," ","先","发","现","一","早","泄","光","气"], jp: ["waan4", "gu3", "dik1", "ce1", "taai5", "zeoi1", "liu5", "maan6", "leoi5", "", "sin1", "faat3", "jin6", "jat1", "zou2", "sit3", "gwong1", "hei3"] },
             { paragraphBreak: true },
             { chars: ["学","爱","你"," ","美","不","美"," ","天","黑","黑","到","地"], jp: ["hok6","ngoi3","nei5","","mei5","bat1","mei5","","tin1","hak1","hak1","dou3","dei6"] },
             { chars: ["朝","着","坏","了","的","灯","泡","舞","着","别","离"], jp: ["ciu4","zoek6","waai6","liu5","dik1","dang1","paau1","mou5","zoek6","bit6","lei4"] },

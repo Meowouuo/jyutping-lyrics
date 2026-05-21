@@ -18,7 +18,7 @@
             { chars: ["你","可","会","很","不","解"," ","我","怎","不","删","了","它"], jp: ["nei5","ho2","wui6","han2","bat1","gaai2","","ngo5","zam2","bat1","saan1","liu5","taa1"] },
             { paragraphBreak: true },
             { chars: ["我","知","不","该"," ","但","是","不","改"], jp: ["ngo5","zi1","bat1","goi1","","daan6","si6","bat1","goi2"] },
-            { chars: ["像","某","种","流","亡","的","爱","千","里","之","外"], jp: ["zoeng6","mau5","zung2","lau4","mong4","dik1","ngoi3","cin1","lei5","zi1","ngoi6"] },
+            { chars: ["像","某","种","流","亡","的","爱","千","里","之","外"], jp: ["zoeng6", "mau5", "zung2", "lau4", "mong4", "dik1", "ngoi3", "cin1", "leoi5", "zi1", "ngoi6"] },
             { chars: ["联","系","还","是","依","在"], jp: ["lyun4","hai6","waan4","si6","ji1","zoi6"] },
             { paragraphBreak: true },
             { chars: ["有","没","有","一","丝","半","秒","伤","悲"], jp: ["jau5","mut6","jau5","jat1","si1","bun3","miu5","soeng1","bei1"] },

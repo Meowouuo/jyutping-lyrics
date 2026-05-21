@@ -40,7 +40,7 @@
             { chars: ["圆", "的", "线"], jp: ["jyun4", "dik1", "sin3"] },
             { paragraphBreak: true },
             { chars: ["谁", "走", "，", "走", "，", "走", " ", "走", "出", "了", "乐", "园"], jp: ["seoi4", "zau2", "", "zau2", "", "zau2", "", "zau2", "ceot1", "liu5", "lok6", "jyun4"] },
-            { chars: ["谁", "痛", "，", "痛", "，", "痛", " ", "痛", "恨", "里", "复", "元"], jp: ["seoi4", "tung3", "", "tung3", "", "tung3", "", "tung3", "han6", "lei5", "fuk6", "jyun4"] },
+            { chars: ["谁", "痛", "，", "痛", "，", "痛", " ", "痛", "恨", "里", "复", "元"], jp: ["seoi4", "tung3", "", "tung3", "", "tung3", "", "tung3", "han6", "leoi5", "fuk6", "jyun4"] },
             { chars: ["即", "使", "距", "离", "还", "太", "远"], jp: ["zik1", "si2", "keoi5", "lei4", "waan4", "taai3", "jyun5"] },
             { chars: ["我", "信", "缘", "分", "安", "于", "身", "边"], jp: ["ngo5", "seon3", "jyun4", "fan1", "on1", "jyu1", "san1", "bin1"] },
             { paragraphBreak: true },
