@@ -18,6 +18,7 @@ const songFiles = [
     'lyrics/十面埋伏.js',
     'lyrics/千千阙歌.js',
     'lyrics/友共情.js',
+    'lyrics/可人儿.js',
     'lyrics/可惜我是水瓶座.js',
     'lyrics/告别我的恋人们.js',
     'lyrics/呼吸有害.js',
