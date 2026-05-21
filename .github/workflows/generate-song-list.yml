@@ -4,7 +4,7 @@
 #   1. 当 main 分支的 lyrics/ 目录下有文件变更时自动触发（push 事件）
 #   2. 当 auto-process 工作流完成后触发（workflow_run 事件，解决 GITHUB_TOKEN push 不触发问题）
 #   3. 支持手动触发（workflow_dispatch）
-# 处理流程：扫描歌词文件 -> 生成清单 -> 检测变更 -> 创建 PR 并自动合并
+# 处理流程：扫描歌词文件 -> 生成清单 -> 检测变更 -> 创建 PR 并自动合并到 dev
 
 name: Generate Songs Manifest
 
@@ -16,10 +16,11 @@ on:
     paths: ['lyrics/**']
   
   # 方式2：当相关处理工作流完成后触发（解决 GITHUB_TOKEN 产生的 push 不触发问题）
+  # 注意：由于 PR 现在合并到 dev，所以也要监听 dev 分支的完成
   workflow_run:
-    workflows: ["Auto Process Issues", "Batch Merge PRs"]
+    workflows: ["Auto Process Issues", "Batch Merge PRs", "Sync Dev to Main"]
     types: [completed]
-    branches: [main]
+    branches: [dev, main]
   
   # 方式3：支持手动触发
   workflow_dispatch:
@@ -85,13 +86,13 @@ jobs:
           git commit -m "chore: 自动更新歌曲清单"
           git push origin "$branch"
 
-          # 通过 GitHub API 创建 PR
+          # 通过 GitHub API 创建 PR（目标分支改为 dev）
           sleep 2
           pr_response=$(curl -s -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls" \
-            -d "{\"title\":\"chore: 自动更新歌曲清单\",\"body\":\"此 PR 由 Actions 自动生成。\",\"head\":\"$branch\",\"base\":\"main\"}")
+            -d "{\"title\":\"chore: 自动更新歌曲清单\",\"body\":\"此 PR 由 Actions 自动生成。\",\"head\":\"$branch\",\"base\":\"dev\"}")
           pr_num=$(echo "$pr_response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('number',''))" 2>/dev/null)
           echo "PR 已创建: #$pr_num"
 
@@ -111,7 +112,7 @@ jobs:
           merged=$(echo "$merge_response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('merged',False))" 2>/dev/null)
 
           if [ "$merged" = "True" ]; then
-            echo "✅ 歌曲清单已更新并合并到 main 分支"
+            echo "✅ 歌曲清单已更新并合并到 dev 分支"
           else
             echo "❌ PR 合并失败"
             echo "$merge_response"

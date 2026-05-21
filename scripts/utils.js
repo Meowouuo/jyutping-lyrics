@@ -272,8 +272,9 @@ function createPR(title, body, branchName, issueNumber) {
     fs.writeFileSync(tmpFile, body, 'utf8');
 
     // 创建 Pull Request
+    // 注意：PR 目标分支改为 dev，遵循"在 dev 分支修改，合并到 main 部署"的规则
     execSync(
-        `gh pr create --title "${title}" --body-file "${tmpFile}" --base main --head ${branchName}`,
+        `gh pr create --title "${title}" --body-file "${tmpFile}" --base dev --head ${branchName}`,
         { stdio: 'pipe' }
     );
 }
