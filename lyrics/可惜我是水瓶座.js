@@ -14,7 +14,7 @@
         lyrics: [
             { chars: ["原","来","你","这","样","珍","惜","我"], jp: ["jyun4","loi4","nei5","ze5","joeng6","zan1","sik1","ngo5"] },
             { chars: ["从","前","在","热","恋","中","都","未","听","讲","过"], jp: ["cung4","cin4","zoi6","jit6","lyun2","zung1","dou1","mei6","ting1","gong2","gwo3"] },
-            { chars: ["别","说"," ","这","种","行","货","哪","里","留","得","住","我"], jp: ["bit6","syut3","","ze5","zung2","hang4","fo3","naa5","lei5","lau4","dak1","zyu6","ngo5"] },
+            { chars: ["别","说"," ","这","种","行","货","哪","里","留","得","住","我"], jp: ["bit6", "syut3", "", "ze5", "zung2", "hang4", "fo3", "naa5", "leoi5", "lau4", "dak1", "zyu6", "ngo5"] },
             { chars: ["到","底","是","为","什","么","分","手"], jp: ["dou3","dai2","si6","wai4","sap6","maa1","fan1","sau2"] },
             { chars: ["你","很","清","楚"], jp: ["nei5","han2","cing1","co2"] },
             { paragraphBreak: true },
@@ -25,7 +25,7 @@
             { chars: ["太","清","楚"], jp: ["taai3","cing1","co2"] },
             { chars: ["想","继","续","装","傻"], jp: ["soeng2","gai3","zuk6","zong1","so4"] },
             { chars: ["却","又","无","力","受","折","磨"], jp: ["koek3","jau6","mou4","lik6","sau6","zit3","mo4"] },
-            { chars: ["心","里","羡","慕","那","些","人"], jp: ["sam1","lei5","sin6","mou6","naa5","se1","jan4"] },
+            { chars: ["心","里","羡","慕","那","些","人"], jp: ["sam1", "leoi5", "sin6", "mou6", "naa5", "se1", "jan4"] },
             { chars: ["盲","目","到","不","计","后","果"], jp: ["maang4","muk6","dou3","bat1","gai3","hau6","gwo2"] },
             { paragraphBreak: true },
             { chars: ["我","就","回","去"], jp: ["ngo5","zau6","wui4","heoi3"] },
