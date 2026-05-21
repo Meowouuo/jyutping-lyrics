@@ -25,6 +25,7 @@ const songFiles = [
     'lyrics/告别我的恋人们.js',
     'lyrics/呼吸有害.js',
     'lyrics/咬唇.js',
+    'lyrics/啜泣（live）.js',
     'lyrics/喜帖街.js',
     'lyrics/喜欢你.js',
     'lyrics/圆.js',
