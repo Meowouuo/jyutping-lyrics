@@ -698,8 +698,11 @@
                 // 根据响应结果显示成功或失败
                 if (data.success) {
                     showResult('jp-result', true, `✅ 提交成功！已创建 <a href="${data.issueUrl}" target="_blank">Issue #${data.issueNumber}</a>，请等待管理员处理。`);
+                    btn.textContent = '✓ 已提交';
                 } else {
                     showResult('jp-result', false, `❌ 提交失败：${data.error}`);
+                    btn.disabled = false;
+                    btn.textContent = '提交纠错';
                 }
             } catch (e) {
                 // 网络错误处理
