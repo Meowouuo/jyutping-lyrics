@@ -719,14 +719,24 @@
                         corrections  // 纠错数据数组
                     }),
                 });
+                
+                // 检查响应状态
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    showResult('jp-result', false, `❌ 服务器错误 (${res.status})：${errorText || '未知错误'}`);
+                    btn.disabled = false;
+                    btn.textContent = '提交纠错';
+                    return;
+                }
+                
                 const data = await res.json();
 
                 // 根据响应结果显示成功或失败
-                if (data.success) {
+                if (data && data.success) {
                     showResult('jp-result', true, `✅ 提交成功！已创建 <a href="${data.issueUrl}" target="_blank">Issue #${data.issueNumber}</a>，请等待管理员处理。`);
                     btn.textContent = '✓ 已提交';
                 } else {
-                    showResult('jp-result', false, `❌ 提交失败：${data.error}`);
+                    showResult('jp-result', false, `❌ 提交失败：${data?.error || '未知错误'}`);
                     btn.disabled = false;
                     btn.textContent = '提交纠错';
                 }
