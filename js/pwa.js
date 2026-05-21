@@ -60,11 +60,10 @@ let deferredPrompt = null;
 function initInstallPrompt() {
     // 监听安装提示事件
     window.addEventListener('beforeinstallprompt', (event) => {
-        // 阻止默认的迷你信息栏显示
-        event.preventDefault();
         // 保存事件供后续使用
         deferredPrompt = event;
-        console.log('[PWA] 安装提示已捕获');
+        console.log('[PWA] 安装提示已捕获，可以安装 PWA');
+        // 注意：不调用 event.preventDefault()，允许浏览器显示安装图标
     });
 
     // 监听应用安装完成事件
