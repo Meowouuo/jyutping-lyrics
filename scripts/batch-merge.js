@@ -19,15 +19,16 @@ const API = `https://api.github.com/repos/${REPO}`;
 // 执行curl命令
 function curl(url, method = 'GET', data = null) {
   const headers = `-H "Authorization: token ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json"`;
-  const cmd = data
-    ? `curl -s -X ${method} ${headers} -d '${JSON.stringify(data)}' "${url}"`
-    : `curl -s ${headers} "${url}"`;
+  // 对于非 GET 请求，需要添加 -X 参数
+  const methodFlag = method !== 'GET' ? `-X ${method}` : '';
+  const dataFlag = data ? `-d '${JSON.stringify(data)}'` : '';
+  const cmd = `curl -s ${methodFlag} ${headers} ${dataFlag} "${url}"`.trim().replace(/\s+/g, ' ');
   try {
     const output = execSync(cmd, { encoding: 'utf8' });
     if (!output.trim()) return null;  // DELETE 请求返回空
     return JSON.parse(output);
   } catch (e) {
-    console.error(`请求失败: ${url}`);
+    console.error(`请求失败: ${url}, 方法: ${method}, 错误: ${e.message}`);
     return null;
   }
 }
