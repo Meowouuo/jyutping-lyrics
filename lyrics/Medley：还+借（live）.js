@@ -77,7 +77,7 @@
             { chars: ["下", "分", "钟", " ", "下", "一", "秒", " ", "你", "眼", "睛", "通", "红", "似", "发", "烧"], jp: ["haa6", "fan1", "zung1", "", "haa6", "jat1", "miu5", "", "nei5", "ngaan5", "zing1", "tung1", "hung4", "ci5", "faat3", "siu1"] },
             { paragraphBreak: true },
             { chars: ["为", "何", "每", "个", "礼", "拜", "消", "遣", "都", "早", "约", "定", "了"], jp: ["wai4", "ho4", "mui5", "go3", "lai5", "baai3", "siu1", "hin2", "dou1", "zou2", "joek3", "ding6", "liu5"] },
-            { chars: ["谁", "人", "个", "唱", "那", "里", "自", "助", "餐", "都", "已", "订", "票"], jp: ["seoi4", "jan4", "go3", "coeng3", "naa5", "lei5", "zi6", "zo6", "caan1", "dou1", "ji5", "ding3", "piu3"] },
+            { chars: ["谁", "人", "个", "唱", "那", "里", "自", "助", "餐", "都", "已", "订", "票"], jp: ["seoi4", "jan4", "go3", "coeng3", "naa5", "leoi5", "zi6", "zo6", "caan1", "dou1", "ji5", "ding3", "piu3"] },
             { chars: ["是", "开", "始", " ", "又", "不", "对", " ", "对", "你", "所", "知", "道", "太", "少"], jp: ["si6", "hoi1", "ci2", "", "jau6", "bat1", "deoi3", "", "deoi3", "nei5", "so2", "zi1", "dou6", "taai3", "siu2"] },
             { chars: ["是", "知", "己", " ", "亦", "不", "对", " ", "你", "太", "好", "的", "人", "缘", " ", "知", "己", "哪", "会", "缺", "少"], jp: ["si6", "zi1", "gei2", "", "jik6", "bat1", "deoi3", "", "nei5", "taai3", "hou2", "dik1", "jan4", "jyun4", "", "zi1", "gei2", "naa5", "wui6", "kyut3", "siu2"] },
             { paragraphBreak: true },
