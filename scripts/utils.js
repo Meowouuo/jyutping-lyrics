@@ -7,7 +7,9 @@
 const fs = require('fs');          // 文件系统模块
 const path = require('path');      // 路径处理模块
 const { execSync } = require('child_process');  // 子进程模块，用于执行 git 命令
-const { matchJyutping } = require("../jyutping-dict");  // 粤拼匹配函数
+// const { matchJyutping } = require("../jyutping-dict");  // 粤拼匹配函数
+const { matchJyutping: originalMatchJyutping, JYUTPING_DICT } = require("../jyutping-dict");  // 原始粤拼匹配函数和字典
+
 
 // ============================================
 // 获取 Issue 信息
@@ -321,6 +323,149 @@ function closeIssue(issueNumber) {
 function addLabel(issueNumber, label) {
     execSync(`gh issue edit ${issueNumber} --add-label "${label}"`, { stdio: 'pipe' });
 }
+
+// ============================================
+// 加载 cantowords 词典
+// 功能：按需加载词典文件，建立词语到粤拼的映射
+// ============================================
+
+// 词典缓存
+let cantowordsCache = null;
+let headwordIndexCache = null;
+let cantowordsLoaded = false;
+
+// 加载 manifest.json 获取索引
+function loadHeadwordIndex() {
+    if (headwordIndexCache) return headwordIndexCache;
+    
+    const manifestPath = path.join(__dirname, '..', 'dictionaries', 'cantowords', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    headwordIndexCache = manifest.headwordIndex;
+    return headwordIndexCache;
+}
+
+// 加载指定 chunk 的词典数据
+function loadChunk(chunkName) {
+    if (!cantowordsCache) {
+        cantowordsCache = {};
+    }
+    
+    if (cantowordsCache[chunkName]) return cantowordsCache[chunkName];
+    
+    const chunkPath = path.join(__dirname, '..', 'dictionaries', 'cantowords', `${chunkName}.json`);
+    if (!fs.existsSync(chunkPath)) {
+        cantowordsCache[chunkName] = [];
+        return [];
+    }
+    
+    const data = JSON.parse(fs.readFileSync(chunkPath, 'utf8'));
+    cantowordsCache[chunkName] = data;
+    return data;
+}
+
+// 获取词语的粤拼
+function getWordJyutping(word) {
+    if (!word || word.length === 0) return null;
+    
+    const index = loadHeadwordIndex();
+    const firstChar = word[0];
+    
+    // 从索引中查找该字所在的 chunk
+    const chunks = index[firstChar];
+    if (!chunks || chunks.length === 0) return null;
+    
+    // 在所有可能的 chunk 中查找
+    for (const chunkName of chunks) {
+        const entries = loadChunk(chunkName);
+        
+        // 查找匹配的词条
+        for (const entry of entries) {
+            if (entry.headword && entry.headword.display === word) {
+                // 找到匹配，返回第一个粤拼
+                if (entry.phonetic && entry.phonetic.jyutping && entry.phonetic.jyutping.length > 0) {
+                    return entry.phonetic.jyutping[0];
+                }
+            }
+        }
+    }
+    
+    return null;
+}
+
+// ============================================
+// 改进的粤拼匹配函数
+// 功能：优先匹配词语和短语，未匹配则回退到单字匹配
+// 
+// 参数：
+//   - text: 要匹配的文本
+//
+// 返回值：匹配结果数组，每个元素包含 char 和 jp
+// ============================================
+function matchJyutping(text) {
+    if (!text) return [];
+    
+    const result = [];
+    let i = 0;
+    const len = text.length;
+    
+    while (i < len) {
+        const char = text[i];
+        
+        // 处理空格和换行
+        if (char === ' ' || char === '\n' || char === '\r') {
+            result.push({ char: char, jp: '' });
+            i++;
+            continue;
+        }
+        
+        // 尝试匹配最长词语（从最长到最短）
+        let matched = false;
+        const maxWordLen = Math.min(10, len - i); // 最多尝试10个字符的词语
+        
+        for (let wordLen = maxWordLen; wordLen >= 2; wordLen--) {
+            if (i + wordLen > len) continue;
+            
+            const word = text.substring(i, i + wordLen);
+            const jyutping = getWordJyutping(word);
+            
+            if (jyutping) {
+                // 找到词语匹配，将词语中的每个字符都标记为对应的粤拼
+                const jpParts = jyutping.split(' ');
+                
+                for (let j = 0; j < wordLen; j++) {
+                    const wordChar = word[j];
+                    const wordJp = jpParts[j] || '';
+                    
+                    if (wordChar === ' ' || wordChar === '\n' || wordChar === '\r') {
+                        result.push({ char: wordChar, jp: '' });
+                    } else {
+                        result.push({ char: wordChar, jp: wordJp });
+                    }
+                }
+                
+                i += wordLen;
+                matched = true;
+                break;
+            }
+        }
+        
+        // 如果没有匹配到词语，使用单字匹配
+        if (!matched) {
+            console.log("未匹配到粤拼, 使用字体库匹配");
+            // 使用原始匹配函数处理单字
+            const singleResult = originalMatchJyutping(char);
+            if (singleResult && singleResult.length > 0) {
+                result.push(singleResult[0]);
+            } else {
+                result.push({ char: char, jp: '' });
+            }
+            i++;
+        }
+    }
+    
+    return result;
+}
+
 
 // ============================================
 // 导出模块
