@@ -789,6 +789,14 @@
             /* 居中对齐 */
             text-align: center;
         }
+        
+        /* 英文字母样式：不需要粤拼，正常间距 */
+        .meta-name-english {
+            font-size: 14px;
+            color: var(--text-secondary);
+            /* 不设置固定宽度，让字母自然排列 */
+            margin: 0 1px;  /* 字母间微小间距 */
+        }
 
         /* 标签冒号样式（歌手：、填词：、作曲：） */
         .meta-label-colon {
@@ -2765,10 +2773,19 @@
      * @returns {string} HTML字符串
      */
     function renderMetaName(name, jyutpingArr) {
-        if (!jyutpingArr || jyutpingArr.length === 0) return name;  // 无粤拼时直接返回原名
+        // 无粤拼时直接返回原名（英文名字等情况）
+        if (!jyutpingArr || jyutpingArr.length === 0) return name;
+        
         // 将人名拆分为字符数组，为每个字符生成带粤拼的 HTML
         return name.split('').map((char, i) => {
             const jp = jyutpingArr[i] || '';           // 获取对应粤拼
+            
+            // 判断是否为英文字母：英文字母不需要粤拼，也不需要固定宽度
+            if (/[a-zA-Z]/.test(char)) {
+                return `<span class="meta-name-english">${char}</span>`;
+            }
+            
+            // 中文或其他字符：显示粤拼，使用固定宽度对齐
             return `
                 <span class="meta-name-group">
                     <span class="meta-name-jyutping">${jp}</span>
