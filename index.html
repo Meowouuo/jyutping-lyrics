@@ -2144,7 +2144,7 @@
                             <span>改歌词</span>
                         </button>
                         <!-- 投稿按钮（新窗口打开投稿表单页面） -->
-                        <button class="toolbar-btn" onclick="window.open('submit.html','_blank')">
+                        <button class="toolbar-btn" onclick="window.open('submit.html?v=2','_blank')">
                             <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
                             <span>投稿</span>
                         </button>
@@ -2934,7 +2934,7 @@
         const songName = encodeURIComponent(currentSong.title);
         // 在新窗口打开投稿表单页面，携带投稿类型和歌曲名参数
         // type 参数标识投稿类型（如 'correction' 纠错投稿）
-        window.open(`submit.html?type=${type}&song=${songName}`, '_blank');
+        window.open(`submit.html?type=${type}&song=${songName}&v=2`, '_blank');
     }
 
     // ========================================
