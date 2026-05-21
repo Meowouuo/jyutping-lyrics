@@ -71,6 +71,41 @@ jobs:
 
           echo "已成功合并到 main 分支"
 
+      # 步骤2.5：更新 songFiles.js（直接在当前工作流中完成，避免异步联动问题）
+      - name: Update songFiles.js
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 切换到 main 分支（此时 main 已有最新歌词）
+          git checkout main
+          git pull origin main
+          
+          # 生成 songFiles.js
+          echo "// 歌曲清单（自动生成，请勿手动修改）" > songFiles.js
+          echo "const songFiles = [" > songFiles.js
+          count=0
+          while IFS= read -r f; do
+              echo "    '"'"'$f'"'"'," >> songFiles.js
+              count=$((count + 1))
+          done < <(find lyrics -maxdepth 1 -name '*.js' -type f | sort)
+          echo "];" >> songFiles.js
+          
+          echo "生成完成，共 $count 首歌曲"
+          
+          # 检查是否有变更
+          if git diff --quiet songFiles.js; then
+            echo "songFiles.js 无变更，跳过"
+          else
+            # 直接提交到 main（使用 GITHUB_TOKEN）
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add songFiles.js
+            git commit -m "chore: 自动更新歌曲清单（共 $count 首）"
+            git push origin main
+            echo "✅ songFiles.js 已更新并推送到 main"
+          fi
+
       # 步骤3：获取合并的 PR 信息，清理相关分支
       - name: Cleanup branches
         env:
