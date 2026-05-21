@@ -2039,20 +2039,19 @@
             </div>
 
             <!-- 空状态提示区域（未选择歌曲时显示，引导用户操作） -->
-            <!-- 使用 list-music SVG 图标替代 emoji 音符，支持夜间模式自适应 -->
+            <!-- 使用 list-music SVG 图标替代 emoji 音符，与左上角 Logo 图标一致，支持夜间模式自适应 -->
             <div class="empty-state" id="emptyState">
                 <div class="empty-icon">
-                    <!-- list-music 图标：音乐列表符号 -->
+                    <!-- list-music 图标：列表+音符，与侧边栏 Logo 图标一致 -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- 第一列音符：高音谱号位置 -->
-                        <path d="M21 15V6"/>
-                        <path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
-                        <!-- 第二列音符：中音位置 -->
-                        <path d="M12 12V3"/>
-                        <path d="M12 12a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
-                        <!-- 第三列音符：低音位置 -->
-                        <path d="M6 12V3"/>
-                        <path d="M6 12a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
+                        <!-- 列表横线（三条，表示列表） -->
+                        <path d="M16 5H3"/>
+                        <path d="M11 12H3"/>
+                        <path d="M11 19H3"/>
+                        <!-- 音符竖线 -->
+                        <path d="M21 16V5"/>
+                        <!-- 音符圆点 -->
+                        <circle cx="18" cy="16" r="3"/>
                     </svg>
                 </div>
                 <div class="empty-title">选择一首歌</div>
