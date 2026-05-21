@@ -142,21 +142,21 @@ function getAllSongs() {
     const songFilesContent = fs.readFileSync(path.join(__dirname, '..', 'songFiles.js'), 'utf8');
     const songs = [];
 
-    // 匹配歌词文件路径
-    const filePattern = /'lyrics\/(.+?)\.js'/g;
+    // 解析新格式 songFiles（对象数组，包含 id, title, artist, lyricist, composer, file）
+    const entryPattern = /id:\s*(\d+),\s*title:\s*"([^"]*)",\s*artist:\s*"([^"]*)",\s*lyricist:\s*"([^"]*)",\s*composer:\s*"([^"]*)",\s*file:\s*"([^"]*)"/g;
     let match;
 
-    // 遍历匹配到的文件
-    while ((match = filePattern.exec(songFilesContent)) !== null) {
-        const fileName = match[1];  // 文件名（不含路径和扩展名）
-        const filePath = path.join(__dirname, '..', 'lyrics', `${fileName}.js`);
+    while ((match = entryPattern.exec(songFilesContent)) !== null) {
+        const file = match[6];  // 文件路径，如 'lyrics/xxx.js'
+        const filePath = path.join(__dirname, '..', file);
 
         // 检查文件是否存在
         if (fs.existsSync(filePath)) {
             const content = fs.readFileSync(filePath, 'utf8');
             const song = parseSongFile(content);
             if (song) {
-                song.fileName = fileName;
+                // 从文件路径提取文件名（不含路径和扩展名）
+                song.fileName = path.basename(file, '.js');
                 songs.push(song);
             }
         }
