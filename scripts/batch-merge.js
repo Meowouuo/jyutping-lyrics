@@ -23,7 +23,9 @@ function curl(url, method = 'GET', data = null) {
     ? `curl -s -X ${method} ${headers} -d '${JSON.stringify(data)}' "${url}"`
     : `curl -s ${headers} "${url}"`;
   try {
-    return JSON.parse(execSync(cmd, { encoding: 'utf8' }));
+    const output = execSync(cmd, { encoding: 'utf8' });
+    if (!output.trim()) return null;  // DELETE 请求返回空
+    return JSON.parse(output);
   } catch (e) {
     console.error(`请求失败: ${url}`);
     return null;
@@ -103,6 +105,19 @@ function mergePR(prNumber) {
 
   if (mergeResult && mergeResult.merged) {
     console.log(`  ✅ PR #${prNumber} 合并成功`);
+
+    // 删除已合并的PR分支
+    const headRef = prInfo.head?.ref;
+    if (headRef && headRef !== 'dev' && headRef !== 'main') {
+      console.log(`  正在删除分支 ${headRef}...`);
+      const deleteResult = curl(`${API}/git/refs/heads/${encodeURIComponent(headRef)}`, 'DELETE');
+      if (deleteResult === null) {
+        // DELETE 请求成功返回空
+        console.log(`  ✅ 分支 ${headRef} 已删除`);
+      } else {
+        console.log(`  ⚠️ 分支 ${headRef} 删除失败`);
+      }
+    }
 
     // 关闭关联的Issue
     if (AUTO_CLOSE && issueNumber) {
