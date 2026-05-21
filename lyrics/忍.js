@@ -59,7 +59,7 @@
             { paragraphBreak: true },
             { chars: ["什","么","都","有","底","线"," ","为","何","要","忍"], jp: ["sap6", "mo1", "dou1", "jau5", "dai2", "sin3", "", "wai4", "ho4", "jiu3", "jan2"] },
             { chars: ["什","么","使","你","胆","敢"," ","横","蛮","至","今"], jp: ["sap6", "mo1", "si2", "nei5", "daam2", "gam2", "", "waang4", "maan4", "zi3", "gam1"] },
-            { chars: ["若","命","里","要","与","你","吵","架"], jp: ["joek6","ming6","lei5","jiu3","jyu5","nei5","caau2","gaa3"] },
+            { chars: ["若","命","里","要","与","你","吵","架"], jp: ["joek6", "ming6", "leoi5", "jiu3", "jyu5", "nei5", "caau2", "gaa3"] },
             { chars: ["沉","默","也","未","能","成","金"," ","怎","么","吞"], jp: ["cam4", "mak6", "jaa5", "mei6", "nang4", "sing4", "gam1", "", "zam2", "mo1", "tan1"] },
             { paragraphBreak: true },
             { chars: ["为","得","到","那","点","爱"," ","何","尝","靠","忍"], jp: ["wai4","dak1","dou3","naa5","dim2","ngoi3","","ho4","soeng4","kaau3","jan2"] },

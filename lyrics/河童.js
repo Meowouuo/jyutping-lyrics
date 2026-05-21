@@ -15,7 +15,7 @@
             { chars: ["河","水","会","可","怜","莲","花","落"], jp: ["ho4","seoi2","wui6","ho2","lin4","lin4","faa1","lok6"] },
             { chars: ["落","花","会","惜","别","好","阳","光"], jp: ["lok6","faa1","wui6","sik1","bit6","hou2","joeng4","gwong1"] },
             { chars: ["星","球","之","中","河","童","在","何","方"], jp: ["sing1","kau4","zi1","zung1","ho4","tung4","zoi6","ho4","fong1"] },
-            { chars: ["他","家","里","没","有","房"], jp: ["taa1","gaa1","lei5","mut6","jau5","fong4"] },
+            { chars: ["他","家","里","没","有","房"], jp: ["taa1", "gaa1", "leoi5", "mut6", "jau5", "fong4"] },
             { chars: ["小","金","花","竟","拒","绝","盛","放"], jp: ["siu2","gam1","faa1","ging2","keoi5","zyut6","sing6","fong3"] },
             { paragraphBreak: true },
             { chars: ["迷","上","安","徒","生","宠","爱","小","王","子"], jp: ["mai4","soeng6","on1","tou4","sang1","cung2","ngoi3","siu2","wong4","zi2"] },

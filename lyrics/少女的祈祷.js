@@ -17,7 +17,7 @@
             { chars: ["祈","求","在","路","上","没","任","何","的","阻","碍"], jp: ["kei4","kau4","zoi6","lou6","soeng6","mut6","jam6","ho4","dik1","zo2","ngoi6"] },
             { chars: ["令","愉","快","旅","程","变","悲","哀"], jp: ["ling6","jyu4","faai3","leoi5","cing4","bin3","bei1","oi1"] },
             { chars: ["连","气","两","次","绿","灯","都","过","渡","了"], jp: ["lin4","hei3","loeng5","ci3","luk6","dang1","dou1","gwo3","dou6","liu5"] },
-            { chars: ["与","他","再","爱","几","公","里"], jp: ["jyu5","taa1","zoi3","ngoi3","gei2","gung1","lei5"] },
+            { chars: ["与","他","再","爱","几","公","里"], jp: ["jyu5", "taa1", "zoi3", "ngoi3", "gei2", "gung1", "leoi5"] },
             { chars: ["当","这","盏","灯","转","红","便","会","别","离"], jp: ["dong1","ze5","zaan2","dang1","zyun2","hung4","bin6","wui6","bit6","lei4"] },
             { chars: ["凭","运","气","决","定","我","生","死"], jp: ["pang4","wan6","hei3","kyut3","ding6","ngo5","sang1","sei2"] },
             { paragraphBreak: true },

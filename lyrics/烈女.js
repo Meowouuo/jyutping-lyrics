@@ -17,7 +17,7 @@
             { chars: ["很","想","偷","呃","拐","骗","的","勾","引"], jp: ["han2","soeng2","tau1","ak1","gwaai2","pin3","dik1","ngau1","jan5"] },
             { chars: ["完","了","事","便","怀","孕"], jp: ["jyun4","liu5","si6","bin6","waai4","jan6"] },
             { chars: ["然","后","便","跟","你"], jp: ["jin4","hau6","bin6","gan1","nei5"] },
-            { chars: ["跟","你","到","家","里","去","扫","地"], jp: ["gan1","nei5","dou3","gaa1","lei5","heoi3","sou3","dei6"] },
+            { chars: ["跟","你","到","家","里","去","扫","地"], jp: ["gan1", "nei5", "dou3", "gaa1", "leoi5", "heoi3", "sou3", "dei6"] },
             { chars: ["让","情","敌","跟","我","讲","恭","喜"], jp: ["joeng6","cing4","dik6","gan1","ngo5","gong2","gung1","hei2"] },
             { chars: ["放","弃","事","与","非"], jp: ["fong3","hei3","si6","jyu5","fei1"] },
             { chars: ["与","魔","鬼","在","一","起"], jp: ["jyu5","mo1","gwai2","zoi6","jat1","hei2"] },

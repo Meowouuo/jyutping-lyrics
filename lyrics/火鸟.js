@@ -12,7 +12,7 @@
         composer: "陈辉阳",
         composerJyutping: ["can4","fai1","joeng4"],
         lyrics: [
-            { chars: ["扫","去","记","忆","里","的","鸿","毛"], jp: ["sou3","heoi3","gei3","jik1","lei5","dik1","hung4","mou4"] },
+            { chars: ["扫","去","记","忆","里","的","鸿","毛"], jp: ["sou3", "heoi3", "gei3", "jik1", "leoi5", "dik1", "hung4", "mou4"] },
             { chars: ["逃","离","未","蒸","发","的","薄","雾"], jp: ["tou4","lei4","mei6","zing1","faat3","dik1","bok6","mou6"] },
             { chars: ["放","弃","跳","不","了","那","场","圆","舞"], jp: ["fong3","hei3","tiu3","bat1","liu5","naa5","coeng4","jyun4","mou5"] },
             { chars: ["遗","忘","是","过","程","没","坏","与","好"], jp: ["wai4","mong4","si6","gwo3","cing4","mut6","waai6","jyu5","hou2"] },
@@ -56,7 +56,7 @@
             { chars: ["谁","曾","忘","掉","这","种","悟","性"], jp: ["seoi4","zang1","mong4","diu6","ze5","zung2","ng6","sing3"] },
             { paragraphBreak: true },
             { chars: ["今","天","火","鸟","在","洪","炉","外","飞","舞"], jp: ["gam1","tin1","fo2","niu5","zoi6","hung4","lou4","ngoi6","fei1","mou5"] },
-            { chars: ["在","悬","崖","上","看","云","里","有","星"], jp: ["zoi6","jyun4","ngaai4","soeng6","hon3","wan4","lei5","jau5","sing1"] }
+            { chars: ["在","悬","崖","上","看","云","里","有","星"], jp: ["zoi6", "jyun4", "ngaai4", "soeng6", "hon3", "wan4", "leoi5", "jau5", "sing1"] }
         ]
     };
     if (typeof window !== 'undefined' && window.__songs) {

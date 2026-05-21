@@ -12,7 +12,7 @@
         composer: "Eric Kwok",
         composerJyutping: ["","","","","","","","",""],
         lyrics: [
-            { chars: ["闻","说","你","时","常","在","下","午"," ","来","这","里","寄","信","件"], jp: ["man4","syut3","nei5","si4","soeng4","zoi6","haa6","ng5","","loi4","ze5","lei5","gei3","seon3","gin6"] },
+            { chars: ["闻","说","你","时","常","在","下","午"," ","来","这","里","寄","信","件"], jp: ["man4", "syut3", "nei5", "si4", "soeng4", "zoi6", "haa6", "ng5", "", "loi4", "ze5", "leoi5", "gei3", "seon3", "gin6"] },
             { chars: ["逢","礼","拜","留","连","艺","术","展"," ","还","是","未","间","断"], jp: ["fung4","lai5","baai3","lau4","lin4","ngai6","seot6","zin2","","waan4","si6","mei6","gaan1","dyun6"] },
             { chars: ["何","以","我","来","回","巡","逻","遍"," ","仍","然","和","你","擦","肩"], jp: ["ho4","ji5","ngo5","loi4","wui4","ceon4","lo4","pin3","","jing4","jin4","wo4","nei5","caat3","gin1"] },
             { chars: ["还","仍","然","在","各","自","宇","宙"," ","错","过","了","春","天"], jp: ["waan4","jing4","jin4","zoi6","gok3","zi6","jyu5","zau6","","co3","gwo3","liu5","ceon1","tin1"] },

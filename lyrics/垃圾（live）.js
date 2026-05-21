@@ -56,7 +56,7 @@
             { chars: ["如","何","招","架"], jp: ["jyu4","ho4","ziu1","gaa3"] },
             { chars: ["残","忍","不","好","吗"], jp: ["caan4","jan2","bat1","hou2","maa1"] },
             { paragraphBreak: true },
-            { chars: ["灰","烬","里"], jp: ["fui1","zeon6","lei5"] },
+            { chars: ["灰","烬","里"], jp: ["fui1", "zeon6", "leoi5"] },
             { chars: ["被","彻","底","消","化"], jp: ["bei6","cit3","dai2","siu1","faa3"] },
             { chars: ["我","以","后"], jp: ["ngo5","ji5","hau6"] },
             { chars: ["全","无","牵","挂"], jp: ["cyun4","mou4","hin1","gwaa3"] },

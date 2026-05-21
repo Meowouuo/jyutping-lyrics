@@ -24,7 +24,7 @@
             { chars: ["至","少","今","天","再","站","起"], jp: ["zi3","siu2","gam1","tin1","zoi3","zaam6","hei2"] },
             { paragraphBreak: true },
             { chars: ["从","前","在","快","乐","时","以","苦","调","味"], jp: ["cung4","cin4","zoi6","faai3","lok6","si4","ji5","fu2","diu6","mei6"] },
-            { chars: ["在","过","山","车","里","上","天","落","地"], jp: ["zoi6","gwo3","saan1","ce1","lei5","soeng6","tin1","lok6","dei6"] },
+            { chars: ["在","过","山","车","里","上","天","落","地"], jp: ["zoi6", "gwo3", "saan1", "ce1", "leoi5", "soeng6", "tin1", "lok6", "dei6"] },
             { chars: ["经","历","就","当","福","气"], jp: ["ging1","lik6","zau6","dong1","fuk1","hei3"] },
             { paragraphBreak: true },
             { chars: ["当","我","无","情","无","恨","望","过","去"], jp: ["dong1","ngo5","mou4","cing4","mou4","han6","mong6","gwo3","heoi3"] },

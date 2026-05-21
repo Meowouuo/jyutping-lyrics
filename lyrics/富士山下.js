@@ -38,7 +38,7 @@
             { chars: ["怎","么","可","以","将","手","腕","忍","痛","划","损","？"], jp: ["zam2","mo1","ho2","ji5","zoeng1","sau2","wun2","jan2","tung3","waak6","syun2",""] },
             { paragraphBreak: true },
             { chars: ["人","活","到","几","岁","算","短","？"," ","失","恋","只","有","更","短"], jp: ["jan4","wut6","dou3","gei2","seoi3","syun3","dyun2","","","sat1","lyun2","zi2","jau5","gang3","dyun2"] },
-            { chars: ["归","家","需","要","几","里","路"," ","谁","能","预","算","？"], jp: ["gwai1","gaa1","seoi1","jiu3","gei2","lei5","lou6","","seoi4","nang4","jyu6","syun3",""] },
+            { chars: ["归","家","需","要","几","里","路"," ","谁","能","预","算","？"], jp: ["gwai1", "gaa1", "seoi1", "jiu3", "gei2", "leoi5", "lou6", "", "seoi4", "nang4", "jyu6", "syun3", ""] },
             { chars: ["忘","掉","我","跟","你","恩","怨"," ","樱","花","开","了","几","转"], jp: ["mong4","diu6","ngo5","gan1","nei5","jan1","jyun3","","jing1","faa1","hoi1","liu5","gei2","zyun3"] },
             { chars: ["东","京","之","旅","一","早","比","一","世","遥","远"], jp: ["dung1","ging1","zi1","leoi5","jat1","zou2","bei2","jat1","sai3","jiu4","jyun5"] },
             { paragraphBreak: true },

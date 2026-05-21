@@ -14,7 +14,7 @@
         lyrics: [
             { chars: ["当","天","应","该","得","七","岁"], jp: ["dong1","tin1","jing3","goi1","dak1","cat1","seoi3"] },
             { chars: ["我","想","喝","妈","妈","的","汽","水"], jp: ["ngo5","soeng2","hot3","maa1","maa1","dik1","hei3","seoi2"] },
-            { chars: ["把","它","抢","在","掌","心","里"], jp: ["baa2","taa1","coeng2","zoi6","zoeng2","sam1","lei5"] },
+            { chars: ["把","它","抢","在","掌","心","里"], jp: ["baa2", "taa1", "coeng2", "zoi6", "zoeng2", "sam1", "leoi5"] },
             { chars: ["大","人","无","法","逼","我","睡"], jp: ["daai6","jan4","mou4","faat3","bik1","ngo5","seoi6"] },
             { paragraphBreak: true },
             { chars: ["他","跟","她","今","天","竟","饮","醉"], jp: ["taa1","gan1","taa1","gam1","tin1","ging2","jam2","zeoi3"] },

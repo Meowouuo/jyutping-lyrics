@@ -51,7 +51,7 @@
             { chars: ["所","以","这","样","拼"], jp: ["so2","ji5","ze5","joeng6","ping1"] },
             { chars: ["这","派","对","后"], jp: ["ze5","paai3","deoi3","hau6"] },
             { chars: ["难","道","你","知"], jp: ["naan4","dou6","nei5","zi1"] },
-            { chars: ["在","哪","里","有","星"], jp: ["zoi6","naa5","lei5","jau5","sing1"] },
+            { chars: ["在","哪","里","有","星"], jp: ["zoi6", "naa5", "leoi5", "jau5", "sing1"] },
             { paragraphBreak: true },
             { chars: ["明","年","保","了","寿","命"], jp: ["ming4","nin4","bou2","liu5","sau6","ming6"] },
             { chars: ["无","法","肯","定"], jp: ["mou4","faat3","hang2","ding6"] },

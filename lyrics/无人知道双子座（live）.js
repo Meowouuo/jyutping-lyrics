@@ -61,7 +61,7 @@
             { chars: ["谁","知","双","子","把","感","性","脆","弱"], jp: ["seoi4","zi1","soeng1","zi2","baa2","gam2","sing3","ceoi3","joek6"] },
             { chars: ["藏","在","最","深"], jp: ["cong4","zoi6","zeoi3","sam1"] },
             { chars: ["不","要","以","为","我","外","表","喜","欢","创","新"], jp: ["bat1","jiu3","ji5","wai4","ngo5","ngoi6","biu2","hei2","fun1","cong3","san1"] },
-            { chars: ["内","里","便","同","时","够","摩","登"], jp: ["noi6","lei5","bin6","tung4","si4","gau3","mo1","dang1"] },
+            { chars: ["内","里","便","同","时","够","摩","登"], jp: ["noi6", "leoi5", "bin6", "tung4", "si4", "gau3", "mo1", "dang1"] },
             { chars: ["不","用","人","亲","吻"], jp: ["bat1","jung6","jan4","can1","man5"] }
         ]
     };
