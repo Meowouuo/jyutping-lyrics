@@ -65,6 +65,7 @@ const songFiles = [
     'lyrics/爱得太迟.js',
     'lyrics/爱神.js',
     'lyrics/用背脊唱情歌.js',
+    'lyrics/空港（live）.js',
     'lyrics/笑中有泪.js',
     'lyrics/笑忘书.js',
     'lyrics/第二最爱.js',
