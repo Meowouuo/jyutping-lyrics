@@ -3074,20 +3074,8 @@
     init();
     </script>
 
-    <!-- ===== PWA Service Worker 注册 ===== -->
-    <!-- 注册 Service Worker 以启用离线缓存和 PWA 功能 -->
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then((registration) => {
-                    console.log('[PWA] Service Worker 注册成功，作用域:', registration.scope);
-                })
-                .catch((error) => {
-                    console.warn('[PWA] Service Worker 注册失败:', error);
-                });
-        });
-    }
-    </script>
+    <!-- ===== PWA 功能模块 ===== -->
+    <!-- 加载 PWA 模块以启用离线缓存和添加到主屏幕功能 -->
+    <script src="js/pwa.js"></script>
 </body>
 </html>
