@@ -270,8 +270,14 @@
 <!-- ==================== HTML 主体内容 ==================== -->
 <body>
     <!-- 页面头部：标题和返回链接 -->
+    <!-- 使用 list-music SVG 图标，与主页 Logo 保持一致 -->
     <div class="header">
-        <h1>🎵 粤拼歌词投稿</h1>
+        <h1>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;">
+                <path d="M16 5H3"/><path d="M11 12H3"/><path d="M11 19H3"/><path d="M21 16V5"/><circle cx="18" cy="16" r="3"/>
+            </svg>
+            粤拼歌词投稿
+        </h1>
         <a href="./">← 返回歌词列表</a>
     </div>
 
@@ -281,10 +287,23 @@
         <!-- 四个功能标签：投稿新歌、粤拼纠错、歌词纠错、删除歌曲 -->
         <div class="tabs">
             <!-- 每个tab通过onclick调用switchTab切换对应面板 -->
-            <div class="tab active" onclick="switchTab('new-song')">📝 投稿新歌</div>
-            <div class="tab" onclick="switchTab('jyutping')">✏️ 粤拼纠错</div>
-            <div class="tab" onclick="switchTab('lyrics')">📝 歌词纠错</div>
-            <div class="tab" onclick="switchTab('delete')">🗑️ 删除歌曲</div>
+            <!-- 使用 SVG 图标替代 emoji，与网页风格保持一致 -->
+            <div class="tab active" onclick="switchTab('new-song')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+                投稿新歌
+            </div>
+            <div class="tab" onclick="switchTab('jyutping')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                粤拼纠错
+            </div>
+            <div class="tab" onclick="switchTab('lyrics')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                歌词纠错
+            </div>
+            <div class="tab" onclick="switchTab('delete')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                删除歌曲
+            </div>
         </div>
 
         <!-- ===== 面板1：投稿新歌 ===== -->
