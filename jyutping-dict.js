@@ -30,6 +30,17 @@ function matchJyutping(text) {
     return result;
 }
 
+// 应用词组语境规则修正粤拼（定义在 jyutping-context.js 中）
+// 如果 applyContextRules 函数可用，则应用语境规则
+const _origMatchJyutping = matchJyutping;
+matchJyutping = function(text) {
+    const result = _origMatchJyutping(text);
+    if (typeof applyContextRules === 'function') {
+        return applyContextRules(result);
+    }
+    return result;
+};
+
 // 导出
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { JYUTPING_DICT, matchJyutping };
