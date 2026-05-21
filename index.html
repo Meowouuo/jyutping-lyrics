@@ -2212,30 +2212,49 @@
      * 通过动态创建 script 标签加载分散在各个文件中的歌曲数据
      * @returns {Promise<Array>} 返回包含所有歌曲数据的数组
      */
-    async function loadAllSongs() {
-        // 初始化全局临时歌曲数组（各歌曲文件加载时会向此数组 push 数据）
-        window.__songs = [];
-        // 遍历歌曲文件清单，为每个文件创建一个加载 Promise
-        // songFiles 数组由 songFiles.js 提供，包含所有歌曲文件的相对路径
-        const loadPromises = songFiles.map(file => {
-            return new Promise((resolve) => {
-                // 使用 Promise 包装动态 script 标签的加载过程
-                // 动态创建 script 元素，用于加载单个歌曲数据文件
-                const script = document.createElement('script');
-                script.src = file;                   // 设置脚本源地址（如 'lyrics/song1.js'）
-                script.onload = resolve;              // 加载成功时 resolve
-                script.onerror = () => {              // 加载失败时打印警告并 resolve（不阻塞）
-                    console.warn('加载歌曲文件失败:', file);
-                    resolve();
-                };
-                // 将 script 标签添加到文档头部，浏览器会自动开始加载
-                document.head.appendChild(script);
-            });
+    /**
+     * 懒加载单个歌曲的歌词数据
+     * @param {Object} song - 歌曲对象（包含 file 字段）
+     */
+    async function loadSongLyrics(song) {
+        return new Promise((resolve) => {
+            // 初始化临时数组，歌词文件加载时会向此数组 push 数据
+            window.__songs = [];
+            const script = document.createElement('script');
+            script.src = song.file;
+            script.onload = () => {
+                // 歌词文件加载完成后，将歌词数据合并到 song 对象
+                const loadedSong = window.__songs[0];
+                if (loadedSong) {
+                    // 合并歌词数据到现有 song 对象（保留元数据）
+                    Object.assign(song, {
+                        lyrics: loadedSong.lyrics,
+                        titleJyutping: loadedSong.titleJyutping,
+                        artistJyutping: loadedSong.artistJyutping,
+                        lyricistJyutping: loadedSong.lyricistJyutping,
+                        composerJyutping: loadedSong.composerJyutping,
+                        _loaded: true
+                    });
+                }
+                window.__songs = [];
+                resolve();
+            };
+            script.onerror = () => {
+                console.warn('加载歌曲文件失败:', song.file);
+                window.__songs = [];
+                resolve();
+            };
+            document.head.appendChild(script);
         });
-        // 等待所有歌曲文件并行加载完成（Promise.all 并发执行）
+    }
+
+    /**
+     * 加载所有歌曲数据（保留用于批量操作场景）
+     */
+    async function loadAllSongs() {
+        const loadPromises = songs.map(song => loadSongLyrics(song));
         await Promise.all(loadPromises);
-        // 返回收集到的所有歌曲数据（各歌曲文件通过 window.__songs.push() 注册数据）
-        return window.__songs;
+        return songs;
     }
     </script>
 
@@ -2317,8 +2336,16 @@
         // 初始化主题模块（根据用户偏好/系统设置加载主题）
         ThemeModule.init();
 
-        // 加载所有歌曲数据
-        songs = await loadAllSongs();
+        // 使用 songFiles 元数据构建歌曲列表（懒加载：不加载歌词文件）
+        songs = songFiles.map(s => ({
+            id: s.id,
+            title: s.title,
+            artist: s.artist,
+            lyricist: s.lyricist,
+            composer: s.composer,
+            file: s.file,
+            _loaded: false  // 标记歌词是否已加载
+        }));
         window.songs = songs;
 
         // 加载 TTS 语音数据清单（预加载语音资源）
@@ -2434,12 +2461,14 @@
                 if (s.lyricist && s.lyricist.toLowerCase().includes(searchQuery)) return true;
                 // 搜索作曲
                 if (s.composer && s.composer.toLowerCase().includes(searchQuery)) return true;
-                // 搜索歌词内容（将所有字符连接成字符串后搜索）
-                const lyricsText = s.lyrics
-                    .filter(l => l.chars)               // 过滤出有字符的行
-                    .map(l => l.chars.join(''))         // 提取字符数组并连接
-                    .join('');
-                if (lyricsText.toLowerCase().includes(searchQuery)) return true;
+                // 搜索歌词内容（仅搜索已加载的歌词）
+                if (s.lyrics) {
+                    const lyricsText = s.lyrics
+                        .filter(l => l.chars)               // 过滤出有字符的行
+                        .map(l => l.chars.join(''))         // 提取字符数组并连接
+                        .join('');
+                    if (lyricsText.toLowerCase().includes(searchQuery)) return true;
+                }
                 return false;
             });
         }
@@ -2526,14 +2555,22 @@
      * 选择歌曲并显示歌词
      * @param {number} id - 歌曲ID
      */
-    function selectSong(id) {
+    async function selectSong(id) {
         // 如果处于纠错模式，先退出（避免状态混乱）
         if (CorrectionModule.isActive()) {
             CorrectionModule.toggle();
         }
 
-        // 根据ID查找并设置当前歌曲
-        currentSong = songs.find(s => s.id === id);
+        // 根据ID查找歌曲
+        const song = songs.find(s => s.id === id);
+
+        // 懒加载：如果歌词未加载，先加载歌词文件
+        if (song && !song._loaded) {
+            await loadSongLyrics(song);
+        }
+
+        // 设置当前歌曲
+        currentSong = song;
         window.currentSong = currentSong;                  // 同步到全局变量
 
         // 重新渲染歌曲列表（更新选中状态高亮）和歌词
