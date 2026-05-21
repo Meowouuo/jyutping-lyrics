@@ -21,7 +21,7 @@
             { chars: ["替","这","位","空","想","家","惊","讶"], jp: ["tai3","ze5","wai6","hung1","soeng2","gaa1","ging1","ngaa6"] },
             { chars: ["孤","单","真","的","不","可","怕"], jp: ["gu1","daan1","zan1","dik1","bat1","ho2","paa3"] },
             { chars: ["能","让","我","画","满","花"], jp: ["nang4","joeng6","ngo5","waak6","mun5","faa1"] },
-            { chars: ["还","未","算","是","那","么","差"], jp: ["waan4","mei6","syun3","si6","naa5","maa1","caa1"] },
+            { chars: ["还","未","算","是","那","么","差"], jp: ["waan4", "mei6", "syun3", "si6", "naa5", "mo1", "caa1"] },
             { paragraphBreak: true },
             { chars: ["让","那"," ","恐","龙","成","群","行","过","枱","面"], jp: ["joeng6","naa5","","hung2","lung4","sing4","kwan4","hang4","gwo3","toi2","min6"] },
             { chars: ["衣","柜","入","面","藏","著","花","园"], jp: ["ji1","gwai6","jap6","min6","cong4","zyu3","faa1","jyun4"] },

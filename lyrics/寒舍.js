@@ -14,7 +14,7 @@
         lyrics: [
             { chars: ["不","理","闷","烦","事","情"], jp: ["bat1","lei5","mun6","faan4","si6","cing4"] },
             { chars: ["不","见","路","过","蜻","蜓"], jp: ["bat1","gin3","lou6","gwo3","cing1","ting4"] },
-            { chars: ["这","新","居","多","么","宁","静"], jp: ["ze5","san1","geoi1","do1","maa1","ning4","zing6"] },
+            { chars: ["这","新","居","多","么","宁","静"], jp: ["ze5", "san1", "geoi1", "do1", "mo1", "ning4", "zing6"] },
             { chars: ["秒","针","的","跳","声","沉","默","地","聆","听"], jp: ["miu5","zam1","dik1","tiu3","sing1","cam4","mak6","dei6","ling4","ting1"] },
             { chars: ["烦","闷","用","冷","静","回","应"], jp: ["faan4","mun6","jung6","laang5","zing6","wui4","jing3"] },
             { paragraphBreak: true },

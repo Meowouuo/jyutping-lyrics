@@ -14,7 +14,7 @@
         lyrics: [
             { chars: ["若","有","你","若","有","我","还","有","十","块"], jp: ["joek6","jau5","nei5","joek6","jau5","ngo5","waan4","jau5","sap6","faai3"] },
             { chars: ["这","样","我","便","可","以","约","你","去","街"], jp: ["ze5","joeng6","ngo5","bin6","ho2","ji5","joek3","nei5","heoi3","gaai1"] },
-            { chars: ["只","有","十","块","什","么","信","物","平","便","买"], jp: ["zi2","jau5","sap6","faai3","sap6","maa1","seon3","mat6","ping4","bin6","maai5"] },
+            { chars: ["只","有","十","块","什","么","信","物","平","便","买"], jp: ["zi2", "jau5", "sap6", "faai3", "sap6", "mo1", "seon3", "mat6", "ping4", "bin6", "maai5"] },
             { chars: ["甜","蜜","蜜","吃","些","烧","卖"], jp: ["tim4","mat6","mat6","hek3","se1","siu1","maai6"] },
             { paragraphBreak: true },
             { chars: ["没","老","友","没","女","友","如","何","愉","快"], jp: ["mut6","lou5","jau5","mut6","neoi5","jau5","jyu4","ho4","jyu4","faai3"] },

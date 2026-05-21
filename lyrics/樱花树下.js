@@ -38,7 +38,7 @@
             { paragraphBreak: true },
             { chars: ["秒","速","之","间","变","改","小","小","世","界"], jp: ["miu5","cuk1","zi1","gaan1","bin3","goi2","siu2","siu2","sai3","gaai3"] },
             { chars: ["眷","恋","也","许","走","不","过","拆","卸","的","街"], jp: ["gyun3","lyun2","jaa5","heoi2","zau2","bat1","gwo3","caak3","se3","dik1","gaai1"] },
-            { chars: ["少","女","亦","随","年","渐","长","走","得","多","么","快"], jp: ["siu2","neoi5","jik6","ceoi4","nin4","zim6","coeng4","zau2","dak1","do1","maa1","faai3"] },
+            { chars: ["少","女","亦","随","年","渐","长","走","得","多","么","快"], jp: ["siu2", "neoi5", "jik6", "ceoi4", "nin4", "zim6", "coeng4", "zau2", "dak1", "do1", "mo1", "faai3"] },
             { paragraphBreak: true },
             { chars: ["如","有","天","樱","花","再","开","期","望","可","跟","你","示","爱"], jp: ["jyu4","jau5","tin1","jing1","faa1","zoi3","hoi1","kei4","mong6","ho2","gan1","nei5","si6","ngoi3"] },
             { chars: ["当","天","园","林","今","天","已","换","上","满","地","青","苔"], jp: ["dong1","tin1","jyun4","lam4","gam1","tin1","ji5","wun6","soeng6","mun5","dei6","cing1","toi4"] },

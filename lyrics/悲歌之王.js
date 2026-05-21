@@ -20,7 +20,7 @@
             { paragraphBreak: true },
             { chars: ["为","何","要","斗","数"], jp: ["wai4","ho4","jiu3","dau3","sou3"] },
             { chars: ["问","我","前","途"], jp: ["man6","ngo5","cin4","tou4"] },
-            { chars: ["愉","快","这","么","少","不","要","数"], jp: ["jyu4","faai3","ze5","maa1","siu2","bat1","jiu3","sou3"] },
+            { chars: ["愉","快","这","么","少","不","要","数"], jp: ["jyu4", "faai3", "ze5", "mo1", "siu2", "bat1", "jiu3", "sou3"] },
             { chars: ["甜","蜜","有","限","度"], jp: ["tim4","mat6","jau5","haan6","dou6"] },
             { chars: ["期","望","那","可","过","份","高"], jp: ["kei4","mong6","naa5","ho2","gwo3","fan6","gou1"] },
             { chars: ["俯","瞰","风","光","也","恐","怖"], jp: ["fu2","ham3","fung1","gwong1","jaa5","hung2","bou3"] },

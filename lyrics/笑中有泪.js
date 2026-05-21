@@ -50,7 +50,7 @@
             { chars: ["无","奈","要","被","你","抛","弃","后"], jp: ["mou4","noi6","jiu3","bei6","nei5","paau1","hei3","hau6"] },
             { chars: ["先","了","解","我","是","谁"], jp: ["sin1","liu5","gaai2","ngo5","si6","seoi4"] },
             { chars: ["如","若","那","天","我","大","多","几","岁"], jp: ["jyu4","joek6","naa5","tin1","ngo5","daai6","do1","gei2","seoi3"] },
-            { chars: ["什","么","都","去","追"], jp: ["sap6","maa1","dou1","heoi3","zeoi1"] },
+            { chars: ["什","么","都","去","追"], jp: ["sap6", "mo1", "dou1", "heoi3", "zeoi1"] },
             { paragraphBreak: true },
             { chars: ["明","白","到","无","需","因","你","会","分","手","过","虑"], jp: ["ming4","baak6","dou3","mou4","seoi1","jan1","nei5","wui6","fan1","sau2","gwo3","leoi6"] },
             { chars: ["谁","亦","可","以","没","谁"], jp: ["seoi4","jik6","ho2","ji5","mut6","seoi4"] },

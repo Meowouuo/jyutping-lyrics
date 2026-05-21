@@ -26,7 +26,7 @@
             { paragraphBreak: true },
             { chars: ["无","奈","肉","眼","看","不","到"], jp: ["mou4","noi6","juk6","ngaan5","hon3","bat1","dou3"] },
             { chars: ["用","两","手","摸","不","到"], jp: ["jung6","loeng5","sau2","mo2","bat1","dou3"] },
-            { chars: ["怎","么","计","算","亦","难","料","沈","迷","程","度"], jp: ["zam2","maa1","gai3","syun3","jik6","naan4","liu6","sam2","mai4","cing4","dou6"] },
+            { chars: ["怎","么","计","算","亦","难","料","沈","迷","程","度"], jp: ["zam2", "mo1", "gai3", "syun3", "jik6", "naan4", "liu6", "sam2", "mai4", "cing4", "dou6"] },
             { paragraphBreak: true },
             { chars: ["同","偕","到","老","还","余","下","多","少","步"], jp: ["tung4","gaai1","dou3","lou5","waan4","jyu4","haa6","do1","siu2","bou6"] },
             { chars: ["还","能","捏","着","你","抱","紧","几","秒","钟","拥","抱"], jp: ["waan4","nang4","nip6","zoek6","nei5","pou5","gan2","gei2","miu5","zung1","jung2","pou5"] },
