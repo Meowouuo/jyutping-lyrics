@@ -1,6 +1,7 @@
 {
   "name": "粤拼歌词",
   "short_name": "粤拼歌词",
+  "description": "粤语拼音歌词学习工具，支持粤拼标注、发音纠错等功能",
   "icons": [
     {
       "src": "web-app-manifest-192x192.png",
@@ -15,7 +16,10 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#1890ff",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "./",
+  "scope": "./",
+  "lang": "zh-CN"
 }
