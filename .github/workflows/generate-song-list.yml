@@ -2,7 +2,7 @@
 # 功能说明：自动扫描 lyrics 目录下的歌曲文件，生成 songFiles.js 清单文件
 # 触发条件：
 #   1. 当 main 分支的 lyrics/ 目录下有文件变更时自动触发（push 事件）
-#   2. 当 auto-process 工作流完成后触发（workflow_run 事件，解决 GITHUB_TOKEN push 不触发问题）
+#   2. 当 Sync Dev to Main 或 Batch Merge PRs 完成后触发（此时歌词已在 main）
 #   3. 支持手动触发（workflow_dispatch）
 # 处理流程：扫描歌词文件 -> 生成清单 -> 检测变更 -> 创建 PR 并自动合并到 dev
 
@@ -15,12 +15,12 @@ on:
     branches: [main]
     paths: ['lyrics/**']
   
-  # 方式2：当相关处理工作流完成后触发（解决 GITHUB_TOKEN 产生的 push 不触发问题）
-  # 注意：由于 PR 现在合并到 dev，所以也要监听 dev 分支的完成
+  # 方式2：当 Sync Dev to Main 或 Batch Merge PRs 完成后触发
+  # 注意：不监听 Auto Process Issues，因为此时 PR 还未合并，歌词文件还没到 dev
   workflow_run:
-    workflows: ["Auto Process Issues", "Batch Merge PRs", "Sync Dev to Main"]
+    workflows: ["Sync Dev to Main", "Batch Merge PRs"]
     types: [completed]
-    branches: [dev, main]
+    branches: [main]
   
   # 方式3：支持手动触发
   workflow_dispatch:
@@ -41,10 +41,10 @@ jobs:
       pull-requests: write
 
     steps:
-      # 步骤1：拉取代码仓库（使用 dev 分支，确保扫描到最新歌词）
+      # 步骤1：拉取代码仓库（默认 main 分支）
+      # 注意：此工作流在 Sync Dev to Main 完成后触发，此时歌词已在 main
       - uses: actions/checkout@v4
         with:
-          ref: dev
           fetch-depth: 0
 
       # 步骤2：扫描 lyrics 目录并生成歌曲清单文件 songFiles.js
@@ -87,13 +87,13 @@ jobs:
           git commit -m "chore: 自动更新歌曲清单"
           git push origin "$branch"
 
-          # 通过 GitHub API 创建 PR（目标分支改为 dev）
+          # 通过 GitHub API 创建 PR（目标分支为 main）
           sleep 2
           pr_response=$(curl -s -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls" \
-            -d "{\"title\":\"chore: 自动更新歌曲清单\",\"body\":\"此 PR 由 Actions 自动生成。\",\"head\":\"$branch\",\"base\":\"dev\"}")
+            -d "{\"title\":\"chore: 自动更新歌曲清单\",\"body\":\"此 PR 由 Actions 自动生成。\",\"head\":\"$branch\",\"base\":\"main\"}")
           pr_num=$(echo "$pr_response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('number',''))" 2>/dev/null)
           echo "PR 已创建: #$pr_num"
 
@@ -113,7 +113,7 @@ jobs:
           merged=$(echo "$merge_response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('merged',False))" 2>/dev/null)
 
           if [ "$merged" = "True" ]; then
-            echo "✅ 歌曲清单已更新并合并到 dev 分支"
+            echo "✅ 歌曲清单已更新并合并到 main 分支"
             # 删除自动创建的分支
             git push origin --delete "$branch" 2>/dev/null && echo "✅ 已删除分支 $branch" || echo "⚠️ 无法删除分支 $branch"
           else
