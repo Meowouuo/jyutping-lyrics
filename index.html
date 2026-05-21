@@ -2027,8 +2027,19 @@
             </div>
 
             <!-- 空状态提示区域（未选择歌曲时显示，引导用户操作） -->
+            <!-- 使用 list-music SVG 图标替代 emoji 音符，支持夜间模式自适应 -->
             <div class="empty-state" id="emptyState">
-                <div class="empty-icon">🎵</div>
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15V6"/>
+                        <path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                        <path d="M12 12V3"/>
+                        <path d="M12 12a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
+                        <path d="M12 12V3"/>
+                        <path d="M6 12V3"/>
+                        <path d="M6 12a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
+                    </svg>
+                </div>
                 <div class="empty-title">选择一首歌</div>
                 <div class="empty-desc">从左侧列表选择歌曲查看歌词</div>
             </div>
