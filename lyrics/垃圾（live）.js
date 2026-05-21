@@ -60,7 +60,7 @@
             { chars: ["被","彻","底","消","化"], jp: ["bei6","cit3","dai2","siu1","faa3"] },
             { chars: ["我","以","后"], jp: ["ngo5","ji5","hau6"] },
             { chars: ["全","无","牵","挂"], jp: ["cyun4","mou4","hin1","gwaa3"] },
-            { chars: ["什","么","都","不","怕"], jp: ["sap6","maa1","dou1","bat1","paa3"] }
+            { chars: ["什","么","都","不","怕"], jp: ["sap6", "mo1", "dou1", "bat1", "paa3"] }
         ]
     };
     if (typeof window !== 'undefined' && window.__songs) {

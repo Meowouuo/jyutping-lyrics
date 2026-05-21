@@ -39,7 +39,7 @@
             { chars: ["彼","此","怎","能","爱","下","去"], jp: ["bei2","ci2","zam2","nang4","ngoi3","haa6","heoi3"] },
             { paragraphBreak: true },
             { chars: ["暴","雨","中"], jp: ["bou6","jyu5","zung1"] },
-            { chars: ["我","到","底","怎","么","要","害","怕"], jp: ["ngo5","dou3","dai2","zam2","maa1","jiu3","hoi6","paa3"] },
+            { chars: ["我","到","底","怎","么","要","害","怕"], jp: ["ngo5", "dou3", "dai2", "zam2", "mo1", "jiu3", "hoi6", "paa3"] },
             { chars: ["难","道","你"], jp: ["naan4","dou6","nei5"] },
             { chars: ["无","台","风","会","决","定","留","下"], jp: ["mou4","toi4","fung1","wui6","kyut3","ding6","lau4","haa6"] },
             { chars: ["但","我","想"], jp: ["daan6","ngo5","soeng2"] },

@@ -22,7 +22,7 @@
             { chars: ["我","会","努","力","从","原","地","起"], jp: ["ngo5","wui6","nou5","lik6","cung4","jyun4","dei6","hei2"] },
             { chars: ["到","了","最","终"], jp: ["dou3","liu5","zeoi3","zung1"] },
             { chars: ["总","算"," ","学","会","飞"], jp: ["zung2","syun3","","hok6","wui6","fei1"] },
-            { chars: ["但","为","什","么"], jp: ["daan6","wai4","sap6","maa1"] },
+            { chars: ["但","为","什","么"], jp: ["daan6", "wai4", "sap6", "mo1"] },
             { chars: ["捉","到","浮","云"], jp: ["zuk1","dou3","fau4","wan4"] },
             { chars: ["才","想","起"], jp: ["coi4","soeng2","hei2"] },
             { paragraphBreak: true },

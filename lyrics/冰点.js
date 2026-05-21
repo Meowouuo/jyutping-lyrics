@@ -39,7 +39,7 @@
             { chars: ["零","度","之","中"], jp: ["ling4","dou6","zi1","zung1"] },
             { chars: ["难","道","等","樱","花","染","红"], jp: ["naan4","dou6","dang2","jing1","faa1","jim5","hung4"] },
             { chars: ["曾","冒","过","雪","的","人"], jp: ["zang1","mou6","gwo3","syut3","dik1","jan4"] },
-            { chars: ["也","知","融","雪","怎","么","冻"], jp: ["jaa5","zi1","jung4","syut3","zam2","maa1","dung3"] },
+            { chars: ["也","知","融","雪","怎","么","冻"], jp: ["jaa5", "zi1", "jung4", "syut3", "zam2", "mo1", "dung3"] },
             { paragraphBreak: true },
             { chars: ["何","谓","冻"], jp: ["ho4","wai6","dung3"] },
             { chars: ["趁","冰","点","时","分","止","步"], jp: ["can3","bing1","dim2","si4","fan1","zi2","bou6"] },

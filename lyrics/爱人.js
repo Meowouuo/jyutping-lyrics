@@ -50,7 +50,7 @@
             { paragraphBreak: true },
             { chars: ["有","没","有"], jp: ["jau5","mut6","jau5"] },
             { chars: ["谁","心","中","有","数"], jp: ["seoi4","sam1","zung1","jau5","sou3"] },
-            { chars: ["怎","么","双","眼","尚","有","失","望"], jp: ["zam2","maa1","soeng1","ngaan5","soeng6","jau5","sat1","mong6"] },
+            { chars: ["怎","么","双","眼","尚","有","失","望"], jp: ["zam2", "mo1", "soeng1", "ngaan5", "soeng6", "jau5", "sat1", "mong6"] },
             { chars: ["明","天","将","会","更","好","的","信","徒"], jp: ["ming4","tin1","zoeng1","wui6","gang1","hou2","dik1","seon3","tou4"] },
             { chars: ["如","害","怕","烦","恼"], jp: ["jyu4","hoi6","paa3","faan4","nou5"] },
             { chars: ["为","何","期","望","太","高"], jp: ["wai4","ho4","kei4","mong6","taai3","gou1"] },

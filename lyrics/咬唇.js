@@ -39,7 +39,7 @@
             { chars: ["借","我","一","啖","气"], jp: ["ze3","ngo5","jat1","daam6","hei3"] },
             { chars: ["现","在","从","容","就","义"], jp: ["jin6","zoi6","cung4","jung4","zau6","ji6"] },
             { chars: ["是","说","谎","或","是","浓","情","蜜","意"], jp: ["si6","syut3","fong1","waak6","si6","nung4","cing4","mat6","ji3"] },
-            { chars: ["不","爱","下","去","怎","么","会","知"], jp: ["bat1","ngoi3","haa6","heoi3","zam2","maa1","wui6","zi1"] },
+            { chars: ["不","爱","下","去","怎","么","会","知"], jp: ["bat1", "ngoi3", "haa6", "heoi3", "zam2", "mo1", "wui6", "zi1"] },
             { paragraphBreak: true },
             { chars: ["别","人","都","知","道","我","火","爆"], jp: ["bit6","jan4","dou1","zi1","dou6","ngo5","fo2","baau3"] },
             { chars: ["直","行","直","冲","不","守","礼","貌"], jp: ["zik6","hang4","zik6","cung1","bat1","sau2","lai5","maau6"] },

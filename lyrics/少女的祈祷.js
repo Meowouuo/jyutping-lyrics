@@ -59,7 +59,7 @@
             { chars: ["为","了","他"], jp: ["wai4","liu5","taa1"] },
             { chars: ["不","懂","祷","告","都","敢","祷","告"], jp: ["bat1","dung2","tou2","gou3","dou1","gam2","tou2","gou3"] },
             { chars: ["谁","愿","眷","顾","这","种","信","徒"], jp: ["seoi4","jyun6","gyun3","gu3","ze5","zung2","seon3","tou4"] },
-            { chars: ["太","爱","他","怎","么","想","到","这","么","恐","怖"], jp: ["taai3","ngoi3","taa1","zam2","maa1","soeng2","dou3","ze5","maa1","hung2","bou3"] },
+            { chars: ["太","爱","他","怎","么","想","到","这","么","恐","怖"], jp: ["taai3", "ngoi3", "taa1", "zam2", "mo1", "soeng2", "dou3", "ze5", "mo1", "hung2", "bou3"] },
             { chars: ["对","绿","灯"], jp: ["deoi3","luk6","dang1"] },
             { chars: ["去","哀","求","哭","诉"], jp: ["heoi3","oi1","kau4","huk1","sou3"] },
             { paragraphBreak: true },
