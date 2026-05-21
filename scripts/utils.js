@@ -247,19 +247,8 @@ function commitAndPush(branchName, message) {
     execSync('git add -A', { stdio: 'pipe' });
     // 提交更改
     execSync(`git commit -m "${message}"`, { stdio: 'pipe' });
-    // 推送到远程仓库（使用 --force-with-lease 处理分支已存在的情况）
-    try {
-        execSync(`git push origin ${branchName} --force-with-lease`, { stdio: 'pipe' });
-    } catch (error) {
-        // 如果强制推送失败，尝试先拉取再推送
-        try {
-            execSync(`git pull origin ${branchName} --rebase`, { stdio: 'pipe' });
-            execSync(`git push origin ${branchName}`, { stdio: 'pipe' });
-        } catch (pullError) {
-            // 如果拉取也失败，使用强制推送
-            execSync(`git push origin ${branchName} --force`, { stdio: 'pipe' });
-        }
-    }
+    // 推送到远程仓库
+    execSync(`git push origin ${branchName}`, { stdio: 'pipe' });
 }
 
 // ============================================
