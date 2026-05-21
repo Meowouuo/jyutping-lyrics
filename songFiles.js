@@ -53,6 +53,7 @@ const songFiles = [
     'lyrics/海阔天空.js',
     'lyrics/游乐场.js',
     'lyrics/火鸟.js',
+    'lyrics/炼金术.js',
     'lyrics/烈女.js',
     'lyrics/爱与诚.js',
     'lyrics/爱人.js',
