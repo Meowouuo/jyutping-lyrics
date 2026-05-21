@@ -62,7 +62,7 @@
             { paragraphBreak: true },
             { chars: ["世","界","最","遥","远","的","一","种","相","距","中"], jp: ["sai3","gaai3","zeoi3","jiu4","jyun5","dik1","jat1","zung2","soeng1","keoi5","zung1"] },
             { chars: ["明","明","留","恋","然","而","让","辗","转","的","挂","念","扑","空"], jp: ["ming4","ming4","lau4","lyun2","jin4","ji4","joeng6","zin2","zyun2","dik1","gwaa3","nim6","pok3","hung1"] },
-            { chars: ["回","忆","心","里","越","载","越","重"], jp: ["wui4","jik1","sam1","lei5","jyut6","zoi3","jyut6","cung5"] },
+            { chars: ["回","忆","心","里","越","载","越","重"], jp: ["wui4", "jik1", "sam1", "leoi5", "jyut6", "zoi3", "jyut6", "cung5"] },
             { chars: ["却","不","珍","惜","这","一","次","重","逢"], jp: ["koek3","bat1","zan1","sik1","ze5","jat1","ci3","cung5","fung4"] },
             { chars: ["我","的","思","想","像","完","全","失","控"], jp: ["ngo5","dik1","si1","soeng2","zoeng6","jyun4","cyun4","sat1","hung3"] },
             { chars: ["逃","避","你","却","又","期","待","我","可","跟","你","做","情","人"], jp: ["tou4","bei6","nei5","koek3","jau6","kei4","doi6","ngo5","ho2","gan1","nei5","zou6","cing4","jan4"] },
