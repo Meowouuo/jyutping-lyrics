@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
 
     steps:
       # 步骤1：检出 dev 分支（PR 已合并到此分支）
@@ -85,6 +86,7 @@ jobs:
 
       # 步骤4：关闭关联的 Issue（如果 PR 描述中包含 Fixes #XX）
       - name: Close related issues
+        if: always()  # 即使前面的步骤失败也执行
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -99,5 +101,7 @@ jobs:
 
           for ISSUE_NUM in $ISSUES; do
             echo "关闭 Issue #$ISSUE_NUM"
-            gh issue close $ISSUE_NUM --comment "已合并到 main 分支，自动关闭。"
+            # 先尝试关闭 Issue，再尝试添加评论（分开执行避免权限问题）
+            gh issue close $ISSUE_NUM 2>/dev/null || echo "无法关闭 Issue #$ISSUE_NUM"
+            gh issue comment $ISSUE_NUM --body "已合并到 main 分支，自动关闭。" 2>/dev/null || echo "无法评论 Issue #$ISSUE_NUM"
           done
