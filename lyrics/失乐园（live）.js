@@ -18,7 +18,7 @@
             { chars: ["无","论","褒","贬","尊","与","卑"], jp: ["mou4","leon6","bou1","bin2","zyun1","jyu5","bei1"] },
             { chars: ["爱","可","有","定","理","谈","情","谁","讲","理"], jp: ["ngoi3","ho2","jau5","ding6","lei5","taam4","cing4","seoi4","gong2","lei5"] },
             { chars: ["越","无","理","越","凄","美","就","算","飞","天","遁","地"], jp: ["jyut6","mou4","lei5","jyut6","cai1","mei5","zau6","syun3","fei1","tin1","deon6","dei6"] },
-            { chars: ["万","年","千","里","亦","决","定","要","共","你","一","起"], jp: ["maan6", "nin4", "cin1", "leoi5", "jik6", "kyut3", "ding6", "jiu3", "gung6", "nei5", "jat1", "hei2"] },
+            { chars: ["万","年","千","里","亦","决","定","要","共","你","一","起"], jp: ["maan6", "nin4", "cin1", "lei5", "jik6", "kyut3", "ding6", "jiu3", "gung6", "nei5", "jat1", "hei2"] },
             { paragraphBreak: true },
             { chars: ["苦","恋","注","定","难","我","已","经","习","惯"], jp: ["fu2","lyun2","zyu3","ding6","naan4","ngo5","ji5","ging1","zaap6","gwaan3"] },
             { chars: ["沿","途","承","受","不","留","情","的","双","眼"], jp: ["jyun4","tou4","sing4","sau6","bat1","lau4","cing4","dik1","soeng1","ngaan5"] },

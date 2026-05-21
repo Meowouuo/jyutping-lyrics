@@ -134,7 +134,7 @@
             { chars: ["越","无","理"], jp: ["jyut6","mou4","lei5"] },
             { chars: ["越","凄","美"], jp: ["jyut6","cai1","mei5"] },
             { chars: ["就","算","飞","天","遁","地"], jp: ["zau6","syun3","fei1","tin1","deon6","dei6"] },
-            { chars: ["万","年","千","里"], jp: ["maan6", "nin4", "cin1", "leoi5"] },
+            { chars: ["万","年","千","里"], jp: ["maan6", "nin4", "cin1", "lei5"] },
             { chars: ["亦","决","定","要","共","你","一","起"], jp: ["jik6","kyut3","ding6","jiu3","gung6","nei5","jat1","hei2"] },
             { paragraphBreak: true },
             { chars: ["苦","恋","注","定","难"], jp: ["fu2","lyun2","zyu3","ding6","naan4"] },
