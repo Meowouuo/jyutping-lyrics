@@ -806,16 +806,9 @@ function enableTitleEditing() {
                 // 阻止冒泡（避免触发其他事件）
                 e.stopPropagation();
                 
-                // 获取当前值：对于歌手/填词/作曲，使用 song 对象的原始值（只包含汉字，不包含粤拼）
-                // 对于歌名，使用 innerText
-                let displayValue;
-                if (field.key === 'artist' || field.key === 'lyricist' || field.key === 'composer') {
-                    // 从 song 对象获取原始值（只包含汉字）
-                    displayValue = song[field.key] || '';
-                } else {
-                    // 歌名使用 innerText
-                    displayValue = el.innerText.trim() === '' ? '' : el.innerText.trim();
-                }
+                // 获取当前值：统一使用 song 对象的原始值（只包含汉字，不包含粤拼）
+                // 粤拼由后台自动匹配，用户只需修改中文
+                const displayValue = song[field.key] || '';
                 
                 // 弹出编辑对话框（显示实际值或空字符串）
                 const newValue = prompt(`修改${field.label}：`, displayValue);
