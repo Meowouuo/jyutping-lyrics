@@ -2785,6 +2785,11 @@
                 return `<span class="meta-name-english">${char}</span>`;
             }
             
+            // 判断是否为空格：单词间的空格使用正常空格，不添加额外样式
+            if (char === ' ') {
+                return ' ';  // 直接返回空格，不包裹 span
+            }
+            
             // 中文或其他字符：显示粤拼，使用固定宽度对齐
             return `
                 <span class="meta-name-group">
