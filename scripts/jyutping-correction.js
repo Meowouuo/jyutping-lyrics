@@ -241,7 +241,7 @@ ${failedRows.length > 0 ? `\n### ⚠️ 未能应用的纠错\n${failedRows.map(
 
     // 创建 Pull Request
     const prTitle = `fix: 粤拼纠错《${songTitle}》(${appliedCount}处)`;
-    createPR(prTitle, prBody, branchName, issueNumber);
+    createPR(prTitle, prBody, branchName, issue.number);
 
     // 在 Issue 中添加成功评论，通知用户处理结果
     // 包含 PR 链接和未能自动处理的纠错列表
