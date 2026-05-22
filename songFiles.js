@@ -90,4 +90,5 @@ const songFiles = [
     { id: 520, title: "最好时光（live）", artist: "容祖儿", lyricist: "Kevin Kern/冯正", composer: "Kevin Kern", file: "lyrics/最好时光（live）.js" },
     { id: 522, title: "心之科学", artist: "容祖儿", lyricist: "黄伟文", composer: "翁厚梁/林家谦", file: "lyrics/心之科学.js" },
     { id: 537, title: "稀客", artist: "杨千嬅", lyricist: "黄伟文", composer: "雷颂德", file: "lyrics/稀客.js" },
+    { id: 543, title: "好歌献给你(live)", artist: "陈奕迅", lyricist: "郑国江", composer: "马饲野康二", file: "lyrics/好歌献给你(live).js" },
 ];
