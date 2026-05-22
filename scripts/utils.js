@@ -9,6 +9,7 @@ const path = require('path');      // 路径处理模块
 const { execSync } = require('child_process');  // 子进程模块，用于执行 git 命令
 // const { matchJyutping } = require("../jyutping-dict");  // 粤拼匹配函数
 const { matchJyutping: originalMatchJyutping, JYUTPING_DICT } = require("../jyutping-dict");  // 原始粤拼匹配函数和字典
+const { applyContextRules } = require("../jyutping-context");  // 引入语境规则修正函数
 
 
 // ============================================
@@ -461,6 +462,11 @@ function matchJyutping(text) {
             }
             i++;
         }
+    }
+    
+    // 应用语境规则修正粤拼（如"千里"中的"里"读 lei5 而非 leoi5）
+    if (typeof applyContextRules === 'function') {
+        return applyContextRules(result);
     }
     
     return result;
