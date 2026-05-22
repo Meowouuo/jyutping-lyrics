@@ -40,8 +40,8 @@ function toggleDeleteMode() {
         // 进入删除模式
         // 添加删除模式样式
         list.classList.add('delete-mode');
-        // 更新按钮文字
-        btn.innerHTML = '✅ 完成';
+        // 更新按钮文字（使用 check SVG 图标替代 emoji）
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M20 6 9 17l-5-5"/></svg> 完成';
         btn.classList.add('active');
         // 显示删除操作栏
         bar.style.display = 'flex';
@@ -51,8 +51,8 @@ function toggleDeleteMode() {
         // 退出删除模式
         // 移除删除模式样式
         list.classList.remove('delete-mode');
-        // 恢复按钮文字
-        btn.innerHTML = '🗑️ 管理歌曲';
+        // 恢复按钮文字（使用 trash-2 SVG 图标替代 emoji）
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> 管理歌曲';
         btn.classList.remove('active');
         // 隐藏删除操作栏
         bar.style.display = 'none';
