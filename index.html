@@ -2241,6 +2241,7 @@
             };
             script.onerror = () => {
                 console.warn('加载歌曲文件失败:', song.file);
+                song._loadError = true;  // 标记加载失败
                 window.__songs = [];
                 resolve();
             };
@@ -2255,6 +2256,43 @@
         const loadPromises = songs.map(song => loadSongLyrics(song));
         await Promise.all(loadPromises);
         return songs;
+    }
+
+    /**
+     * 后台静默预缓存所有歌词文件
+     * 页面渲染完成后在后台逐个加载歌词文件，让 Service Worker 缓存
+     * 不阻塞界面，失败也不影响正常使用
+     */
+    function precacheAllSongs() {
+        // 延迟 2 秒开始，确保首屏渲染完成
+        setTimeout(() => {
+            let cachedCount = 0;
+            const total = songs.length;
+
+            // 逐个加载，避免并发过多
+            const cacheNext = async (index) => {
+                if (index >= total) {
+                    console.log(`[预缓存] 完成，共缓存 ${cachedCount}/${total} 首歌曲`);
+                    return;
+                }
+
+                const song = songs[index];
+                if (!song._loaded) {
+                    try {
+                        await loadSongLyrics(song);
+                        cachedCount++;
+                    } catch (e) {
+                        // 静默失败，继续下一个
+                    }
+                }
+
+                // 每加载一个，等待 100ms 再加载下一个，避免并发过多
+                setTimeout(() => cacheNext(index + 1), 100);
+            };
+
+            cacheNext(0);
+            console.log(`[预缓存] 开始后台预缓存 ${total} 首歌曲...`);
+        }, 2000);
     }
     </script>
 
@@ -2365,6 +2403,9 @@
         // 渲染界面
         renderArtistFilter();                          // 渲染歌手筛选标签
         renderSongList();                              // 渲染歌曲列表
+
+        // 后台静默预缓存所有歌词文件（不阻塞界面渲染）
+        precacheAllSongs();
     }
 
     // ========================================
@@ -2567,6 +2608,26 @@
         // 懒加载：如果歌词未加载，先加载歌词文件
         if (song && !song._loaded) {
             await loadSongLyrics(song);
+        }
+
+        // 检查歌词加载是否失败
+        if (song && song._loadError) {
+            // 显示友好错误提示
+            const lyricsContent = document.getElementById('lyricsContent');
+            if (lyricsContent) {
+                lyricsContent.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+                        <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                        <div style="font-size: 18px; margin-bottom: 10px;">歌词加载失败</div>
+                        <div style="font-size: 14px; color: var(--text-tertiary);">网络不稳定，请刷新页面后重试</div>
+                        <button onclick="location.reload()" style="margin-top: 20px; padding: 8px 20px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 4px; cursor: pointer;">刷新页面</button>
+                    </div>
+                `;
+            }
+            currentSong = song;
+            window.currentSong = currentSong;
+            renderSongList();
+            return;
         }
 
         // 设置当前歌曲

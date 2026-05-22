@@ -39,6 +39,9 @@ function registerServiceWorker() {
             })
             .catch((error) => {
                 console.warn('[PWA] Service Worker 注册失败:', error);
+                // 显示友好提示（仅在控制台警告，不阻塞页面）
+                // PWA 功能不可用不影响基本使用，仅在离线时可能无法访问
+                console.log('[PWA] 提示：离线缓存功能不可用，请确保网络稳定');
             });
     });
 }
