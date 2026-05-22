@@ -23,7 +23,7 @@
  * ============================================================ */
 
 /** 缓存版本号，修改后 Service Worker 会重新安装并更新缓存 */
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
 
 /** 缓存名称，包含版本号，便于版本管理 */
 const CACHE_NAME = `jyutping-lyrics-${CACHE_VERSION}`;
@@ -39,10 +39,13 @@ const PRECACHE_URLS = [
   './web-app-manifest-192x192.png', /* PWA 图标 192x192 */
   './web-app-manifest-512x512.png', /* PWA 图标 512x512 */
   './jyutping-dict.js',          /* 粤拼词典 */
+  './jyutping-context.js',       /* 粤拼语境规则 */
   './songFiles.js',              /* 歌曲列表 */
   './js/correction.js',          /* 纠错模块 */
   './js/edit-lyrics.js',         /* 编辑歌词模块 */
   './js/import.js',              /* 导入模块 */
+  './js/delete.js',              /* 删除模块 */
+  './js/pwa.js',                 /* PWA 模块 */
   './submit.html'                /* 提交页面 */
 ];
 
