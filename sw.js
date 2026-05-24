@@ -33,11 +33,11 @@ const PRECACHE_URLS = [
   './',                          /* 首页 */
   './index.html',                /* 主页面 */
   './site.webmanifest',          /* PWA 清单 */
-  './favicon.ico',               /* 网站图标 */
-  './favicon.svg',               /* SVG 图标 */
-  './apple-touch-icon.png',      /* Apple 触摸图标 */
-  './web-app-manifest-192x192.png', /* PWA 图标 192x192 */
-  './web-app-manifest-512x512.png', /* PWA 图标 512x512 */
+  './icons/favicon.ico',               /* 网站图标 */
+  './icons/favicon.svg',               /* SVG 图标 */
+  './icons/apple-touch-icon.png',      /* Apple 触摸图标 */
+  './icons/web-app-manifest-192x192.png', /* PWA 图标 192x192 */
+  './icons/web-app-manifest-512x512.png', /* PWA 图标 512x512 */
   './jyutping-dict.js',          /* 粤拼词典 */
   './jyutping-context.js',       /* 粤拼语境规则 */
   './songFiles.js',              /* 歌曲列表 */
