@@ -99,7 +99,9 @@
             { chars: ["我","都","记","得","跟","你","互","放","光","辉","的","协","奏"], jp: ["ngo5","dou1","gei3","dak1","gan1","nei5","wu6","fong3","gwong1","fai1","dik1","hip3","zau3"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
