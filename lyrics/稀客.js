@@ -70,7 +70,9 @@
             { chars: ["以","后","亦","无","内","疚","还","哪","有","借","口"], jp: ["ji5","hau6","jik6","mou4","noi6","gau3","waan4","naa5","jau5","ze3","hau2"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
