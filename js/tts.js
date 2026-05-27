@@ -2,6 +2,12 @@
 // TTS 语音播报模块
 // 功能：提供粤拼语音朗读功能，支持整行、分段、单字播放
 // 兼容：桌面浏览器、移动端 Safari/Chrome、微信内置浏览器
+//
+// 多源 CDN 切换（v2.0 新增）：
+//   当主 CDN 加载失败时，自动切换到备选源尝试，
+//   解决国内无法直接访问 GitHub/jsDelivr 的问题。
+//   备选源包括 Cloudflare Worker 代理和公共 GitHub 加速站。
+//
 // 注意：使用 Audio 元素播放，避免 fetch 导致的 CORS 问题
 // ============================================
 
@@ -13,7 +19,7 @@
 // 格式为 { "粤拼": "音频文件路径", ... } 的映射表
 let ttsManifest = null;
 
-// TTS 音频文件的基础 URL
+// TTS 音频文件的基础 URL（主源）
 // 拼接方式：ttsBaseUrl + '/' + manifest中的路径
 let ttsBaseUrl = '';
 
@@ -30,7 +36,7 @@ let currentPlayingBtn = null;
 let ttsMode = false;
 
 // 当前正在播放的字符元素（用于单字播放高亮）
-// 播放时添加高亮样式，播放完成后移除
+// 播放时添加高亮样式，播放完成后移除高亮
 let currentPlayingChar = null;
 
 // 是否已有用户交互（用于处理浏览器自动播放策略）
@@ -38,12 +44,61 @@ let currentPlayingChar = null;
 let _hasUserInteraction = false;
 
 // ============================================
+// 多源 CDN 配置（v2.0 新增）
+// ============================================
+
+/**
+ * CDN 备选源列表
+ * @description 定义多个可用的 CDN 源，按优先级排序。
+ *              系统会依次尝试每个源，直到成功或全部失败。
+ *
+ * 使用说明：
+ * - 第一个元素是默认主源（从 manifest 中读取的 baseUrl）
+ * - 后续元素是备选源，在主源失败时自动切换
+ * - 每个 source 对象包含：
+ *   - name: 源名称（仅用于日志标识）
+ *   - baseUrl: 基础 URL（会与 manifest 中的相对路径拼接）
+ *   - enabled: 是否启用（可单独禁用某个源）
+ *
+ * 备选源说明：
+ * - CF Worker 代理：通过项目自建的 Cloudflare Worker 转发请求到 GitHub Raw
+ *   需要将 WORKER_URL 替换为实际的 Worker 域名
+ */
+const CDN_FALLBACK_SOURCES = [
+    {
+        // 主源：jsDelivr CDN（海外访问快，国内可能被墙）
+        name: 'jsdelivr',
+        baseUrl: '',  // 运行时从 manifest 动态填充
+        enabled: true
+    },
+    {
+        // 备选源1：Cloudflare Worker 音频代理
+        // 利用 CF 全球网络代理 GitHub Raw，解决国内访问问题
+        // ⚠️ 需要将此 URL 替换为实际部署的 Worker 域名
+        name: 'worker-proxy',
+        baseUrl: '',  // 运行时根据页面域名动态构建
+        enabled: true,
+        isWorkerProxy: true  // 标识这是 Worker 代理（URL 构建方式不同）
+    },
+    {
+        // 备选源2：GitHub 公共加速镜像（备用方案，稳定性不保证）
+        // 如需使用，取消注释并填入有效的加速地址
+        name: 'gh-mirror',
+        baseUrl: '',
+        enabled: false  // 默认禁用，需要时可开启
+    }
+];
+
+// 记录上次成功的 CDN 源索引
+// 用于优化：下次请求优先使用上次的成功源，减少不必要的重试
+let _lastSuccessfulSourceIndex = 0;
+
+// ============================================
 // 用户交互标记
 // 功能：标记用户已有交互行为，以满足浏览器自动播放策略
 // 必须在用户点击后调用，否则音频无法播放
 // ============================================
 function _markUserInteraction() {
-    // 设置交互标记为 true，表示用户已与页面交互
     _hasUserInteraction = true;
 }
 
@@ -54,43 +109,131 @@ function _markUserInteraction() {
 // 原因：微信的 WebView 对音频自动播放有额外限制
 // ============================================
 function _initWechat() {
-    // 检测是否在微信环境中
-    // 通过 User-Agent 中的 MicroMessenger 标识判断
     if (!/MicroMessenger/i.test(navigator.userAgent)) return;
     console.log('[TTS] WeChat detected');
 
-    // 创建解锁函数，标记用户已交互
     const unlock = () => { _markUserInteraction(); };
 
-    // 尝试获取网络类型（这是微信的特殊 API）
-    // 调用此 API 会触发微信的音频播放权限解锁
     if (window.WeixinJSBridge && window.WeixinJSBridge.invoke) {
-        // WeixinJSBridge 已加载，直接调用
         WeixinJSBridge.invoke('getNetworkType', {}, unlock);
     } else {
-        // Bridge 还未加载，注册事件监听等待加载完成
-        // once: true 表示只监听一次，触发后自动移除
         document.addEventListener('WeixinJSBridgeReady', unlock, { once: true });
     }
 }
 
 // ============================================
-// 播放音频核心函数
-// 功能：创建 Audio 对象并播放指定 URL，支持重试机制
+// 构建 CDN 源的完整基础 URL
+// @description 根据源的配置信息构建完整的 baseUrl
+// @param {Object} source - CDN 源配置对象
+// @returns {string} 完整的基础 URL
+// ============================================
+function _buildSourceBaseUrl(source) {
+    // 如果已有固定的 baseUrl（如 jsDelivr），直接返回
+    if (source.baseUrl && !source.isWorkerProxy) {
+        return source.baseUrl;
+    }
+
+    // Worker 代理模式：基于当前页面域名构建
+    if (source.isWorkerProxy) {
+        // 使用当前页面的 origin 作为 Worker 基础地址
+        // 假设 Worker 部署在同一域名下（通过路由规则区分）
+        // 例如：页面在 https://lyrics.example.com，Worker 在 https://lyrics.example.com/audio/
+        const origin = window.location.origin;
+        return origin + '/audio';
+    }
+
+    // 其他备选源
+    return source.baseUrl || '';
+}
+
+// ============================================
+// 初始化多源 CDN 配置
+// @description 在 manifest 加载完成后调用，用实际数据填充 CDN 源列表
+//              将 manifest 中的 baseUrl 设置为主源，并初始化其他备选源
+// ============================================
+function _initCDNSources() {
+    if (!ttsBaseUrl) return;
+
+    // 设置主源为 manifest 中的 baseUrl
+    CDN_FALLBACK_SOURCES[0].baseUrl = ttsBaseUrl;
+
+    // 初始化 Worker 代理的完整 URL（延迟到首次需要时构建）
+    // Worker 代理的 URL 是动态的，依赖 location.origin
+    // 不在这里预构建，由 _buildSourceBaseUrl 在运行时处理
+
+    console.log('[TTS] CDN sources initialized, primary:', ttsBaseUrl);
+}
+
+// ============================================
+// 播放音频核心函数（v2.0 升级：支持多源自动切换）
+// 功能：创建 Audio 对象并播放指定 URL，支持跨源重试机制
 //
 // 参数：
-//   - url: 音频文件 URL（完整路径）
+//   - audioPath: 音频文件的相对路径（来自 manifest，如 "v1/4f/xxx.mp3"）
 //   - retryCount: 当前重试次数（内部递归使用，默认为 0）
+//   - sourceIndex: 当前使用的 CDN 源索引（内部递归使用，默认从上次成功的源开始）
 //
 // 返回值：Promise，播放成功或失败时 resolve
-// 设计思路：使用 Audio 元素而非 fetch，避免 CORS 跨域问题
+//
+// v2.0 变更：
+//   - 不再对同一个 URL 重试 3 次
+//   - 改为：每个 CDN 源尝试 1 次，失败后立即切换到下一个源
+//   - 总尝试次数 = 已启用的 CDN 源数量
 // ============================================
-function _playAudio(url, retryCount = 0) {
-    const MAX_RETRIES = 2;  // 最多重试 2 次（共尝试 3 次）
+function _playAudio(audioPath, retryCount = 0, sourceIndex = null) {
+
+    // ------------------------------------------------
+    // 确定当前要使用的 CDN 源
+    // ------------------------------------------------
+
+    // 如果指定了源索引，直接使用；否则从上次成功的源开始
+    if (sourceIndex === null) {
+        sourceIndex = _lastSuccessfulSourceIndex;
+    }
+
+    // 找到下一个可用的已启用源
+    let currentSource = null;
+    let startIndex = sourceIndex;
+    let attempts = 0;  // 已尝试次数
+    const maxAttempts = CDN_FALLBACK_SOURCES.filter(s => s.enabled).length;  // 最大尝试次数 = 启用源数
+
+    for (let i = startIndex; i < CDN_FALLBACK_SOURCES.length && attempts < maxAttempts; i++) {
+        if (CDN_FALLBACK_SOURCES[i].enabled) {
+            sourceIndex = i;
+            currentSource = CDN_FALLBACK_SOURCES[i];
+            attempts++;
+            break;
+        }
+    }
+
+    // 如果从 startIndex 没找到可用源，从头再找（循环）
+    if (!currentSource && attempts < maxAttempts) {
+        for (let i = 0; i < startIndex && attempts < maxAttempts; i++) {
+            if (CDN_FALLBACK_SOURCES[i].enabled) {
+                sourceIndex = i;
+                currentSource = CDN_FALLBACK_SOURCES[i];
+                attempts++;
+                break;
+            }
+        }
+    }
+
+    // 所有源都不可用
+    if (!currentSource) {
+        console.error('[TTS] No available CDN sources');
+        return Promise.reject(new Error('No available CDN sources'));
+    }
+
+    // ------------------------------------------------
+    // 构建完整的音频 URL
+    // ------------------------------------------------
+    const sourceBaseUrl = _buildSourceBaseUrl(currentSource);
+    const fullUrl = sourceBaseUrl + '/' + audioPath;
+
+    console.log('[TTS] Attempting source:', currentSource.name, '(' + (attempts) + '/' + maxAttempts + ')', fullUrl);
 
     return new Promise((resolve, reject) => {
         // 显示加载提示（如果加载提示组件存在）
-        // TTSLoading 是全局加载提示组件
         if (window.TTSLoading && window.currentSong) {
             window.TTSLoading.show(window.currentSong.id);
         }
@@ -100,81 +243,93 @@ function _playAudio(url, retryCount = 0) {
         currentAudio = audio;  // 保存引用，用于后续停止控制
 
         // 标记是否已完成（避免重复调用 resolve/reject）
-        // Promise 只能 resolve 或 reject 一次
         let resolved = false;
         // 成功完成回调
-        const done = () => { if (!resolved) { resolved = true; resolve(); } };
+        const done = () => {
+            if (!resolved) {
+                resolved = true;
+                // 记录本次成功的源索引，下次优先使用
+                _lastSuccessfulSourceIndex = sourceIndex;
+                resolve();
+            }
+        };
         // 失败回调，传入错误对象
-        const fail = (e) => { if (!resolved) { resolved = true; reject(e || new Error('Audio error')); } };
+        const fail = (e) => {
+            if (!resolved) {
+                resolved = true;
+                reject(e || new Error('Audio error'));
+            }
+        };
 
         // 监听播放结束事件（音频自然播放完毕）
         audio.onended = done;
 
         // 监听播放错误事件（加载失败或解码错误）
+        // v2.0: 失败后尝试下一个 CDN 源
         audio.onerror = () => {
-            // 打印当前重试次数，便于调试
-            console.warn('[TTS] Audio error (attempt ' + (retryCount + 1) + '/' + (MAX_RETRIES + 1) + ')');
-            if (retryCount < MAX_RETRIES) {
-                // 未达到最大重试次数，递归调用自身进行重试
-                // 重试时会创建新的 Audio 对象
-                _playAudio(url, retryCount + 1).then(resolve).catch(reject);
+            console.warn('[TTS] Source failed:', currentSource.name, '- trying next source');
+
+            // 尝试下一个 CDN 源
+            const nextSourceIndex = sourceIndex + 1;
+            // 检查是否还有更多可用源
+            const hasMoreSources = CDN_FALLBACK_SOURCES.some(
+                (s, idx) => s.enabled && idx > sourceIndex
+            );
+
+            if (hasMoreSources) {
+                // 有更多源可以尝试，递归调用并传入下一个源索引
+                _playAudio(audioPath, retryCount + 1, nextSourceIndex)
+                    .then(resolve)
+                    .catch(reject);
             } else {
-                // 已达到最大重试次数，放弃并报错
-                fail(new Error('Audio load/play error after retries'));
+                // 所有源都已尝试过，放弃
+                fail(new Error('All CDN sources failed after ' + attempts + ' attempts'));
             }
         };
 
         // 监听时间更新事件，用于检测播放是否正常结束
-        // 某些浏览器可能不触发 onended 事件，需要兜底检测
         audio.addEventListener('timeupdate', function () {
-            // 判断条件：音频时长已知，且播放到接近结尾（剩余不到 0.06 秒）
-            // 0.06 秒是经验值，足以判断播放即将结束
             if (!resolved && audio.duration && audio.currentTime >= audio.duration - 0.06) {
-                done();  // 视为播放完成
+                done();
             }
         });
 
         // 设置音频源 URL
-        audio.src = url;
+        audio.src = fullUrl;
 
         // 尝试播放函数
         const tryPlay = () => {
-            // 调用 audio.play()，返回 Promise
             const playPromise = audio.play();
             if (playPromise !== undefined) {
-                // play() 返回 Promise，需要处理可能的异常
                 playPromise.catch((err) => {
-                    // NotAllowedError 表示浏览器阻止了自动播放
-                    // 通常是因为用户尚未与页面交互
                     if (err.name === 'NotAllowedError' && !_hasUserInteraction) {
                         showToast('请点击页面任意位置后再播放');
                     }
-                    fail(err);  // 播放失败
+                    fail(err);
                 });
             }
         };
 
         // 监听 canplay 事件，音频可以播放时尝试播放
-        // once: true 确保只触发一次
         audio.addEventListener('canplay', tryPlay, { once: true });
 
         // 延迟 500ms 后再次尝试播放（兜底机制）
-        // 某情况下 canplay 事件可能不触发，需要手动重试
         setTimeout(() => { if (!resolved) tryPlay(); }, 500);
 
-        // 设置总超时时间 15 秒
-        // 防止音频加载卡住导致永远等待
+        // 设置总超时时间 15 秒（针对所有源的总超时保护）
         setTimeout(() => {
             if (!resolved) {
-                if (retryCount < MAX_RETRIES) {
-                    // 超时但未达到最大重试次数，重试
-                    _playAudio(url, retryCount + 1).then(resolve).catch(reject);
+                const nextIdx = sourceIndex + 1;
+                const hasMore = CDN_FALLBACK_SOURCES.some(
+                    (s, idx) => s.enabled && idx > sourceIndex
+                );
+                if (hasMore) {
+                    _playAudio(audioPath, retryCount + 1, nextIdx).then(resolve).catch(reject);
                 } else {
-                    // 超时且已达到最大重试次数，放弃
-                    fail(new Error('timeout after retries'));
+                    fail(new Error('Timeout after trying all CDN sources'));
                 }
             }
-        }, 15000);  // 15 秒超时
+        }, 15000);
     });
 }
 
@@ -183,13 +338,13 @@ function _playAudio(url, retryCount = 0) {
 // 功能：从 manifest.v1.json 加载音频文件映射表
 // manifest 包含粤拼到音频文件的映射关系
 // 加载失败时会自动重试一次（延迟 1 秒）
+// v2.0: 加载成功后会自动初始化多源 CDN 配置
 // ============================================
 function loadTTSManifest() {
     return new Promise(function(resolve) {
         // 首次尝试加载 manifest 文件
         fetch('tts/manifest.v1.json')
             .then(function(resp) {
-                // 检查 HTTP 响应状态码
                 if (resp.ok) return resp.json();
                 throw new Error('HTTP ' + resp.status);
             })
@@ -198,6 +353,8 @@ function loadTTSManifest() {
                 ttsManifest = data.items;
                 // 保存基础 URL（音频文件的公共前缀）
                 ttsBaseUrl = data.baseUrl;
+                // v2.0: 初始化多源 CDN 配置
+                _initCDNSources();
                 resolve();  // 加载成功
             })
             .catch(function(e) {
@@ -211,6 +368,8 @@ function loadTTSManifest() {
                             // 重试成功，保存数据
                             ttsManifest = data.items;
                             ttsBaseUrl = data.baseUrl;
+                            // v2.0: 初始化多源 CDN 配置
+                            _initCDNSources();
                         })
                         .catch(function(e2) {
                             // 重试仍然失败，打印警告但不阻塞
@@ -242,7 +401,6 @@ async function playLineTTS(lineIndex, btn) {
     // 根据行索引获取该行歌词数据
     const line = window.currentSong.lyrics[lineIndex];
     if (!line || !line.jp) {
-        // 该行不存在或没有粤拼数据
         showToast('该行没有粤拼数据');
         return;
     }
@@ -277,7 +435,7 @@ async function playLineTTS(lineIndex, btn) {
 // 用于播放一行中的部分内容（如用户选中的片段）
 //
 // 参数：
-//   - arr: 粤拼数组（如 ["jyut", "ping"]）
+//   - arr: 粤拼数组（如 [\"jyut\", \"ping\"]）
 //   - btn: 播放按钮元素（用于高亮和 toggle 判断）
 // ============================================
 async function playSegmentTTS(arr, btn) {
@@ -307,14 +465,13 @@ async function playSegmentTTS(arr, btn) {
 // 支持中途停止（通过检查 currentPlayingBtn 是否仍匹配）
 //
 // 参数：
-//   - arr: 粤拼数组（如 ["ngo5", "hai6", "hong1", "kong3"]）
+//   - arr: 粤拼数组（如 [\"ngo5\", \"hai6\", \"hong1\", \"kong3\"]）
 //   - btn: 播放按钮元素（用于判断是否被用户中途停止）
 // ============================================
 async function _playSequence(arr, btn) {
     // 遍历每个粤拼，按顺序播放
     for (const jp of arr) {
         // 每次播放前检查是否被用户停止
-        // 如果 currentPlayingBtn 不再等于当前按钮，说明用户点击了停止
         if (!currentPlayingBtn || currentPlayingBtn !== btn) break;
 
         // 从 manifest 中查找粤拼对应的音频文件路径
@@ -322,9 +479,8 @@ async function _playSequence(arr, btn) {
         if (!p) continue;  // 没有对应音频文件，跳过该粤拼
 
         try {
-            // 拼接完整 URL 并播放
-            // 等待播放完成后再播放下一个（顺序播放）
-            await _playAudio(ttsBaseUrl + '/' + p);
+            // v2.0: _playAudio 现在接受相对路径，内部自动处理多源切换
+            await _playAudio(p);
         } catch (e) {
             // 单个粤拼播放失败不影响后续播放
             console.warn('[TTS] Play failed:', jp, e.message);
@@ -332,7 +488,6 @@ async function _playSequence(arr, btn) {
     }
 
     // 播放完成后的清理工作
-    // 再次检查是否被中途停止（避免清理其他播放的状态）
     if (currentPlayingBtn === btn) {
         btn.classList.remove('playing');  // 移除播放中样式
         currentAudio = null;              // 清除音频引用
@@ -346,7 +501,7 @@ async function _playSequence(arr, btn) {
 // 播放时会高亮当前字符，播放完成后自动移除高亮
 //
 // 参数：
-//   - jp: 粤拼（如 "jyut"）
+//   - jp: 粤拼（如 \"jyut\"）
 //   - charEl: 字符 DOM 元素（用于高亮显示）
 // ============================================
 async function playCharTTS(jp, charEl) {
@@ -354,7 +509,6 @@ async function playCharTTS(jp, charEl) {
     if (!ttsManifest || !jp) return;
 
     // 清除上一个正在播放的字符的高亮
-    // 确保同一时间只有一个字符被高亮
     if (currentPlayingChar) {
         currentPlayingChar.classList.remove('tts-char-playing');
     }
@@ -368,8 +522,8 @@ async function playCharTTS(jp, charEl) {
     charEl.classList.add('tts-char-playing');  // 添加高亮样式
 
     try {
-        // 拼接完整 URL 并播放
-        await _playAudio(ttsBaseUrl + '/' + p);
+        // v2.0: 传递相对路径而非完整 URL
+        await _playAudio(p);
     } catch (e) {
         // 播放失败，提示用户
         console.error('[TTS] Char play failed:', e);
@@ -388,10 +542,7 @@ async function playCharTTS(jp, charEl) {
 //   - el: 字符 DOM 元素
 // ============================================
 function _clearChar(el) {
-    // 移除高亮 CSS 类
     el.classList.remove('tts-char-playing');
-    // 仅当该元素是当前播放字符时才清除全局引用
-    // 避免误清除其他字符的状态
     if (currentPlayingChar === el) {
         currentPlayingChar = null;
     }
@@ -403,24 +554,21 @@ function _clearChar(el) {
 // 包括：音频对象、按钮高亮、字符高亮
 // ============================================
 function stopCurrentTTS() {
-    // 停止音频播放
     if (currentAudio) {
         try {
             currentAudio.pause();          // 暂停播放
             currentAudio.currentTime = 0;  // 重置播放进度到开头
         } catch(e) {
-            // 忽略停止时的异常（如音频已加载完成）
+            // 忽略停止时的异常
         }
-        currentAudio = null;  // 清除音频引用
+        currentAudio = null;
     }
 
-    // 清除播放按钮的高亮样式和引用
     if (currentPlayingBtn) {
         currentPlayingBtn.classList.remove('playing');
         currentPlayingBtn = null;
     }
 
-    // 清除字符的高亮样式和引用
     if (currentPlayingChar) {
         currentPlayingChar.classList.remove('tts-char-playing');
         currentPlayingChar = null;
@@ -434,25 +582,21 @@ function stopCurrentTTS() {
 // 关闭模式时会自动停止当前播放
 // ============================================
 function toggleTTSMode() {
-    // 切换模式状态（true ↔ false）
     ttsMode = !ttsMode;
 
-    // 获取模式按钮和歌词视图的 DOM 元素
     const btn = document.getElementById('ttsModeBtn');
     const view = document.getElementById('lyricsView');
 
     if (ttsMode) {
-        // 开启单字播放模式
-        btn.classList.add('tts-active');     // 按钮添加激活样式
-        view.classList.add('tts-mode');      // 视图添加 TTS 模式样式
-        _markUserInteraction();              // 标记用户交互（确保音频可播放）
-        _initWechat();                       // 初始化微信环境（如果在微信中）
+        btn.classList.add('tts-active');
+        view.classList.add('tts-mode');
+        _markUserInteraction();
+        _initWechat();
         showToast('已进入播放模式，点击单字播放语音');
     } else {
-        // 关闭单字播放模式
-        btn.classList.remove('tts-active');  // 移除按钮激活样式
-        view.classList.remove('tts-mode');   // 移除视图 TTS 模式样式
-        stopCurrentTTS();                    // 停止当前播放
+        btn.classList.remove('tts-active');
+        view.classList.remove('tts-mode');
+        stopCurrentTTS();
         showToast('已退出播放模式');
     }
 }
@@ -460,20 +604,16 @@ function toggleTTSMode() {
 // ============================================
 // 初始化微信环境
 // 功能：在页面加载时初始化微信特殊处理
-// 根据文档加载状态选择合适的初始化时机
 // ============================================
 if (document.readyState === 'loading') {
-    // 文档仍在加载中，等待 DOMContentLoaded 事件
     document.addEventListener('DOMContentLoaded', _initWechat);
 } else {
-    // 文档已加载完成，直接初始化
     _initWechat();
 }
 
 // ============================================
 // 监听用户交互事件
 // 功能：标记用户交互，以满足浏览器自动播放策略
-// 监听触摸和点击事件，passive: true 提升滚动性能
 // ============================================
 document.addEventListener('touchstart', _markUserInteraction, { passive: true });
 document.addEventListener('click', _markUserInteraction, { passive: true });
@@ -481,14 +621,13 @@ document.addEventListener('click', _markUserInteraction, { passive: true });
 // ============================================
 // 导出模块
 // 将功能挂载到全局对象，供 HTML 页面中的事件处理函数调用
-// 使用模块化设计，各功能独立导出
 // ============================================
 window.TTSModule = {
     init: loadTTSManifest,      // 初始化：加载 manifest 清单
     playLine: playLineTTS,      // 播放整行：播放指定行的所有粤拼
-    playSegment: playSegmentTTS,  // 播放分段：播放选中的粤拼片段
+    playSegment: playSegmentTTS,// 播放分段：播放选中的粤拼片段
     playChar: playCharTTS,      // 播放单字：播放单个字符的粤拼发音
     toggleMode: toggleTTSMode,  // 切换模式：开启/关闭单字播放模式
-    stop: stopCurrentTTS,        // 停止播放：停止所有音频并清除状态
-    isModeActive: () => ttsMode  // 查询状态：返回当前是否处于 TTS 模式
+    stop: stopCurrentTTS,       // 停止播放：停止所有音频并清除状态
+    isModeActive: () => ttsMode // 查询状态：返回当前是否处于 TTS 模式
 };
