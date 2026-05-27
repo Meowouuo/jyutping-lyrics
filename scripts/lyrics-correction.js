@@ -208,17 +208,17 @@ function processInsertions(content, insertions, songTitle) {
     if (appliedCount === 0) {
         return {
             success: false,
-            message: `❌ 未能应用任何插入。请检查行号是否正确。\n\n失败的插入：\n${failedInserts.map(ins => \`第\${ins.line}行\${ins.position}：\${ins.lyrics}\`).join('\n')}`
+            message: '❌ 未能应用任何插入。请检查行号是否正确。\n\n失败的插入：\n' + failedInserts.map(ins => '第' + ins.line + '行' + ins.position + '：' + ins.lyrics).join('\n')
         };
     }
     
     return {
         success: true,
         content: newContent,
-        commitMsg: \`fix: 插入歌词 (\${appliedCount}处)\`,
-        prTitle: \`[歌词纠错-插入行] \${songTitle}（\${appliedCount}处）\`,
-        prBody: \`## 插入歌词\n\n**歌曲名称：** \${songTitle}\n\n**插入数量：** \${appliedCount} 处\n\n插入内容已应用。\`,
-        comment: \`✅ 已成功插入 \${appliedCount} 处歌词。\n\n\${failedInserts.length > 0 ? \`以下插入未能应用（请检查行号是否正确）：\n\${failedInserts.map(ins => \`- 第\${ins.line}行\${ins.position}：\${ins.lyrics}\`).join('\n')}\` : ''}\`
+        commitMsg: 'fix: 插入歌词 (' + appliedCount + '处)',
+        prTitle: '[歌词纠错-插入行] ' + songTitle + '（' + appliedCount + '处）',
+        prBody: '## 插入歌词\n\n**歌曲名称：** ' + songTitle + '\n\n**插入数量：** ' + appliedCount + ' 处\n\n插入内容已应用。',
+        comment: '✅ 已成功插入 ' + appliedCount + ' 处歌词。\n\n' + (failedInserts.length > 0 ? '以下插入未能应用（请检查行号是否正确）：\n' + failedInserts.map(ins => '- 第' + ins.line + '行' + ins.position + '：' + ins.lyrics).join('\n') : '')
     };
 }
 
