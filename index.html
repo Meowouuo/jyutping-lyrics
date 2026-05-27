@@ -2223,9 +2223,35 @@
             //   之前使用共享的 window.__songs 数组会导致并发请求互相覆盖数据）
             const loadKey = '__song_load_' + song.id;
             window[loadKey] = [];
-            // 向后兼容: 歌词文件内硬编码了 window.__songs.push(song),
-            // 此别名使旧写法仍能正常工作,指向同一个数组
-            window.__songs = window[loadKey];
+
+            // 【修复竞态条件】使用 Object.defineProperty 拦截器替代简单的别名赋值
+            //
+            // 问题根因 (PR #566 ~ #567):
+            //   旧写法 "window.__songs = window[loadKey]" 在并发时会互相覆盖：
+            //   loadSongLyrics(A) 设 __songs → A的数组, 然后 loadSongLyrics(B) 立即覆盖为 B的数组,
+            //   此时 A的脚本还没下载完, 等它下载完后 push 就写入了 B的数组 → 歌词错乱!
+            //
+            // 修复方案:
+            //   用 getter 定义 __songs 属性, 每次 __songs 被 lyrics/*.js 访问时,
+            //   动态返回 window[window.__activeLoadKey], 即当前"正在被加载"的那首歌的数组.
+            //   JavaScript 单线程保证: 每个 <script> 执行(含 push)是原子的,
+            //   只要 __activeLoadKey 在脚本执行前正确设置即可.
+            //
+            // 注意: 只需定义一次, 后续调用只需更新 __activeLoadKey 的值.
+            if (!window.__songsInterceptorInitialized) {
+                Object.defineProperty(window, '__songs', {
+                    get: function() {
+                        // 返回当前活跃加载目标数组, 若无则回退到安全空数组
+                        var key = window.__activeLoadKey;
+                        return key ? window[key] : [];
+                    },
+                    configurable: true  // 允许后续重新定义(如需要)
+                });
+                window.__songsInterceptorInitialized = true;
+            }
+            // 设置当前活跃加载 key → 歌词文件的 push 会自动路由到此数组
+            window.__activeLoadKey = loadKey;
+
             const script = document.createElement('script');
             script.src = song.file;
             script.onload = () => {
