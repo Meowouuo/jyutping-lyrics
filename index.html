@@ -2277,15 +2277,22 @@
 
         // 【执行】用 Function 构造器在全局作用域执行修改后的代码
         try {
+            // 【v2.0.0 防御性检查】如果 fetch 返回的是 HTML（SPA Fallback），
+            // 则 code 会包含 <!DOCTYPE 或 <html 标签，执行它毫无意义且可能出错。
+            // 这种情况通常是因为 Service Worker 缓存了错误的 HTML 响应，
+            // 或者 CDN/CDN 对 URL 编码的中文文件名返回了 index.html。
+            if (code.trim().startsWith('<!DOCTYPE') || code.trim().startsWith('<html') ||
+                code.includes('<html') || code.includes('<!DOCTYPE')) {
+                console.warn('[loadSongLyrics] 检测到HTML内容（非JS），可能是SPA Fallback:', song.file);
+                throw new Error('响应内容为HTML而非JS文件（SPA Fallback），URL: ' + song.file);
+            }
+
             new Function(code)();
         } catch (execErr) {
             console.warn('执行歌曲文件出错:', song.file, execErr);
         }
 
         // 从当前歌曲专属数组读取数据并合并到 song 对象
-        // [DEBUG] 追踪歌词数据加载
-        console.log('[LOAD] id=' + song.id + ' title=' + song.title + ' file=' + song.file + ' loadKey=' + loadKey);
-        console.log('[LOAD] window[' + loadKey + '] after exec:', JSON.stringify(window[loadKey]).substring(0, 200));
         const loadedSong = window[loadKey] && window[loadKey][0];
         if (loadedSong) {
             Object.assign(song, {
@@ -2807,10 +2814,6 @@
                     </div>
                 `;
             }
-            console.log('[SELECT] id=' + id + ' found song:', song ? song.id + ':' + song.title : 'NULL', '_loaded=', song ? song._loaded : '?');
-        if (song && song.lyrics && song.lyrics.length > 0) {
-            console.log('[SELECT] lyrics[0].chars=', song.lyrics[0].chars ? song.lyrics[0].chars.join('').substring(0,30) : '?');
-        }
         currentSong = song;
             window.currentSong = currentSong;
             renderSongList();

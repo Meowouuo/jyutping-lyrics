@@ -5,17 +5,25 @@
  *
  * 功能说明：
  * - 缓存静态资源（HTML、CSS、JS、图片等），实现离线访问
- * - 采用"缓存优先"策略：优先从缓存读取，缓存未命中则从网络获取
+ * - 采用"混合缓存策略"：核心资源缓存优先，歌词数据文件网络优先
  * - 安装时预缓存核心资源，确保基本功能离线可用
  * - 激活时清理旧版本缓存
  *
- * 缓存策略：
- * - 预缓存：index.html、manifest、图标等核心文件
- * - 运行时缓存：歌词数据文件、音频文件等动态资源
+ * 缓存策略（v2.0.0 重大更新）：
+ * - 预缓存：index.html、manifest、图标等核心文件 → Cache-First
+ * - 歌词数据文件 (.js under lyrics/) → Network-First（防止 SPA Fallback 缓存错误 HTML）
+ * - 其他静态资源 → Cache-First
  * - 版本号：更新 CACHE_VERSION 可触发重新缓存
  *
+ * v2.0.0 变更说明：
+ * - 修复歌词显示错乱的严重Bug：Cache-First 策略会永久缓存 Cloudflare Pages
+ *   返回的 SPA Fallback HTML（当 URL 编码不匹配时），导致歌词 .js 文件被替换为
+ *   index.html 内容，点击歌曲显示错误的歌词。
+ * - 解决方案：对 lyrics/ 路径下的 .js 文件采用 Network-First 策略，
+ *   同时升级版本号强制清除所有旧缓存。
+ *
  * 作者：粤拼歌词项目组
- * 版本：1.0.0
+ * 版本：2.0.0
  */
 
 /* ============================================================
@@ -23,7 +31,7 @@
  * ============================================================ */
 
 /** 缓存版本号，修改后 Service Worker 会重新安装并更新缓存 */
-const CACHE_VERSION = 'v1.1.0';
+const CACHE_VERSION = 'v2.0.0';
 
 /** 缓存名称，包含版本号，便于版本管理 */
 const CACHE_NAME = `jyutping-lyrics-${CACHE_VERSION}`;
@@ -96,21 +104,36 @@ self.addEventListener('activate', (event) => {
         return Promise.all(deletePromises);
       })
       .then(() => {
-        console.log('[SW] 激活完成，已清理旧缓存');
+        console.log('[SW] 激活完成，已清理旧缓存（含v1.x所有可能污染的缓存）');
         return self.clients.claim(); /* 立即控制所有页面 */
       })
   );
 });
 
 /* ============================================================
- * 请求拦截：缓存优先策略
+ * 请求拦截：混合缓存策略（v2.0.0 核心修复）
  * ============================================================
  *
- * 策略说明：
- * 1. 同源 GET 请求 → 优先从缓存读取，缓存未命中则从网络获取并缓存
- * 2. 异源请求（API调用等）→ 直接走网络，不缓存
- * 3. 非 GET 请求 → 直接走网络，不缓存
+ * 策略说明（v2.0.0 更新）：
+ * 1. 歌词数据文件 (lyrics/*.js) → Network-First（网络优先）
+ *    - 原因: Cloudflare Pages 的 SPA Fallback 会将不存在的/URL编码的请求
+ *            重定向到 index.html，Cache-First 会永久缓存这个错误 HTML 响应
+ *    - Network-First 确保每次都从服务器获取最新正确的歌词内容
+ *    - 仅在网络失败时才使用缓存作为回退
+ *
+ * 2. 其他同源 GET 请求 → Cache-First（缓存优先）
+ *    - HTML/CSS/图片等静态资源适合缓存优先
+ *
+ * 3. 异源请求（API调用等）→ 直接走网络，不缓存
+ *
+ * 4. 非 GET 请求 → 直接走网络，不缓存
  */
+
+/** 判断是否为歌词数据文件 */
+function isLyricFile(url) {
+  return url.pathname.startsWith('/lyrics/') || url.pathname.startsWith('/lyrics\\/') ||
+         url.pathname.includes('/lyrics/');
+}
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -121,6 +144,43 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  /* ===== 歌词数据文件：Network-First 策略（v2.0.0 核心 Bug 修复） ===== */
+  if (isLyricFile(url)) {
+    event.respondWith(
+      caches.open(CACHE_NAME)
+        .then((cache) => {
+          return fetch(request)
+            .then((networkResponse) => {
+              /* 检查响应是否为有效的 JS 内容（非 HTML Fallback） */
+              const contentType = networkResponse.headers.get('Content-Type') || '';
+
+              /* 如果返回的是 HTML 而非 JS，说明触发了 SPA Fallback，不缓存！ */
+              if (contentType.includes('text/html') || networkResponse.status !== 200) {
+                console.warn('[SW] 歌词文件返回了非JS内容（可能是SPA Fallback）, URL:', url.pathname);
+                return networkResponse; /* 直接返回，不缓存 */
+              }
+
+              /* 有效 JS 响应：更新缓存并返回 */
+              const responseToCache = networkResponse.clone();
+              cache.put(request, responseToCache).catch(() => {});
+              return networkResponse;
+            })
+            .catch(() => {
+              /* 网络失败：尝试从缓存读取 */
+              console.log('[SW] 歌词文件网络请求失败，尝试缓存回退:', url.pathname);
+              return cache.match(request).then((cached) => {
+                return cached || new Response('离线状态，无法加载歌词', {
+                  status: 503,
+                  statusText: 'Service Unavailable'
+                });
+              });
+            });
+        })
+    );
+    return;
+  }
+
+  /* ===== 其他资源：Cache-First 策略（原有逻辑保持不变） ===== */
   event.respondWith(
     caches.match(request)
       .then((cachedResponse) => {
