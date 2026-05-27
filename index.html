@@ -2223,6 +2223,9 @@
             //   之前使用共享的 window.__songs 数组会导致并发请求互相覆盖数据）
             const loadKey = '__song_load_' + song.id;
             window[loadKey] = [];
+            // 向后兼容: 歌词文件内硬编码了 window.__songs.push(song),
+            // 此别名使旧写法仍能正常工作,指向同一个数组
+            window.__songs = window[loadKey];
             const script = document.createElement('script');
             script.src = song.file;
             script.onload = () => {
