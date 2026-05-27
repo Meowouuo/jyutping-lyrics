@@ -12,6 +12,7 @@
         composer: "郭文纬",
         composerJyutping: ["gwok3","man4","wai5"],
         lyrics: [
+        { chars: ["告", "别", "我", "的", "恋", "人", "们"], jp: ["gou3", "bit6", "ngo5", "dik1", "lyun2", "jan4", "mun4"] },
             { chars: ["谁","没","有","得","到","更","多"], jp: ["seoi4","mut6","jau5","dak1","dou3","gang3","do1"] },
             { chars: ["错","误","错","得","可","玩","味"], jp: ["co3","ng6","co3","dak1","ho2","wun6","mei6"] },
             { chars: ["未","留","下","也","算","好","结","果"], jp: ["mei6","lau4","haa6","jaa5","syun3","hou2","git3","gwo2"] },
