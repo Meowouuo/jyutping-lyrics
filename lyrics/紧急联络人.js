@@ -68,7 +68,11 @@
             { chars: ["只","想","是","你"], jp: ["zi2","soeng2","si6","nei5"] }
         ]
     };
-    window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
 }());
 
 // ⚠️ 重要：请在 index.html 的 songFiles 数组中添加以下一行：
