@@ -56,7 +56,9 @@
             { chars: ["回","忆","当","天","三","岁","的","波","板","糖"], jp: ["wui4","jik1","dong1","tin1","saam1","seoi3","dik1","bo1","baan2","tong4"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
