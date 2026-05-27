@@ -2241,61 +2241,65 @@
      * @param {Object} song - 歌曲对象（包含 id 和 file 字段）
      */
     async function loadSongLyrics(song) {
-        // 每首歌使用以 song.id 为后缀的唯一数组 key
-        const loadKey = '__song_load_' + song.id;
-        window[loadKey] = [];
+    // 每首歌使用以 song.id 为后缀的唯一数组 key
+    const loadKey = '__song_load_' + song.id;
+    window[loadKey] = [];
 
-        try {
-            // 【改动1】用 fetch API 替代 <script> 标签获取歌词文件
-            const response = await fetch(song.file);
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
-            let code = await response.text();
-
-            // 【改动2 · 核心】字符串替换: 将歌词代码中的全局变量引用
-            //              替换为当前歌曲的唯一数组名
-            //
-            // 兼容两种歌词文件格式:
-            //   旧格式: window.__songs.push(song);
-            //   新格式: window.__songPush(song);
-            //
-            // 替换后效果:
-            //   window['__song_load_3'].push(song);  // 海阔天空的数据进自己的数组
-            //   window['__song_load_12'].push(song);  // 喜欢你   的数据进自己的数组
-            //
-            // \b 确保不会误匹配 window.__songsInterceptorInitialized 等其他属性
-            code = code.replace(/window\.__songs\b/g, "window['" + loadKey + "]");
-            code = code.replace(/window\.__songPush\b/g, "window['" + loadKey + "]");
-
-            // 【改动3】用 Function 构造器在全局作用域执行修改后的代码
-            try {
-                new Function(code)();
-            } catch (execErr) {
-                console.warn('执行歌曲文件出错:', song.file, execErr);
-            }
-
-            // 从当前歌曲专属数组读取数据并合并
-            const loadedSong = window[loadKey][0];
-            if (loadedSong) {
-                Object.assign(song, {
-                    lyrics: loadedSong.lyrics,
-                    titleJyutping: loadedSong.titleJyutping,
-                    artistJyutping: loadedSong.artistJyutping,
-                    lyricistJyutping: loadedSong.lyricistJyutping,
-                    composerJyutping: loadedSong.composerJyutping,
-                    _loaded: true
-                });
-            }
-
-            // 清理
-            window[loadKey] = [];
-        } catch (err) {
-            console.warn('加载歌曲文件失败:', song.file, err);
-            song._loadError = true;
-            window[loadKey] = [];
+    try {
+        // 【方案A】用 fetch API 替代 <script> 标签获取歌词文件
+        const response = await fetch(song.file);
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
         }
+        let code = await response.text();
+
+        // 【核心修复】歌词文件两种格式的处理:
+        //   旧格式 (Format A):  if (typeof window.__songs === 'undefined') window.__songs = [];
+        //                    window.__songs.push(song);
+        //   → 替换后: window[loadKey].push(song);
+        //
+        //   新格式 (Format B):  window.__songPush(song);
+        //   → 替换后: window[loadKey].push(song);
+        //
+        // 注意: __songPush 是一个函数调用，不能替换成数组名，
+        // 要把整个调用表达式替换成 "数组名.push("
+
+        // 替换旧格式: window.__songs.push(...) → window[loadKey].push(...)
+        // \b 确保不会误匹配 window.__songsInterceptorInitialized
+        code = code.replace(/window\.__songs\b/g, "window['" + loadKey + "']");
+
+        // 替换新格式: window.__songPush(...) → window[loadKey].push(...)
+        // 匹配 "window.__songPush" 后面可选的空白和 "("
+        code = code.replace(/window\.__songPush\s*\(/g, "window['" + loadKey + "'].push(");
+
+        // 【执行】用 Function 构造器在全局作用域执行修改后的代码
+        try {
+            new Function(code)();
+        } catch (execErr) {
+            console.warn('执行歌曲文件出错:', song.file, execErr);
+        }
+
+        // 从当前歌曲专属数组读取数据并合并到 song 对象
+        const loadedSong = window[loadKey] && window[loadKey][0];
+        if (loadedSong) {
+            Object.assign(song, {
+                lyrics: loadedSong.lyrics,
+                titleJyutping: loadedSong.titleJyutping,
+                artistJyutping: loadedSong.artistJyutping,
+                lyricistJyutping: loadedSong.lyricistJyutping,
+                composerJyutping: loadedSong.composerJyutping,
+                _loaded: true
+            });
+        }
+
+        // 清理：释放数组内存
+        window[loadKey] = [];
+    } catch (err) {
+        console.warn('加载歌曲文件失败:', song.file, err);
+        song._loadError = true;
+        if (window[loadKey]) window[loadKey] = [];
     }
+}
 
 
     /**
