@@ -81,7 +81,9 @@
             { chars: ["仍","然","有","你","的","忠","心","爱","侣"], jp: ["jing4","jin4","jau5","nei5","dik1","zung1","sam1","ngoi3","leoi5"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
