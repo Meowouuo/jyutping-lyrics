@@ -2263,37 +2263,90 @@
      * 页面渲染完成后在后台逐个加载歌词文件，让 Service Worker 缓存
      * 不阻塞界面，失败也不影响正常使用
      */
+    
+    /**
+     * 后台有限并发预缓存（方案C优化）
+     *
+     * 【设计目标】解决歌曲增多后预缓存时间线性增长 O(n) 的问题。
+     * 原方案：串行加载全部歌曲 × 100ms间隔 → 91首需 ~11秒，200首需 ~22秒
+     * 新方案：并发控制（最多3个同时）+ 上限30首 → 无论多少歌曲都只需约 ~5-8秒
+     *
+     * 【策略】
+     * - 延迟3秒启动（确保首屏+hover机制已就绪）
+     * - 并发数 CONCURRENCY=3：同时最多3个网络请求
+     * - 上限 MAX_PRECACHE=30：最多预缓存30首（覆盖用户最可能点击的前几屏）
+     * - 跳过已加载和正在加载的歌曲（与hover preload协作不冲突）
+     * - 失败静默跳过，不影响用户体验
+     */
     function precacheAllSongs() {
-        // 延迟 2 秒开始，确保首屏渲染完成
-        setTimeout(() => {
+        const CONCURRENCY = 3;       // 最大并发加载数（平衡网络带宽与速度）
+        const MAX_PRECACHE = 30;      // 最多预缓存歌曲数（不随总量线性增长）
+        const DELAY_MS = 3000;        // 延迟启动时间(ms)，等待首屏渲染和hover就绪
+
+        setTimeout(async () => {
+            // 筛选需要预缓存的歌曲：未加载且未在加载中的
+            const toPcache = songs.filter(s => !s._loaded && !s._loading).slice(0, MAX_PRECACHE);
+            const total = toPcache.length;
+
+            if (total === 0) {
+                console.log('[预缓存] 所有歌词已加载，跳过');
+                return;
+            }
+
+            console.log(`[预缓存] 开始后台预缓存 ${total} 首歌曲 (并发=${CONCURRENCY}, 上限=${MAX_PRECACHE})...`);
+
             let cachedCount = 0;
-            const total = songs.length;
+            let currentIndex = 0;
+            let activeCount = 0;  // 当前正在进行的请求数
 
-            // 逐个加载，避免并发过多
-            const cacheNext = async (index) => {
-                if (index >= total) {
-                    console.log(`[预缓存] 完成，共缓存 ${cachedCount}/${total} 首歌曲`);
-                    return;
+            /**
+             * 加载下一批歌曲（并发控制）
+             * 使用计数器模式：每完成一个就补充一个新的，保持并发数恒定
+             */
+            const loadNext = async () => {
+                // 所有候选歌曲都已处理完毕
+                if (currentIndex >= total) return;
+
+                // 如果已达并发上限，等有空位再调用
+                if (activeCount >= CONCURRENCY) return;
+
+                const song = toPcache[currentIndex++];
+                // 二次检查：可能在等待期间被hover preload已经加载了
+                if (song._loaded || song._loading) {
+                    // 跳过这首歌，尝试下一首
+                    activeCount++; // 占位防止死循环，下面立即释放
+                    activeCount--;
+                    return loadNext();
                 }
 
-                const song = songs[index];
-                if (!song._loaded) {
-                    try {
-                        await loadSongLyrics(song);
-                        cachedCount++;
-                    } catch (e) {
-                        // 静默失败，继续下一个
-                    }
-                }
+                activeCount++;
+                song._loading = true;  // 标记正在加载，防止重复
 
-                // 每加载一个，等待 100ms 再加载下一个，避免并发过多
-                setTimeout(() => cacheNext(index + 1), 100);
+                try {
+                    await loadSongLyrics(song);
+                    cachedCount++;
+                } catch (e) {
+                    // 单个失败不影响整体
+                } finally {
+                    song._loading = false;  // 清除加载标记
+                    activeCount--;
+                    // 当前请求完成，触发下一个
+                    await loadNext();
+                }
             };
 
-            cacheNext(0);
-            console.log(`[预缓存] 开始后台预缓存 ${total} 首歌曲...`);
-        }, 2000);
+            // 启动初始的 CONCURRENCY 个并发任务
+            const initialWorkers = Math.min(CONCURRENCY, total);
+            const workers = [];
+            for (let i = 0; i < initialWorkers; i++) {
+                workers.push(loadNext());
+            }
+            await Promise.all(workers);
+
+            console.log(`[预缓存] 完成，共缓存 ${cachedCount}/${total} 首歌曲`);
+        }, DELAY_MS);
     }
+
     </script>
 
     <script>
@@ -2423,6 +2476,45 @@
             });
         }
 
+
+
+
+        /**
+         * Hover 预加载事件委托（方案C核心）
+         *
+         * 【原理】利用用户鼠标从列表项移到点击的自然延迟（~200-800ms），
+         * 在 mouseenter 时提前触发歌词文件加载。当用户真正点击时，
+         * 歌词很可能已经加载完毕，实现"零感知"体验。
+         *
+         * 【防重复机制】使用 song._loading 标记：
+         * - hover 进入 → 检查 _loaded/_loading → 都为false则开始加载并设 _loading=true
+         * - 加载完成 → _loaded=true, _loading=false
+         * - 用户点击 → selectSong 检查 _loaded → 已true则直接渲染，无需等待
+         */
+        const songListEl = document.getElementById('songList');
+        if (songListEl) {
+            songListEl.addEventListener('mouseenter', (e) => {
+                // 找到被悬停的歌曲项（向上查找最近的 .song-item）
+                const item = e.target.closest('.song-item');
+                if (!item) return;
+
+                // 从 data 属性获取歌曲ID
+                const songId = parseInt(item.dataset.songId, 10);
+                if (!songId || isNaN(songId)) return;
+
+                // 根据ID查找歌曲对象
+                const song = songs.find(s => s.id === songId);
+                if (!song) return;
+
+                // 仅当歌曲未加载且未在加载中时才触发预加载
+                if (!song._loaded && !song._loading) {
+                    song._loading = true;  // 标记为加载中，防止重复触发
+                    loadSongLyrics(song).finally(() => {
+                        song._loading = false;  // 无论成功失败都清除标记
+                    });
+                }
+            }, true);  // 使用捕获阶段，确保能监听到子元素的 hover
+        }
 
 
         // 后台静默预缓存所有歌词文件（不阻塞界面渲染）
@@ -2556,7 +2648,7 @@
             // 生成歌曲项 HTML 结构
             // 包含：序号（两位数补零）、歌曲标题、歌手名
             html += `
-                <div class="song-item ${isActive ? 'active' : ''}" onclick="${clickAction}">
+                <div class="song-item ${isActive ? 'active' : ''}" data-song-id="${song.id}" onclick="${clickAction}">
                     <span class="song-number">${String(index + 1).padStart(2, '0')}</span>
                     <div class="song-info-compact">
                         <div class="song-title-compact">${song.title}</div>
