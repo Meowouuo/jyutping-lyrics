@@ -2248,29 +2248,32 @@
     try {
         // 【方案A】用 fetch API 替代 <script> 标签获取歌词文件
         const response = await fetch(song.file);
-        if (!response.ok) {
-            throw new Error('HTTP ' + response.status);
-        }
+        if (!response.ok) throw new Error('HTTP ' + response.status);
         let code = await response.text();
 
         // 【核心修复】歌词文件两种格式的处理:
-        //   旧格式 (Format A):  if (typeof window.__songs === 'undefined') window.__songs = [];
-        //                    window.__songs.push(song);
-        //   → 替换后: window[loadKey].push(song);
         //
-        //   新格式 (Format B):  window.__songPush(song);
-        //   → 替换后: window[loadKey].push(song);
+        //   旧格式:
+        //     window.__songs.push(song)        -> window[loadKey].push(song)
+        //     window.__songs = []              -> window[loadKey] = []
         //
-        // 注意: __songPush 是一个函数调用，不能替换成数组名，
-        // 要把整个调用表达式替换成 "数组名.push("
+        //   新格式 (Format B):
+        //     if (... && window.__songPush) {  -> if (... && window[loadKey].push) {
+        //       window.__songPush(song);      ->   window[loadKey].push(song);
+        //     }
+        //
+        // ⚠️ 关键: 必须用 \b 匹配所有 __songPush 引用！
+        //    PR #569 只匹配了 __songPush\s*\( (函数调用形式)，
+        //    但漏掉了 if 条件检查中的 window.__songPush 引用，
+        //    导致 if 判断为 false，.push() 永远不执行！
 
-        // 替换旧格式: window.__songs.push(...) → window[loadKey].push(...)
-        // \b 确保不会误匹配 window.__songsInterceptorInitialized
+        // 替换旧格式: window.__songs -> window['...']
+        // \b 防止误匹配 __songsInterceptorInitialized 等
         code = code.replace(/window\.__songs\b/g, "window['" + loadKey + "']");
 
-        // 替换新格式: window.__songPush(...) → window[loadKey].push(...)
-        // 匹配 "window.__songPush" 后面可选的空白和 "("
-        code = code.replace(/window\.__songPush\s*\(/g, "window['" + loadKey + "'].push(");
+        // 替换新格式: window.__songPush -> window['...'].push
+        // \b 匹配所有出现位置 (if检查 + 函数调用)
+        code = code.replace(/window\.__songPush\b/g, "window['" + loadKey + "'].push");
 
         // 【执行】用 Function 构造器在全局作用域执行修改后的代码
         try {
@@ -2291,9 +2294,7 @@
                 _loaded: true
             });
         }
-
-        // 清理：释放数组内存
-        window[loadKey] = [];
+        window[loadKey] = [];  // 清理
     } catch (err) {
         console.warn('加载歌曲文件失败:', song.file, err);
         song._loadError = true;
