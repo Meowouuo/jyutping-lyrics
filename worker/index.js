@@ -1,13 +1,16 @@
 /**
  * ============================================================
- * Cloudflare Worker：粤拼歌词投稿后端服务
+ * Cloudflare Worker：粤拼歌词后端服务
  * ============================================================
  *
  * 功能说明：
- * - 接收前端投稿表单数据
- * - 验证数据合法性
- * - 调用 GitHub API 创建 Issue
- * - 返回处理结果给前端
+ * - 接收前端投稿表单数据（原功能）
+ * - 音频文件代理转发（新增，解决国内无法访问 GitHub 的问题）
+ *
+ * 音频代理路由：
+ * - GET /audio/<path>  → 代理 GitHub Raw 上的音频文件
+ *   示例: /audio/v1/4f/4fef6fb...mp3
+ *         → https://raw.githubusercontent.com/Meowouuo/lyrics-audio/main/v1/4f/4fef6fb...mp3
  *
  * 部署说明：
  * - 使用 Cloudflare Workers 部署
@@ -15,8 +18,18 @@
  * - GITHUB_TOKEN 需要具有创建 Issue 的权限
  *
  * 作者：粤拼歌词项目组
- * 版本：1.0.0
+ * 版本：2.0.0（新增音频代理功能）
  */
+
+// ============================================================
+// 配置常量
+// ============================================================
+
+/**
+ * 音频文件的 GitHub 源地址
+ * @description 音频文件存储在独立的 lyrics-audio 仓库的 main 分支
+ */
+const AUDIO_SOURCE_BASE = 'https://raw.githubusercontent.com/Meowouuo/lyrics-audio/main/';
 
 // ============================================================
 // 主入口函数：处理所有 HTTP 请求
@@ -24,7 +37,10 @@
 
 /**
  * Fetch 事件处理函数
- * @description 处理所有进入的 HTTP 请求，包括 OPTIONS 预检请求和 POST 请求
+ * @description 处理所有进入的 HTTP 请求，包括：
+ *   - OPTIONS 预检请求（CORS）
+ *   - GET /audio/* 音频代理请求
+ *   - POST 投稿表单提交
  * @param {Request} request - HTTP 请求对象
  * @param {Object} env - 环境变量，包含 GITHUB_TOKEN 等配置
  * @param {Object} ctx - Cloudflare 上下文对象
@@ -32,266 +48,363 @@
  */
 export default {
   async fetch(request, env) {
+    // 解析请求 URL 和路径
+    const url = new URL(request.url);
+    const path = url.pathname;
+
     // ------------------------------------------------
-    // CORS 预检请求处理
+    // 路由分发：根据请求路径和方法分配到对应处理器
     // ------------------------------------------------
-    // 浏览器在发送跨域 POST 请求前会先发送 OPTIONS 请求
-    // 需要返回正确的 CORS 头才能让浏览器继续发送实际请求
+
+    // GET /audio/* → 音频代理处理器
+    if (request.method === 'GET' && path.startsWith('/audio/')) {
+      return handleAudioProxy(path);
+    }
+
+    // OPTIONS → CORS 预检处理器
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          // 允许所有来源访问（生产环境应限制具体域名）
-          'Access-Control-Allow-Origin': '*',
-          // 允许的 HTTP 方法
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          // 允许的请求头
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      });
+      return handleOptions();
     }
 
-    // ------------------------------------------------
-    // 请求方法验证
-    // ------------------------------------------------
-    // 本接口只接受 POST 请求，其他方法返回 405 Method Not Allowed
-    if (request.method !== 'POST') {
-      return jsonResponse({ error: '仅支持 POST 请求' }, 405);
+    // POST → 投稿表单处理器（原功能）
+    if (request.method === 'POST') {
+      return handleSubmit(request, env);
     }
 
-    // ------------------------------------------------
-    // 请求体解析与数据验证
-    // ------------------------------------------------
-    try {
-      // 解析 JSON 请求体
-      const data = await request.json();
-
-      // 从请求体中提取基本字段
-      const {
-        type,
-        title,
-        artist,
-        lyricist,
-        composer,
-        lyrics,
-        corrections,
-        songName
-      } = data;
-
-      // 验证 type 字段是否存在（必须指定请求类型）
-      if (!type) {
-        return jsonResponse({ error: '缺少 type 字段' }, 400);
-      }
-
-      // ------------------------------------------------
-      // 根据 type 类型处理不同的请求
-      // ------------------------------------------------
-      let issueTitle;    // GitHub Issue 标题
-      let issueBody;      // GitHub Issue 正文
-      let labels;         // GitHub Issue 标签
-
-      switch (type) {
-        // =============================================
-        // 新歌投稿处理
-        // =============================================
-        case 'new-song':
-          // 验证必填字段
-          if (!title || !artist || !lyrics) {
-            return jsonResponse({
-              error: '投稿需要歌曲名称、歌手和歌词'
-            }, 400);
-          }
-
-          // 构建 Issue 标题，格式：[新歌投稿] 歌曲名 - 歌手
-          issueTitle = `[新歌投稿] ${title} - ${artist}`;
-
-          // 设置 Issue 标签
-          labels = ['投稿-新歌'];
-
-          // 生成 Issue 正文内容
-          issueBody = buildNewSongBody({ title, artist, lyricist, composer, lyrics });
-          break;
-
-        // =============================================
-        // 粤拼纠错处理
-        // =============================================
-        case 'jyutping-correction':
-          // 验证必填字段
-          if (!songName || !corrections || corrections.length === 0) {
-            return jsonResponse({
-              error: '纠错需要歌曲名称和纠错内容'
-            }, 400);
-          }
-
-          // 构建 Issue 标题，格式：[粤拼纠错] 歌曲名（N处）
-          issueTitle = `[粤拼纠错] ${songName}（${corrections.length}处）`;
-
-          // 设置 Issue 标签
-          labels = ['投稿-粤拼'];
-
-          // 生成 Issue 正文内容
-          issueBody = buildJyutpingCorrectionBody({ songName, corrections });
-          break;
-
-        // =============================================
-        // 歌词纠错处理（支持多种纠错类型）
-        // =============================================
-        case 'lyrics-correction':
-          // 验证歌曲名称
-          if (!songName) {
-            return jsonResponse({
-              error: '歌词纠错需要歌曲名称'
-            }, 400);
-          }
-
-          // 获取纠错类型，默认为逐行修改
-          const correctionType = data.correctionType || 'line';
-
-          // 获取完整歌词（用于整首替换）
-          const fullLyrics = data.fullLyrics;
-
-          // 获取插入数据
-          const insertData = data.insert;
-
-          // 根据纠错类型分别处理
-          if (correctionType === 'full') {
-            // ----- 整首替换模式 -----
-            if (!fullLyrics) {
-              return jsonResponse({
-                error: '整首替换需要填写完整歌词'
-              }, 400);
-            }
-            issueTitle = `[歌词纠错-整首替换] ${songName}`;
-            labels = ['歌词纠错'];
-            issueBody = buildFullReplacementBody({ songName, fullLyrics });
-
-          } else if (correctionType === 'insert') {
-            // ----- 插入行模式 -----
-            // 支持 insertions 数组或单个 insert 对象
-            const insertions = data.insertions || (data.insert ? [data.insert] : []);
-            if (!insertions || insertions.length === 0) {
-              return jsonResponse({
-                error: '插入行需要填写插入位置和歌词'
-              }, 400);
-            }
-            issueTitle = `[歌词纠错-插入行] ${songName}（${insertions.length}处）`;
-            labels = ['歌词纠错'];
-            issueBody = buildInsertBody({ songName, insertions });
-
-          } else {
-            // ----- 逐行修改模式（默认） -----
-            // 支持只有歌名/元信息修改的情况
-            const meta = data.meta;
-            if ((!corrections || corrections.length === 0) && (!meta || Object.keys(meta).length === 0)) {
-              return jsonResponse({
-                error: '歌词纠错需要纠错内容'
-              }, 400);
-            }
-            // 构建标题和正文
-            const metaParts = [];
-            if (meta) {
-              if (meta.title) metaParts.push('歌名: ' + meta.title.original + ' → ' + meta.title.new);
-              if (meta.artist) metaParts.push('歌手: ' + meta.artist.original + ' → ' + meta.artist.new);
-              if (meta.lyricist) metaParts.push('填词: ' + meta.lyricist.original + ' → ' + meta.lyricist.new);
-              if (meta.composer) metaParts.push('作曲: ' + meta.composer.original + ' → ' + meta.composer.new);
-            }
-            const count = (corrections ? corrections.length : 0) + metaParts.length;
-            issueTitle = `[歌词纠错] ${songName}（${count}处）`;
-            labels = ['歌词纠错'];
-            // 如果有逐行纠错，使用标准格式；否则只提交 meta 信息
-            if (corrections && corrections.length > 0) {
-              issueBody = buildLyricsCorrectionBody({ songName, corrections, meta });
-            } else {
-              issueBody = `## 歌曲名称
-${songName}
-
-## 纠错内容
-
-${metaParts.map(p => '- ' + p).join('
-')}`;
-            }
-          }
-          break;
-
-        // =============================================
-        // 删除歌曲请求处理
-        // =============================================
-        case 'delete-song':
-          const songs = data.songs;
-          if (!songs || songs.length === 0) {
-            return jsonResponse({
-              error: '删除歌曲需要选择要删除的歌曲'
-            }, 400);
-          }
-          issueTitle = `[删除歌曲] ${songs.length}首歌曲`;
-          labels = ['投稿-删除'];
-          issueBody = buildDeleteSongBody({ songs });
-          break;
-
-        // =============================================
-        // 未知类型处理
-        // =============================================
-        default:
-          return jsonResponse({ error: `未知的 type: ${type}` }, 400);
-      }
-
-      // ------------------------------------------------
-      // 调用 GitHub API 创建 Issue
-      // ------------------------------------------------
-
-      // 检查 GitHub Token 是否配置
-      const githubToken = env.GITHUB_TOKEN;
-      if (!githubToken) {
-        return jsonResponse({ error: '服务端未配置 GITHUB_TOKEN' }, 500);
-      }
-
-      // 调用 GitHub API 创建 Issue
-      const githubResponse = await fetch('https://api.github.com/repos/Meowouuo/lyrics/issues', {
-        method: 'POST',
-        headers: {
-          // Bearer Token 认证
-          'Authorization': `Bearer ${githubToken}`,
-          // JSON 格式
-          'Content-Type': 'application/json',
-          // User-Agent 用于 GitHub API 识别
-          'User-Agent': 'Lyrics-Submit-Worker',
-        },
-        body: JSON.stringify({
-          title: issueTitle,     // Issue 标题
-          body: issueBody,       // Issue 正文
-          labels: labels,        // Issue 标签
-        }),
-      });
-
-      // 检查 GitHub API 响应
-      if (!githubResponse.ok) {
-        // API 返回错误，记录日志
-        const error = await githubResponse.text();
-        console.error('GitHub API 错误:', error);
-        return jsonResponse({
-          error: '创建 Issue 失败',
-          detail: error
-        }, 500);
-      }
-
-      // 解析成功响应，返回 Issue 信息
-      const issue = await githubResponse.json();
-      return jsonResponse({
-        success: true,
-        message: '提交成功！已创建 GitHub Issue',
-        issueUrl: issue.html_url,      // Issue 页面链接
-        issueNumber: issue.number,     // Issue 编号
-      });
-
-    } catch (error) {
-      // ------------------------------------------------
-      // 异常处理
-      // ------------------------------------------------
-      // 捕获所有未处理的错误，包括 JSON 解析错误、网络错误等
-      console.error('Worker 运行时错误:', error);
-      return jsonResponse({ error: '服务器内部错误' }, 500);
-    }
+    // 其他请求返回 405
+    return jsonResponse({ error: 'Method Not Allowed' }, 405);
   },
 };
+
+// ============================================================
+// 音频代理处理器（新增功能）
+// ============================================================
+
+/**
+ * 处理音频文件代理请求
+ * @description 将前端的音频请求代理到 GitHub Raw，
+ *             利用 Cloudflare 全球网络解决国内访问问题。
+ *             支持 Range 请求（音频拖动播放）和缓存优化。
+ *
+ * 工作流程：
+ * 1. 从 URL 路径中提取音频文件相对路径
+ * 2. 拼接完整的 GitHub Raw URL
+ * 3. 转发请求（保留原始 headers 如 Range）
+ * 4. 返回响应（添加缓存头优化重复访问）
+ *
+ * @param {string} path - 请求路径（格式: /audio/v1/xx/xxxx.mp3）
+ * @returns {Response} 音频文件响应或错误响应
+ */
+async function handleAudioProxy(path) {
+  // ------------------------------------------------
+  // 提取音频文件路径
+  // ------------------------------------------------
+  // 去掉 /audio/ 前缀，得到相对路径（如 v1/4f/4fef6fb...mp3）
+  const audioPath = path.replace(/^\/audio\//, '');
+
+  // 安全校验：防止路径遍历攻击
+  // 只允许包含字母、数字、斜杠、点、连字符、下划线的路径
+  if (!/^[\w\-./]+$/.test(audioPath) || audioPath.includes('..')) {
+    return jsonResponse({ error: 'Invalid audio path' }, 400);
+  }
+
+  // ------------------------------------------------
+  // 构建源文件 URL
+  // ------------------------------------------------
+  // 最终 URL 格式：
+  // https://raw.githubusercontent.com/Meowouuo/lyrics-audio/main/v1/4f/4fef6fb...mp3
+  const sourceUrl = AUDIO_SOURCE_BASE + audioPath;
+
+  console.log('[Audio Proxy] Fetching:', sourceUrl);
+
+  try {
+    // ------------------------------------------------
+    // 转发请求到 GitHub Raw
+    // ------------------------------------------------
+    // 构建转发请求头
+    const forwardHeaders = new Headers();
+
+    // 传递 Range 头（支持音频拖动/分段加载）
+    // 浏览器在播放音频时会用 Range 请求来实现拖动进度条等功能
+    const rangeHeader = request.headers.get('Range');
+    if (rangeHeader) {
+      forwardHeaders.set('Range', rangeHeader);
+    }
+
+    // 发起子请求获取音频文件
+    // Cloudflare Worker 的 fetch 可以直接访问外部网络
+    const response = await fetch(sourceUrl, {
+      method: 'GET',
+      headers: forwardHeaders,
+      // 不跟随重定向以外的特殊处理
+    });
+
+    // ------------------------------------------------
+    // 检查响应状态
+    // ------------------------------------------------
+    if (!response.ok) {
+      console.error('[Audio Proxy] Source returned status:', response.status);
+      return jsonResponse(
+        { error: `Audio source error: ${response.status}` },
+        response.status
+      );
+    }
+
+    // ------------------------------------------------
+    // 构建并返回响应
+    // ------------------------------------------------
+    // 读取响应体（音频二进制数据）
+    const audioData = await response.arrayBuffer();
+
+    // 构建响应头
+    const responseHeaders = new Headers({
+      // 设置正确的 MIME 类型为音频
+      'Content-Type': 'audio/mpeg',
+      // 设置内容长度
+      'Content-Length': audioData.byteLength.toString(),
+      // 允许跨域访问（前端页面域名与 Worker 域名不同）
+      'Access-Control-Allow-Origin': '*',
+      // 缓存策略：
+      // public: 可被 CDN 和浏览器缓存
+      // max-age=2592000: 缓存 30 天（音频文件不变更）
+      // immutable: 缓存期间内不需要重新验证
+      'Cache-Control': 'public, max-age=2592000, immutable',
+      // 传递源站的 Accept-Ranges 头（支持 Range 请求的标识）
+      'Accept-Ranges': 'bytes',
+    });
+
+    // 如果源站支持 Range，传递 Content-Range 头
+    const contentRange = response.headers.get('Content-Range');
+    if (contentRange) {
+      responseHeaders.set('Content-Range', contentRange);
+      // Range 请求成功返回 206 Partial Content
+      return new Response(audioData, {
+        status: 206,
+        headers: responseHeaders,
+      });
+    }
+
+    // 普通 GET 请求返回 200 OK
+    return new Response(audioData, {
+      status: 200,
+      headers: responseHeaders,
+    });
+
+  } catch (error) {
+    // ------------------------------------------------
+    // 错误处理
+    // ------------------------------------------------
+    console.error('[Audio Proxy] Error:', error.message);
+    return jsonResponse(
+      { error: 'Failed to proxy audio file', detail: error.message },
+      502  // Bad Gateway：上游服务不可达
+    );
+  }
+}
+
+// ============================================================
+// CORS 预检处理器
+// ============================================================
+
+/**
+ * 处理 OPTIONS 预检请求
+ * @description 浏览器在发送跨域请求前会先发送 OPTIONS 请求
+ *              需要返回正确的 CORS 头才能让浏览器继续发送实际请求
+ *              同时也用于音频代理接口的预检
+ * @returns {Response} CORS 预检响应
+ */
+function handleOptions() {
+  return new Response(null, {
+    headers: {
+      // 允许所有来源访问（生产环境应限制具体域名）
+      'Access-Control-Allow-Origin': '*',
+      // 允许的 HTTP 方法（包含 GET 用于音频代理，POST 用于投稿）
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      // 允许的请求头（Range 用于音频拖动）
+      'Access-Control-Allow-Headers': 'Content-Type, Range',
+    },
+  });
+}
+
+// ============================================================
+// 投稿表单处理器（原功能保持不变）
+// ============================================================
+
+/**
+ * 处理前端投稿表单提交
+ * @description 接收前端 POST 请求，验证数据后调用 GitHub API 创建 Issue
+ * @param {Request} request - HTTP 请求对象
+ * @param {Object} env - 环境变量
+ * @returns {Response} JSON 格式的处理结果
+ */
+async function handleSubmit(request, env) {
+  try {
+    // 解析 JSON 请求体
+    const data = await request.json();
+
+    // 从请求体中提取基本字段
+    const {
+      type,
+      title,
+      artist,
+      lyricist,
+      composer,
+      lyrics,
+      corrections,
+      songName
+    } = data;
+
+    // 验证 type 字段是否存在（必须指定请求类型）
+    if (!type) {
+      return jsonResponse({ error: '缺少 type 字段' }, 400);
+    }
+
+    // 根据 type 类型处理不同的请求
+    let issueTitle;    // GitHub Issue 标题
+    let issueBody;      // GitHub Issue 正文
+    let labels;         // GitHub Issue 标签
+
+    switch (type) {
+      // =============================================
+      // 新歌投稿处理
+      // =============================================
+      case 'new-song':
+        // 验证必填字段
+        if (!title || !artist || !lyrics) {
+          return jsonResponse({
+            error: '投稿需要歌曲名称、歌手和歌词'
+          }, 400);
+        }
+        // 构建 Issue 标题，格式：[新歌投稿] 歌曲名 - 歌手
+        issueTitle = `[新歌投稿] ${title} - ${artist}`;
+        labels = ['投稿-新歌'];
+        issueBody = buildNewSongBody({ title, artist, lyricist, composer, lyrics });
+        break;
+
+      // =============================================
+      // 粤拼纠错处理
+      // =============================================
+      case 'jyutping-correction':
+        // 验证必填字段
+        if (!songName || !corrections || corrections.length === 0) {
+          return jsonResponse({
+            error: '纠错需要歌曲名称和纠错内容'
+          }, 400);
+        }
+        issueTitle = `[粤拼纠错] ${songName}（${corrections.length}处）`;
+        labels = ['投稿-粤拼'];
+        issueBody = buildJyutpingCorrectionBody({ songName, corrections });
+        break;
+
+      // =============================================
+      // 歌词纠错处理（支持多种纠错类型）
+      // =============================================
+      case 'lyrics-correction':
+        // 验证歌曲名称
+        if (!songName) {
+          return jsonResponse({
+            error: '歌词纠错需要歌曲名称'
+          }, 400);
+        }
+        const correctionType = data.correctionType || 'line';
+        const fullLyrics = data.fullLyrics;
+        const insertData = data.insert;
+
+        if (correctionType === 'full') {
+          if (!fullLyrics) {
+            return jsonResponse({ error: '整首替换需要填写完整歌词' }, 400);
+          }
+          issueTitle = `[歌词纠错-整首替换] ${songName}`;
+          labels = ['歌词纠错'];
+          issueBody = buildFullReplacementBody({ songName, fullLyrics });
+        } else if (correctionType === 'insert') {
+          const insertions = data.insertions || (data.insert ? [data.insert] : []);
+          if (!insertions || insertions.length === 0) {
+            return jsonResponse({ error: '插入行需要填写插入位置和歌词' }, 400);
+          }
+          issueTitle = `[歌词纠错-插入行] ${songName}（${insertions.length}处）`;
+          labels = ['歌词纠错'];
+          issueBody = buildInsertBody({ songName, insertions });
+        } else {
+          const meta = data.meta;
+          if ((!corrections || corrections.length === 0) && (!meta || Object.keys(meta).length === 0)) {
+            return jsonResponse({ error: '歌词纠错需要纠错内容' }, 400);
+          }
+          const metaParts = [];
+          if (meta) {
+            if (meta.title) metaParts.push('歌名: ' + meta.title.original + ' → ' + meta.title.new);
+            if (meta.artist) metaParts.push('歌手: ' + meta.artist.original + ' → ' + meta.artist.new);
+            if (meta.lyricist) metaParts.push('填词: ' + meta.lyricist.original + ' → ' + meta.lyricist.new);
+            if (meta.composer) metaParts.push('作曲: ' + meta.composer.original + ' → ' + meta.composer.new);
+          }
+          const count = (corrections ? corrections.length : 0) + metaParts.length;
+          issueTitle = `[歌词纠错] ${songName}（${count}处）`;
+          labels = ['歌词纠错'];
+          if (corrections && corrections.length > 0) {
+            issueBody = buildLyricsCorrectionBody({ songName, corrections, meta });
+          } else {
+            issueBody = `## 歌曲名称\n${songName}\n\n## 纠错内容\n\n${metaParts.map(p => '- ' + p).join('\n')}`;
+          }
+        }
+        break;
+
+      // =============================================
+      // 删除歌曲请求处理
+      // =============================================
+      case 'delete-song':
+        const songs = data.songs;
+        if (!songs || songs.length === 0) {
+          return jsonResponse({ error: '删除歌曲需要选择要删除的歌曲' }, 400);
+        }
+        issueTitle = `[删除歌曲] ${songs.length}首歌曲`;
+        labels = ['投稿-删除'];
+        issueBody = buildDeleteSongBody({ songs });
+        break;
+
+      default:
+        return jsonResponse({ error: `未知的 type: ${type}` }, 400);
+    }
+
+    // 检查 GitHub Token 是否配置
+    const githubToken = env.GITHUB_TOKEN;
+    if (!githubToken) {
+      return jsonResponse({ error: '服务端未配置 GITHUB_TOKEN' }, 500);
+    }
+
+    // 调用 GitHub API 创建 Issue
+    const githubResponse = await fetch('https://api.github.com/repos/Meowouuo/lyrics/issues', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${githubToken}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'Lyrics-Submit-Worker',
+      },
+      body: JSON.stringify({
+        title: issueTitle,
+        body: issueBody,
+        labels: labels,
+      }),
+    });
+
+    if (!githubResponse.ok) {
+      const error = await githubResponse.text();
+      console.error('GitHub API 错误:', error);
+      return jsonResponse({ error: '创建 Issue 失败', detail: error }, 500);
+    }
+
+    const issue = await githubResponse.json();
+    return jsonResponse({
+      success: true,
+      message: '提交成功！已创建 GitHub Issue',
+      issueUrl: issue.html_url,
+      issueNumber: issue.number,
+    });
+
+  } catch (error) {
+    console.error('Worker 运行时错误:', error);
+    return jsonResponse({ error: '服务器内部错误' }, 500);
+  }
+}
 
 // ============================================================
 // 辅助函数
@@ -309,26 +422,17 @@ function jsonResponse(data, status = 200) {
     status,
     headers: {
       'Content-Type': 'application/json',
-      // 允许跨域访问
       'Access-Control-Allow-Origin': '*',
     },
   });
 }
 
 // ============================================================
-// Issue 正文生成函数
+// Issue 正文生成函数（保持原逻辑不变）
 // ============================================================
 
 /**
  * 生成新歌投稿的 Issue 正文
- * @description 将投稿数据格式化为 Markdown 文档
- * @param {Object} params - 投稿参数
- * @param {string} params.title - 歌曲名称
- * @param {string} params.artist - 歌手名称
- * @param {string} params.lyricist - 填词人
- * @param {string} params.composer - 作曲人
- * @param {string} params.lyrics - 完整歌词
- * @returns {string} Markdown 格式的 Issue 正文
  */
 function buildNewSongBody({ title, artist, lyricist, composer, lyrics }) {
   return `## 投稿信息
@@ -350,14 +454,8 @@ ${lyrics}
 
 /**
  * 生成粤拼纠错的 Issue 正文
- * @description 将粤拼纠错数据格式化为带表格的 Markdown 文档
- * @param {Object} params - 纠错参数
- * @param {string} params.songName - 歌曲名称
- * @param {Array} params.corrections - 纠错内容数组
- * @returns {string} Markdown 格式的 Issue 正文
  */
 function buildJyutpingCorrectionBody({ songName, corrections }) {
-  // 将纠错数据转换为 Markdown 表格行
   const tableRows = corrections.map(c =>
     `| 第${c.line}行 | ${c.char} | ${c.originalJp} | ${c.newJp} |`
   ).join('\n');
@@ -378,13 +476,8 @@ ${tableRows}
 
 /**
  * 生成删除歌曲请求的 Issue 正文
- * @description 将待删除歌曲列表格式化为 Markdown 文档
- * @param {Object} params - 删除参数
- * @param {Array} params.songs - 待删除歌曲数组
- * @returns {string} Markdown 格式的 Issue 正文
  */
 function buildDeleteSongBody({ songs }) {
-  // 将歌曲列表格式化为编号列表
   const songList = songs.map((s, i) =>
     `${i + 1}. **${s.title}** - ${s.artist}（ID: ${s.id}）`
   ).join('\n');
@@ -401,14 +494,8 @@ ${songList}
 
 /**
  * 生成歌词纠错（逐行修改）的 Issue 正文
- * @description 将逐行纠错数据格式化为带表格的 Markdown 文档
- * @param {Object} params - 纠错参数
- * @param {string} params.songName - 歌曲名称
- * @param {Array} params.corrections - 纠错内容数组
- * @returns {string} Markdown 格式的 Issue 正文
  */
 function buildLyricsCorrectionBody({ songName, corrections }) {
-  // 将纠错数据转换为 Markdown 表格行
   const tableRows = corrections.map(c =>
     `| 第${c.line}行 | ${c.originalText} | ${c.newText} |`
   ).join('\n');
@@ -429,11 +516,6 @@ ${tableRows}
 
 /**
  * 生成整首歌词替换的 Issue 正文
- * @description 将完整歌词格式化为 Markdown 文档
- * @param {Object} params - 替换参数
- * @param {string} params.songName - 歌曲名称
- * @param {string} params.fullLyrics - 完整歌词
- * @returns {string} Markdown 格式的 Issue 正文
  */
 function buildFullReplacementBody({ songName, fullLyrics }) {
   return `## 整首歌词替换
@@ -452,16 +534,9 @@ ${fullLyrics}
 
 /**
  * 生成插入歌词的 Issue 正文
- * @description 将插入请求格式化为 Markdown 文档
- * @param {Object} params - 插入参数
- * @param {string} params.songName - 歌曲名称
- * @param {Array} params.insertions - 插入项数组
- * @returns {string} Markdown 格式的 Issue 正文
  */
 function buildInsertBody({ songName, insertions }) {
-  // 将插入项格式化为列表
   const insertList = insertions.map((ins, i) => {
-    // 转换位置描述
     const posText = ins.position === 'before' ? '前' : '后';
     return `### 插入 ${i + 1}
 - **位置：** 第${ins.line}行${posText}
