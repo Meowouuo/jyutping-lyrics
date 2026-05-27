@@ -339,7 +339,7 @@
             color: #1890ff;                         /* 蓝色链接色 */
             /* 光标样式 */
             cursor: pointer;
-            /* 字号 */
+            /* 字�� */
             font-size: 14px;
             border-top: 1px solid var(--border-dark);
             transition: background 0.2s;           /* 过渡动画 */
@@ -800,7 +800,7 @@
 
         /* 标签冒号样式（歌手：、填词：、作曲：） */
         .meta-label-colon {
-            /* 不设固定宽度，不影响对齐 */
+            /* 不设固定宽度，不��响对齐 */
             /* 字号与汉字一致 */
             font-size: 14px;
             /* 文字颜色 */
@@ -1077,7 +1077,7 @@
                 bottom: 0;
                 /* 内边距 */
                 padding: 12px 48px;
-                max-width: 800px;                      /* 与歌词区域对齐 */
+                max-width: 800px;                      /* 与歌���区域对齐 */
                 margin: 0 auto;                         /* 居中 */
             }
         }
@@ -1507,7 +1507,7 @@
             /* 显示方式 */
             display: flex;
             gap: 8px;                                   /* 按钮间距 */
-            margin-top: 10px;                            /* 顶部间距10px */
+            margin-top: 10px;                            /* ���部间距10px */
             justify-content: flex-end;                   /* 右对齐 */                   /* 右对齐 */
         }
 
@@ -2027,7 +2027,7 @@
 
             <!-- 歌手筛选标签区域（横向排列，支持展开/收起） -->
             <div class="artist-filter" id="artistFilter">
-                <span class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部</span>
+                <span class="filter-btn active" data-filter="all">全部</span>
             </div>
 
             <!-- 歌曲列表容器（动态渲染，支持懒加载和搜索过滤） -->
@@ -2318,7 +2318,7 @@
     /** @type {number} 当前字体大小（px） */
     let fontSize = 20;
     
-    /** @type {number} 懒加载显示的歌曲数量，0表示自动计算 */
+    /** @type {number} 懒加载���示的歌曲数量，0表示自动计算 */
     /** @type {number} 懒加载显示的歌曲数量，0表示尚未计算（首次渲染时自动根据容器高度计算） */
     let displayedSongs = 0;
     
@@ -2403,6 +2403,27 @@
         // 渲染界面
         renderArtistFilter();                          // 渲染歌手筛选标签
         renderSongList();                              // 渲染歌曲列表
+        // 事件委托：为歌手筛选按钮统一设置点击处理
+        // 使用事件委托而非 inline onclick，避免因脚本加载顺序或 Service Worker 缓存
+        // 导致的 "setFilter is not defined" 错误
+        const artistFilterEl = document.getElementById('artistFilter');
+        if (artistFilterEl) {
+            artistFilterEl.addEventListener('click', (e) => {
+                // 查找被点击的 .filter-btn 元素
+                const btn = e.target.closest('.filter-btn');
+                if (!btn || !btn.dataset.filter) return;
+                // 如果 setFilter 函数已定义则调用，否则安全忽略
+                if (typeof window.setFilter === 'function') {
+                    window.setFilter(btn.dataset.filter);
+                } else if (typeof setFilter === 'function') {
+                    setFilter(btn.dataset.filter);
+                } else {
+                    console.warn('[筛选] setFilter 尚未就绪，请稍后再试');
+                }
+            });
+        }
+
+
 
         // 后台静默预缓存所有歌词文件（不阻塞界面渲染）
         precacheAllSongs();
@@ -2462,7 +2483,7 @@
     }
 
     /**
-     * 切换歌手筛选的展开/收起状态
+     * 切换歌手筛选的展开/收��状态
      */
     function toggleArtistFilter() {
         window.artistFilterExpanded = !window.artistFilterExpanded;
@@ -2525,7 +2546,7 @@
         const songsToShow = filtered.slice(0, displayedSongs);
         let html = '';
 
-        // 5. 渲染歌曲项
+        // 5. 渲染���曲项
         songsToShow.forEach((song, index) => {
             const isActive = currentSong && currentSong.id === song.id;  // 是否为当前选中歌曲
             // 删除模式下点击切换选择，正常模式下点击选择歌曲
@@ -2597,7 +2618,7 @@
      * @param {number} id - 歌曲ID
      */
     async function selectSong(id) {
-        // 如果处于纠错模式，先退出（避免状态混乱）
+        // 如果处于纠错模式，先退出（避免��态混乱）
         if (CorrectionModule.isActive()) {
             CorrectionModule.toggle();
         }
@@ -2721,7 +2742,7 @@
 
             // ========== 智能分割 segment ==========
             // 空格根据规则决定：分割（换行）或保留（显示间距）
-            // 规则1：连续重复词中间的空格 → 保留不分割
+            // 规则1：���续重复词中间的空格 → 保留不分割
             // 规则2：英文单词间的空格 → 保留不分割
             // 规则3：空格前累积汉字数 < 3 → 保留不分割
             // 规则4：其他空格 → 分割（换行）
@@ -2742,7 +2763,7 @@
                 if ((char === ' ' || char === '\u3000') && inBrackets === 0) {
                     // ===== 遇到空格字符，判断是否分割 =====
 
-                    // 收集空格后的下一个词（用于判断是否重复/英文）
+                    // 收集��格后的下一个词（用于判断是否重复/英文）
                     let nextWord = '';
                     for (let j = i + 1; j < line.chars.length; j++) {
                         if (line.chars[j] === ' ' || line.chars[j] === '\u3000') break;
@@ -2764,7 +2785,7 @@
                     // 但如果刚执行了分割（规则4），连续空格应跳过而非保留
                     else if (charCountSinceLastSpace < 3) {
                         if (justSplit) {
-                            // 分割后的连续空格，跳过不保留
+                            // 分割后的连��空格，跳过不保留
                             charCountSinceLastSpace = 0;
                         } else {
                             currentSegment.push({ char, jp: line.jp[i] || '', index: i });
@@ -3082,7 +3103,7 @@
         }
 
         // ========== 纠错模式 ==========
-        // 尝试让纠错模块处理点击事件
+        // 尝试让纠错模块处理���击事件
         if (CorrectionModule.handleCharClick(event, lineIndex, charIndex)) {
             return;                                       // 已处理则返回
         }
@@ -3120,7 +3141,7 @@
 
     /**
      * 更新主题切换按钮的显示
-     * 根据当前主题模式显示不同的图标和文字
+     * 根据当前主题模式显示不同的���标和文字
      */
     function updateThemeToggleButton() {
         const btn = document.getElementById('themeToggleBtn');
@@ -3202,7 +3223,7 @@
             
             <div class="import-actions">
                 <button class="import-btn cancel" onclick="ImportModule.hide()">取消</button>
-                <button class="import-btn confirm" onclick="ImportModule.generate()">生成歌曲文件</button>
+                <button class="import-btn confirm" onclick="ImportModule.generate()">��成歌曲文件</button>
             </div>
         </div>
     </div>
