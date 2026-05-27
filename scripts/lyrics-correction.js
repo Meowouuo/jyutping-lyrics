@@ -55,6 +55,174 @@ function parseTable(body) {
 }
 
 // ============================================
+// 解析插入行数据
+// 功能：从 Issue body 中提取插入行信息
+//
+// 返回值：数组，每项包含 { position, line, lyrics }
+// ============================================
+function parseInsertions(body) {
+    const insertions = [];
+    const lines = body.split('\n');
+    
+    let currentInsert = null;
+    let inLyricsBlock = false;
+    let lyricsLines = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // 检测插入块开始：### 插入 N
+        const insertMatch = line.match(/###\s*插入\s*\d+/);
+        if (insertMatch) {
+            // 保存之前的插入项
+            if (currentInsert && lyricsLines.length > 0) {
+                currentInsert.lyrics = lyricsLines.join('\n');
+                insertions.push(currentInsert);
+            }
+            currentInsert = null;
+            lyricsLines = [];
+            inLyricsBlock = false;
+            continue;
+        }
+        
+        // 解析位置：- **位置：** 第N行前/后
+        const posMatch = line.match(/-\s*\*\*位置[:：]\*\*\s*第(\d+)行(前|后)/);
+        if (posMatch) {
+            currentInsert = {
+                line: parseInt(posMatch[1]),
+                position: posMatch[2]  // '前' 或 '后'
+            };
+            continue;
+        }
+        
+        // 检测歌词块开始
+        if (line.trim() === '```' && currentInsert) {
+            if (!inLyricsBlock) {
+                inLyricsBlock = true;
+            } else {
+                // 歌词块结束
+                inLyricsBlock = false;
+            }
+            continue;
+        }
+        
+        // 收集歌词内容
+        if (inLyricsBlock && currentInsert) {
+            lyricsLines.push(line);
+        }
+    }
+    
+    // 保存最后一个插入项
+    if (currentInsert && lyricsLines.length > 0) {
+        currentInsert.lyrics = lyricsLines.join('\n');
+        insertions.push(currentInsert);
+    }
+    
+    return insertions;
+}
+
+// ============================================
+// 插入行处理
+// 功能：根据用户提供的插入信息，在指定位置插入歌词
+//
+// 参数：
+//   - content: 当前歌曲文件的内容
+//   - insertions: 插入信息数组 [{ position, line, lyrics }]
+//   - songTitle: 歌曲名称
+//
+// 返回值：
+//   - 对象，包含 success、content、commitMsg、prTitle、prBody、comment 等字段
+// ============================================
+function processInsertions(content, insertions, songTitle) {
+    const fs = require('fs');
+    const path = require('path');
+    
+    if (!insertions || insertions.length === 0) {
+        return { success: false, message: '❌ 未检测到插入内容' };
+    }
+    
+    let newContent = content;
+    let appliedCount = 0;
+    let failedInserts = [];
+    
+    // 按 position 排序：'后' 的先处理，'前' 的后处理（避免行号偏移问题）
+    // 实际上应该按 line 从大到小排序，这样插入不会影响前面的行号
+    const sortedInsertions = [...insertions].sort((a, b) => {
+        if (a.line !== b.line) return b.line - a.line;  // 行号大的先处理
+        return a.position === '后' ? -1 : 1;  // 同一行，'后' 先处理
+    });
+    
+    for (const ins of sortedInsertions) {
+        const { line: targetLine, position, lyrics } = ins;
+        
+        // 解析歌词，生成 chars 和 jp 数组
+        const lines = newContent.split('\n');
+        
+        // 找到目标行的位置
+        let lineCount = 0;
+        let targetIndex = -1;
+        
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].includes('paragraphBreak')) {
+                continue;
+            }
+            if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
+                lineCount++;
+                if (lineCount === targetLine) {
+                    targetIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        if (targetIndex === -1) {
+            failedInserts.push(ins);
+            continue;
+        }
+        
+        // 为每行歌词生成 chars 和 jp
+        const lyricsLines = lyrics.split('\n').filter(l => l.trim() || l === '');
+        const newLines = [];
+        
+        for (const lyricLine of lyricsLines) {
+            if (lyricLine.trim() === '') {
+                // 空行生成 paragraphBreak
+                newLines.push('        { paragraphBreak: true },');
+            } else {
+                // 匹配粤拼
+                const matched = matchJyutping(lyricLine);
+                const chars = matched.map(m => `"${m.char}"`).join(', ');
+                const jp = matched.map(m => /[\u4e00-\u9fff\u3400-\u4dbfa-zA-Z0-9]/.test(m.char) ? `"${m.jp}"` : `""`).join(', ');
+                newLines.push(`        { chars: [${chars}], jp: [${jp}] },`);
+            }
+        }
+        
+        // 插入到目标位置
+        const insertIndex = position === '前' ? targetIndex : targetIndex + 1;
+        lines.splice(insertIndex, 0, ...newLines);
+        
+        newContent = lines.join('\n');
+        appliedCount++;
+    }
+    
+    if (appliedCount === 0) {
+        return {
+            success: false,
+            message: `❌ 未能应用任何插入。请检查行号是否正确。\n\n失败的插入：\n${failedInserts.map(ins => \`第\${ins.line}行\${ins.position}：\${ins.lyrics}\`).join('\n')}`
+        };
+    }
+    
+    return {
+        success: true,
+        content: newContent,
+        commitMsg: \`fix: 插入歌词 (\${appliedCount}处)\`,
+        prTitle: \`[歌词纠错-插入行] \${songTitle}（\${appliedCount}处）\`,
+        prBody: \`## 插入歌词\n\n**歌曲名称：** \${songTitle}\n\n**插入数量：** \${appliedCount} 处\n\n插入内容已应用。\`,
+        comment: \`✅ 已成功插入 \${appliedCount} 处歌词。\n\n\${failedInserts.length > 0 ? \`以下插入未能应用（请检查行号是否正确）：\n\${failedInserts.map(ins => \`- 第\${ins.line}行\${ins.position}：\${ins.lyrics}\`).join('\n')}\` : ''}\`
+    };
+}
+
+// ============================================
 // 逐行纠错处理
 // 功能：根据用户提供的表格，逐行修改歌词
 //
@@ -302,8 +470,18 @@ function processLyricsCorrection() {
     const filePath = path.join(__dirname, '..', 'lyrics', `${song.fileName}.js`);
     let content = fs.readFileSync(filePath, 'utf8');
     
-    // 调用 processLineByLine 处理歌词纠错
-    const result = processLineByLine(content, issue.body, songTitle);
+    // 检测是否是插入行模式
+    const isInsertMode = issue.title.includes('插入行') || issue.body.includes('## 插入歌词');
+    
+    let result;
+    if (isInsertMode) {
+        // 解析插入行数据
+        const insertions = parseInsertions(issue.body);
+        result = processInsertions(content, insertions, songTitle);
+    } else {
+        // 调用 processLineByLine 处理逐行纠错
+        result = processLineByLine(content, issue.body, songTitle);
+    }
     
     if (!result.success) {
         addComment(issue.number, result.message);
@@ -364,5 +542,7 @@ function processLyricsCorrection() {
 module.exports = {
     processLyricsCorrection,
     processLineByLine,
-    parseTable
+    processInsertions,
+    parseTable,
+    parseInsertions
 };
