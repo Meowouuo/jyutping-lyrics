@@ -2283,6 +2283,9 @@
         }
 
         // 从当前歌曲专属数组读取数据并合并到 song 对象
+        // [DEBUG] 追踪歌词数据加载
+        console.log('[LOAD] id=' + song.id + ' title=' + song.title + ' file=' + song.file + ' loadKey=' + loadKey);
+        console.log('[LOAD] window[' + loadKey + '] after exec:', JSON.stringify(window[loadKey]).substring(0, 200));
         const loadedSong = window[loadKey] && window[loadKey][0];
         if (loadedSong) {
             Object.assign(song, {
@@ -2804,7 +2807,11 @@
                     </div>
                 `;
             }
-            currentSong = song;
+            console.log('[SELECT] id=' + id + ' found song:', song ? song.id + ':' + song.title : 'NULL', '_loaded=', song ? song._loaded : '?');
+        if (song && song.lyrics && song.lyrics.length > 0) {
+            console.log('[SELECT] lyrics[0].chars=', song.lyrics[0].chars ? song.lyrics[0].chars.join('').substring(0,30) : '?');
+        }
+        currentSong = song;
             window.currentSong = currentSong;
             renderSongList();
             return;
