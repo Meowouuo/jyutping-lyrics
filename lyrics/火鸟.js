@@ -59,7 +59,9 @@
             { chars: ["在","悬","崖","上","看","云","里","有","星"], jp: ["zoi6", "jyun4", "ngaai4", "soeng6", "hon3", "wan4", "leoi5", "jau5", "sing1"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
