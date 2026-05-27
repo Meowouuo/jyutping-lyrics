@@ -2218,13 +2218,16 @@
      */
     async function loadSongLyrics(song) {
         return new Promise((resolve) => {
-            // 初始化临时数组，歌词文件加载时会向此数组 push 数据
-            window.__songs = [];
+            // 使用 songId 作为唯一key，避免并发调用时的竞态条件
+            // （方案C引入了hover预缓存+并发预加载，多个loadSongLyrics可能同时执行，
+            //   之前使用共享的 window.__songs 数组会导致并发请求互相覆盖数据）
+            const loadKey = '__song_load_' + song.id;
+            window[loadKey] = [];
             const script = document.createElement('script');
             script.src = song.file;
             script.onload = () => {
                 // 歌词文件加载完成后，将歌词数据合并到 song 对象
-                const loadedSong = window.__songs[0];
+                const loadedSong = window[loadKey][0];
                 if (loadedSong) {
                     // 合并歌词数据到现有 song 对象（保留元数据）
                     Object.assign(song, {
@@ -2236,13 +2239,13 @@
                         _loaded: true
                     });
                 }
-                window.__songs = [];
+                window[loadKey] = [];
                 resolve();
             };
             script.onerror = () => {
                 console.warn('加载歌曲文件失败:', song.file);
                 song._loadError = true;  // 标记加载失败
-                window.__songs = [];
+                window[loadKey] = [];
                 resolve();
             };
             document.head.appendChild(script);
@@ -2406,6 +2409,8 @@
     function setFilter(artist) {
         // 更新当前筛选条件为指定的歌手名（或 'all' 表示显示全部）
         currentFilter = artist;
+        // 重置懒加载计数器（切换筛选时需要重新计算显示数量）
+        resetLazyLoad();
         // 遍历所有筛选按钮，更新激活状态样式
         // 使用 dataset.filter 属性匹配当前选中的歌手，匹配的按钮添加 active 类
         document.querySelectorAll(".filter-btn").forEach(btn => {
@@ -2424,6 +2429,7 @@
      * 加载歌曲数据、初始化各模块、渲染界面
      */
     async function init() {
+        try {
         // 初始化主题模块（根据用户偏好/系统设置加载主题）
         ThemeModule.init();
 
@@ -2519,6 +2525,16 @@
 
         // 后台静默预缓存所有歌词文件（不阻塞界面渲染）
         precacheAllSongs();
+        } catch (err) {
+            console.error('[初始化错误]', err);
+            // 确保即使初始化出错，核心UI功能仍然可用
+            if (!document.getElementById('artistFilter').children.length) {
+                renderArtistFilter();
+            }
+            if (!document.getElementById('songList').children.length) {
+                renderSongList();
+            }
+        }
     }
 
     // ========================================
