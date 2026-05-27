@@ -68,7 +68,9 @@
             { chars: ["爱","人","难"," ","我","肯","学"," ","定","能","爱","下","去"], jp: ["ngoi3","jan4","naan4","","ngo5","hang2","hok6","","ding6","nang4","ngoi3","haa6","heoi3"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
