@@ -48,11 +48,11 @@
             { chars: ["沉","溺","　","烦","扰","　","磨","折","　","何","苦","　","多","讲"], jp: ["cam4","nik6","","faan4","jiu2","","mo4","zit3","","ho4","fu2","","do1","gong2"] },
             { chars: ["拥","有","同","样","寄","望"], jp: ["jung2","jau5","tung4","joeng6","gei3","mong6"] },
             { chars: ["彼","此","亦","有","苦","况"], jp: ["bei2","ci2","jik6","jau5","fu2","fong3"] },
-            { chars: ["棉","花","糖","从","成","长","中","曾","送","你","愉","快","天","堂"], jp: ["min4","faa1","tong4","cung4","sing4","coeng4","zung1","zang1","sung3","nei5","jyu4","faai3","tin1","tong4"] },
+            { chars: ["棉","花","糖","从","成","长","中","曾","送","你","愉","快","天","堂"], jp: ["min4", "faa1", "tong4", "cung4", "sing4", "coeng4", "zung1", "cang4", "sung3", "nei5", "jyu4", "faai3", "tin1", "tong4"] },
             { chars: ["经","过","同","样","跌","荡"], jp: ["ging1","gwo3","tung4","joeng6","dit3","dong6"] },
             { chars: ["可","会","学","会","释","放"], jp: ["ho2","wui6","hok6","wui6","sik1","fong3"] },
             { chars: ["童","话","　","情","书","　","遗","书","　","寻","找","　","答","案"], jp: ["tung4","waa6","","cing4","syu1","","wai4","syu1","","cam4","zaau2","","daap3","on3"] },
-            { chars: ["曾","经","　","曾","经"], jp: ["zang1","ging1","","zang1","ging1"] },
+            { chars: ["曾","经","　","曾","经"], jp: ["cang4", "ging1", "", "cang4", "ging1"] },
             { chars: ["回","忆","当","天","三","岁","的","波","板","糖"], jp: ["wui4","jik1","dong1","tin1","saam1","seoi3","dik1","bo1","baan2","tong4"] }
         ]
     };

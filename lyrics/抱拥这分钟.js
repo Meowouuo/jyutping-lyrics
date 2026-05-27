@@ -32,7 +32,7 @@
             { chars: ["却","也","叫","我","猜","不","中"], jp: ["koek3","jaa5","giu3","ngo5","caai1","bat1","zung1"] },
             { chars: ["谁","可","以","这","样","折","衷"], jp: ["seoi4","ho2","ji5","ze5","joeng6","zit3","zung1"] },
             { paragraphBreak: true },
-            { chars: ["曾","与","你","爱","过","却","匆","匆"], jp: ["zang1","jyu5","nei5","ngoi3","gwo3","koek3","cung1","cung1"] },
+            { chars: ["曾","与","你","爱","过","却","匆","匆"], jp: ["cang4", "jyu5", "nei5", "ngoi3", "gwo3", "koek3", "cung1", "cung1"] },
             { chars: ["过","去","己","有","太","多","类","同"], jp: ["gwo3","heoi3","gei2","jau5","taai3","do1","leoi6","tung4"] },
             { chars: ["谁","在","心","中"], jp: ["seoi4","zoi6","sam1","zung1"] },
             { chars: ["怎","猜","得","准"], jp: ["zam2","caai1","dak1","zeon2"] },

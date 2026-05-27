@@ -40,7 +40,7 @@
             { paragraphBreak: true },
             { chars: ["如","果","一","呼","气","一","吸","气","代","表","相","爱"], jp: ["jyu4","gwo2","jat1","fu1","hei3","jat1","kap1","hei3","doi6","biu2","soeng1","ngoi3"] },
             { chars: ["或","者","淹","死","我","会","更","发","现","你","存","在"], jp: ["waak6","ze2","jim1","sei2","ngo5","wui6","gang1","faat3","jin6","nei5","cyun4","zoi6"] },
-            { chars: ["如","果","日","夜","一","起","想","不","起","我","曾","被","爱"], jp: ["jyu4","gwo2","jat6","je6","jat1","hei2","soeng2","bat1","hei2","ngo5","zang1","bei6","ngoi3"] },
+            { chars: ["如","果","日","夜","一","起","想","不","起","我","曾","被","爱"], jp: ["jyu4", "gwo2", "jat6", "je6", "jat1", "hei2", "soeng2", "bat1", "hei2", "ngo5", "cang4", "bei6", "ngoi3"] },
             { chars: ["难","道","分","手","会","令","感","动","再","来"], jp: ["naan4","dou6","fan1","sau2","wui6","ling6","gam2","dung6","zoi3","loi4"] },
             { paragraphBreak: true },
             { chars: ["谁","叫","我","这","样","活","该"], jp: ["seoi4","giu3","ngo5","ze5","joeng6","wut6","goi1"] },

@@ -19,7 +19,7 @@
             { chars: ["你","的","爱"], jp: ["nei5","dik1","ngoi3"] },
             { chars: ["与","你","的","暖"], jp: ["jyu5","nei5","dik1","nyun5"] },
             { chars: ["我","也","发","觉"], jp: ["ngo5","jaa5","faat3","gok3"] },
-            { chars: ["缘","份","曾"], jp: ["jyun4","fan6","zang1"] },
+            { chars: ["缘","份","曾"], jp: ["jyun4", "fan6", "cang4"] },
             { chars: ["来","过","了"], jp: ["loi4","gwo3","liu5"] },
             { chars: ["就","在","伸","手","那","么","远"], jp: ["zau6", "zoi6", "san1", "sau2", "naa5", "mo1", "jyun5"] },
             { paragraphBreak: true },

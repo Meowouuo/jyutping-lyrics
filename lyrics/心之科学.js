@@ -22,7 +22,7 @@
             { chars: ["提","前","到","末","期"], jp: ["tai4","cin4","dou3","mut6","kei4"] },
             { chars: ["绝","非","因","你"], jp: ["zyut6","fei1","jan1","nei5"] },
             { chars: ["下","错","棋"], jp: ["haa6","co3","kei4"] },
-            { chars: ["曾","多","么"], jp: ["zang1", "do1", "mo1"] },
+            { chars: ["曾","多","么"], jp: ["cang4", "do1", "mo1"] },
             { chars: ["爱","亦","会","腻"], jp: ["ngoi3","jik6","wui6","nei6"] },
             { chars: ["谁","的","心"], jp: ["seoi4","dik1","sam1"] },
             { chars: ["似","随","意","肌"], jp: ["ci5","ceoi4","ji3","gei1"] },
