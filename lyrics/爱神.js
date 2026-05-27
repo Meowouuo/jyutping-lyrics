@@ -41,7 +41,11 @@
             { chars: ["爱","侣","几","百","万"," ","谁","料","我","蠢","得","竟","可","重","复","去","犯","错"], jp: ["ngoi3","leoi5","gei2","baak3","maan6","","seoi4","liu6","ngo5","ceon2","dak1","ging2","ho2","cung5","fuk6","heoi3","faan6","co3"] }
         ]
     };
-    window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
 }());
 
 // ⚠️ 重要：请在 index.html 的 songFiles 数组中添加以下一行：

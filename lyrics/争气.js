@@ -104,7 +104,9 @@
             { chars: ["未","能","拿","出","空","档","来","受","气"], jp: ["mei6","nang4","naa4","ceot1","hung1","dong2","loi4","sau6","hei3"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();

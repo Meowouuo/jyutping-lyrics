@@ -46,5 +46,9 @@
             { chars: ["失","去","你"," ","唯","有","等","歌","迷","去"," ","喜","欢","我"], jp: ["sat1","heoi3","nei5","","wai4","jau5","dang2","go1","mai4","heoi3","","hei2","fun1","ngo5"] }
         ]
     };
-    window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
 })();

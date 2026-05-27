@@ -69,7 +69,9 @@
             { chars: ["奴","隶","可","能"," ","合","衬"], jp: ["nou4","dai6","ho2","nang4","","hap6","can3"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();

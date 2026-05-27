@@ -58,7 +58,9 @@
             { chars: ["未","来"," ","同","渡","变","化"], jp: ["mei6","loi4","","tung4","dou6","bin3","faa3"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();

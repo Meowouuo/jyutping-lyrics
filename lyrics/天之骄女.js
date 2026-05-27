@@ -63,7 +63,9 @@
             { chars: ["脚","步","愿","放","慢","迎","合","去","就","你"], jp: ["goek3","bou6","jyun6","fong3","maan6","jing4","hap6","heoi3","zau6","nei5"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();

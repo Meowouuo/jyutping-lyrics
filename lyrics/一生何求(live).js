@@ -48,7 +48,11 @@
             { chars: ["情","在","心","灵","你","生","存"], jp: ["cing4","zoi6","sam1","ling4","nei5","sang1","cyun4"] }
         ]
     };
-    window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
 }());
 
 // ⚠️ 重要：请在 index.html 的 songFiles 数组中添加以下一行：
