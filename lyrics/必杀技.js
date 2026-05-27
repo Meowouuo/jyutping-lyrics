@@ -54,7 +54,9 @@
             { chars: ["一","讲","起","你","已","经"," ","等","于"," ","再","杀","死","我"], jp: ["jat1","gong2","hei2","nei5","ji5","ging1","","dang2","jyu1","","zoi3","saat3","sei2","ngo5"] }
         ]
     };
-    if (typeof window !== 'undefined' && window.__songs) {
-        window.__songs.push(song);
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
     }
 })();
