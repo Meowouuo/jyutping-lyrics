@@ -281,7 +281,7 @@ ${lyricsStr}
     ).join('\n');
 
     // 计算粤拼匹配层级统计
-    const layerStats = calculateLayerStats(lyrics);
+    const layerStats = calculateLayerStats(lyricsText);
     const layerStatsMarkdown = `| 层级 | 匹配字数 |
 |------|----------|
 | 语境规则（第1层） | ${layerStats.layer1} 字 |
