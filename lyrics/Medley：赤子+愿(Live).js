@@ -34,7 +34,7 @@
             { chars: ["爱","护","你","的","也","是","人"], jp: ["ngoi3","wu6","nei5","dik1","jaa5","si6","jan4"] },
             { chars: ["正","是","为","了","深","爱","变","遗","憾"], jp: ["zing3","si6","wai4","liu5","sam1","ngoi3","bin3","wai4","ham6"] },
             { chars: ["说","说","笑","笑","里"], jp: ["syut3", "syut3", "siu3", "siu3", "leoi5"] },
-            { chars: ["曾","觉","得","欢","欢","喜","喜"], jp: ["zang1","gok3","dak1","fun1","fun1","hei2","hei2"] },
+            { chars: ["曾","觉","得","欢","欢","喜","喜"], jp: ["cang4", "gok3", "dak1", "fun1", "fun1", "hei2", "hei2"] },
             { chars: ["谁","料","老","了","变","了","另","有","天","地"], jp: ["seoi4","liu6","lou5","liu5","bin3","liu5","ling6","jau5","tin1","dei6"] },
             { chars: ["世","界","太","阔","了"], jp: ["sai3","gaai3","taai3","fut3","liu5"] },
             { chars: ["由","你","出","生","当","天","起"], jp: ["jau4","nei5","ceot1","sang1","dong1","tin1","hei2"] },

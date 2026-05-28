@@ -14,10 +14,10 @@
         lyrics: [
             { chars: ["讲","啲","嘢","俾","你","听"], jp: ["gong2","di1","je5","bei2","nei5","ting1"] },
             { paragraphBreak: true },
-            { chars: ["谁","人","曾","爱","过","你"], jp: ["seoi4","jan4","zang1","ngoi3","gwo3","nei5"] },
+            { chars: ["谁","人","曾","爱","过","你"], jp: ["seoi4", "jan4", "cang4", "ngoi3", "gwo3", "nei5"] },
             { chars: ["你","尽","量","幻","想","他","贪","你","什","么"], jp: ["nei5", "zeon6", "loeng4", "waan6", "soeng2", "taa1", "taam1", "nei5", "sap6", "mo1"] },
             { chars: ["好","心","地","也","不","错"], jp: ["hou2","sam1","dei6","jaa5","bat1","co3"] },
-            { chars: ["谁","人","曾","厌","弃","你"], jp: ["seoi4","jan4","zang1","jim3","hei3","nei5"] },
+            { chars: ["谁","人","曾","厌","弃","你"], jp: ["seoi4", "jan4", "cang4", "jim3", "hei3", "nei5"] },
             { chars: ["你","问","问","自","己","他","憎","你","什","么"], jp: ["nei5", "man6", "man6", "zi6", "gei2", "taa1", "zang1", "nei5", "sap6", "mo1"] },
             { chars: ["或","是","怕","你","会","肚","饿"], jp: ["waak6","si6","paa3","nei5","wui6","tou5","ngo6"] },
             { paragraphBreak: true },

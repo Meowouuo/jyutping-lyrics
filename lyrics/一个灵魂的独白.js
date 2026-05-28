@@ -35,7 +35,7 @@
             { chars: ["吻","别","你","安","心","步","去"], jp: ["man5","bit6","nei5","on1","sam1","bou6","heoi3"] },
             { paragraphBreak: true },
             { chars: ["多","少","所","得","尽","情","争","取"], jp: ["do1","siu2","so2","dak1","zeon6","cing4","zang1","ceoi2"] },
-            { chars: ["多","少","所","失","曾","唏","嘘"], jp: ["do1","siu2","so2","sat1","zang1","hei1","heoi1"] },
+            { chars: ["多","少","所","失","曾","唏","嘘"], jp: ["do1", "siu2", "so2", "sat1", "cang4", "hei1", "heoi1"] },
             { chars: ["到","了","这","晚","我","笑","人","类"], jp: ["dou3","liu5","ze5","maan5","ngo5","siu3","jan4","leoi6"] },
             { chars: ["没","极","限","名","利"], jp: ["mut6","gik6","haan6","ming4","lei6"] },
             { chars: ["终","于","将","失","去"], jp: ["zung1","jyu1","zoeng1","sat1","heoi3"] },
