@@ -1021,7 +1021,7 @@
          * 返回各层级的匹配字数
          */
         function getLyricsLayerStats(text) {
-            const stats = { layer2: 0, layer3: 0, layer4: 0 };
+            const stats = { layer1: 0, layer2: 0, layer3: 0, layer4: 0 };
             
             if (typeof CANTOWORDS_DICT === 'undefined' || !CANTOWORDS_LOADED) {
                 // 字典未加载时返回空统计
@@ -1072,6 +1072,21 @@
                 }
                 
                 i++;
+            }
+            
+            // 第1层：语境规则统计
+            // 检查文本中是否出现了 JYUTPING_CONTEXT_RULES 中定义的词组
+            if (typeof JYUTPING_CONTEXT_RULES !== 'undefined') {
+                for (const phrase of Object.keys(JYUTPING_CONTEXT_RULES)) {
+                    let searchFrom = 0;
+                    while (true) {
+                        const idx = text.indexOf(phrase, searchFrom);
+                        if (idx === -1) break;
+                        // 每出现一次词组，统计被覆盖的字数
+                        stats.layer1 += Object.keys(JYUTPING_CONTEXT_RULES[phrase]).length;
+                        searchFrom = idx + 1;
+                    }
+                }
             }
             
             return stats;
