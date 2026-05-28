@@ -84,8 +84,8 @@ function previewImport() {
 
         // 遍历每行歌词
         lines.forEach((line, lIdx) => {
-            // 使用 matchJyutping 函数匹配粤拼
-            const matched = matchJyutping(line.trim());
+            // 使用 matchJyutpingFourLayer 函数匹配粤拼（四层匹配）
+            const matched = matchJyutpingFourLayer(line.trim());
 
             // 添加到歌词数组
             lyrics.push({
@@ -164,10 +164,10 @@ function generateSongFile() {
     const songId = maxId + 1;
 
     // 匹配标题、歌手、填词、作曲的粤拼
-    const titleJyutping = matchJyutping(title).map(m => m.jp);
-    const artistJyutping = matchJyutping(artist).map(m => m.jp);
-    const lyricistJyutping = lyricist ? matchJyutping(lyricist).map(m => m.jp) : [];
-    const composerJyutping = composer ? matchJyutping(composer).map(m => m.jp) : [];
+    const titleJyutping = matchJyutpingFourLayer(title).map(m => m.jp);
+    const artistJyutping = matchJyutpingFourLayer(artist).map(m => m.jp);
+    const lyricistJyutping = lyricist ? matchJyutpingFourLayer(lyricist).map(m => m.jp) : [];
+    const composerJyutping = composer ? matchJyutpingFourLayer(composer).map(m => m.jp) : [];
 
     // 生成歌词部分的 JS 代码
     const lyricsStr = importedLyricsData.map(line => {
