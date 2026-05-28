@@ -14,7 +14,6 @@ on:
       count:
         description: '合并数量 (recent模式)'
         required: false
-        default: '5'
         type: string
       exclude:
         description: '排除的PR编号 (recent模式,逗号分隔如: 123,456)'
