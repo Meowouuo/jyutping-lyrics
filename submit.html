@@ -606,7 +606,8 @@
                         artist,
                         lyricist,   // 选填字段，为空时传空字符串
                         composer,   // 选填字段，为空时传空字符串
-                        lyrics
+                        lyrics,
+                        lyricsLayerStats: getLyricsLayerStats(lyrics)  // 粤拼匹配层级统计
                     }),
                 });
 
@@ -1011,6 +1012,69 @@
             // 重新渲染列表，更新显示
             renderInsertList();
             // renderInsertList会自动处理手动输入区域的显示/隐藏
+        }
+
+        // ===== 粤拼匹配层级统计 =====
+        
+        /**
+         * 计算歌词文本的粤拼匹配层级统计
+         * 返回各层级的匹配字数
+         */
+        function getLyricsLayerStats(text) {
+            const stats = { layer2: 0, layer3: 0, layer4: 0 };
+            
+            if (typeof CANTOWORDS_DICT === 'undefined' || !CANTOWORDS_LOADED) {
+                // 字典未加载时返回空统计
+                return stats;
+            }
+            
+            let i = 0;
+            while (i < text.length) {
+                const char = text[i];
+                
+                if (char === ' ' || char === '\n' || char === '\r') {
+                    i++;
+                    continue;
+                }
+                
+                if (/^[a-zA-Z]$/.test(char)) {
+                    i++;
+                    continue;
+                }
+                
+                let matched = false;
+                
+                // 第2层：cantowords 词语
+                for (let len = Math.min(8, text.length - i); len >= 2; len--) {
+                    const substring = text.substring(i, i + len);
+                    if (CANTOWORDS_DICT.words && CANTOWORDS_DICT.words[substring]) {
+                        stats.layer2 += len;
+                        i += len;
+                        matched = true;
+                        break;
+                    }
+                }
+                
+                if (matched) continue;
+                
+                // 第3层：cantowords 单字
+                if (CANTOWORDS_DICT.characters && CANTOWORDS_DICT.characters[char]) {
+                    stats.layer3++;
+                    i++;
+                    continue;
+                }
+                
+                // 第4层：JYUTPING_DICT 后备
+                if (typeof JYUTPING_DICT !== 'undefined' && JYUTPING_DICT[char]) {
+                    stats.layer4++;
+                    i++;
+                    continue;
+                }
+                
+                i++;
+            }
+            
+            return stats;
         }
 
         // ===== 删除歌曲功能 =====
