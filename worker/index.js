@@ -278,7 +278,7 @@ async function handleSubmit(request, env) {
         // 构建 Issue 标题，格式：[新歌投稿] 歌曲名 - 歌手
         issueTitle = `[新歌投稿] ${title} - ${artist}`;
         labels = ['投稿-新歌'];
-        issueBody = buildNewSongBody({ title, artist, lyricist, composer, lyrics });
+        issueBody = buildNewSongBody({ title, artist, lyricist, composer, lyrics, lyricsLayerStats: data.lyricsLayerStats });
         break;
 
       // =============================================
@@ -434,13 +434,26 @@ function jsonResponse(data, status = 200) {
 /**
  * 生成新歌投稿的 Issue 正文
  */
-function buildNewSongBody({ title, artist, lyricist, composer, lyrics }) {
+function buildNewSongBody({ title, artist, lyricist, composer, lyrics, lyricsLayerStats }) {
+  // 层级统计
+  const layerStatsHtml = lyricsLayerStats 
+    ? `| 层级 | 匹配字数 |
+|------|----------|
+| cantowords 词语（第2层） | ${lyricsLayerStats.layer2} 字 |
+| cantowords 单字（第3层） | ${lyricsLayerStats.layer3} 字 |
+| JYUTPING_DICT 后备（第4层） | ${lyricsLayerStats.layer4} 字 |`
+    : '层级统计加载中...';
+
   return `## 投稿信息
 
 **歌曲名称：** ${title}
 **歌手：** ${artist}
 **填词：** ${lyricist || ''}
 **作曲：** ${composer || ''}
+
+## 粤拼匹配层级统计
+
+${layerStatsHtml}
 
 ## 完整歌词
 

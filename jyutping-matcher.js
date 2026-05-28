@@ -203,3 +203,72 @@ function matchWithOriginal(text) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { loadCantowordsDictAsync, matchJyutpingFourLayer };
 }
+
+// ============================================
+// 计算粤拼匹配的层级统计
+// 返回：{ layer2: 词语数, layer3: cantowords单字数, layer4: JYUTPING_DICT后备数 }
+// ============================================
+function getMatchLayerStats(text) {
+    const stats = { layer2: 0, layer3: 0, layer4: 0, total: 0 };
+    
+    // 确保字典已加载
+    if (!CANTOWORDS_LOADED || !CANTOWORDS_DICT) {
+        return stats;
+    }
+    
+    let i = 0;
+    while (i < text.length) {
+        const char = text[i];
+        
+        if (char === ' ' || char === '\n' || char === '\r') {
+            i++;
+            continue;
+        }
+        
+        if (/^[a-zA-Z]$/.test(char)) {
+            i++;
+            continue;
+        }
+        
+        let matched = false;
+        
+        // 第2层：cantowords 词语
+        for (let len = Math.min(8, text.length - i); len >= 2; len--) {
+            const substring = text.substring(i, i + len);
+            if (CANTOWORDS_DICT.words[substring]) {
+                stats.layer2 += len;
+                stats.total += len;
+                i += len;
+                matched = true;
+                break;
+            }
+        }
+        
+        if (matched) continue;
+        
+        // 第3层：cantowords 单字
+        if (CANTOWORDS_DICT.characters[char]) {
+            stats.layer3++;
+            stats.total++;
+            i++;
+            continue;
+        }
+        
+        // 第4层：JYUTPING_DICT 后备
+        if (JYUTPING_DICT[char]) {
+            stats.layer4++;
+            stats.total++;
+            i++;
+            continue;
+        }
+        
+        i++;
+    }
+    
+    return stats;
+}
+
+// 导出
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { loadCantowordsDictAsync, matchJyutpingFourLayer, getMatchLayerStats };
+}
