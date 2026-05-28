@@ -439,6 +439,7 @@ function buildNewSongBody({ title, artist, lyricist, composer, lyrics, lyricsLay
   const layerStatsHtml = lyricsLayerStats 
     ? `| 层级 | 匹配字数 |
 |------|----------|
+| 语境规则（第1层） | ${lyricsLayerStats.layer1 || 0} 字 |
 | cantowords 词语（第2层） | ${lyricsLayerStats.layer2} 字 |
 | cantowords 单字（第3层） | ${lyricsLayerStats.layer3} 字 |
 | JYUTPING_DICT 后备（第4层） | ${lyricsLayerStats.layer4} 字 |`
