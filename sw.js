@@ -23,7 +23,7 @@
  *   同时升级版本号强制清除所有旧缓存。
  *
  * 作者：粤拼歌词项目组
- * 版本：2.0.0
+ * 版本：2.1.0
  */
 
 /* ============================================================
@@ -31,7 +31,7 @@
  * ============================================================ */
 
 /** 缓存版本号，修改后 Service Worker 会重新安装并更新缓存 */
-const CACHE_VERSION = 'v2.0.0';
+const CACHE_VERSION = 'v2.1.0';
 
 /** 缓存名称，包含版本号，便于版本管理 */
 const CACHE_NAME = `jyutping-lyrics-${CACHE_VERSION}`;
@@ -51,7 +51,6 @@ const PRECACHE_URLS = [
   './songFiles.js',              /* 歌曲列表 */
   './js/correction.js',          /* 纠错模块 */
   './js/edit-lyrics.js',         /* 编辑歌词模块 */
-  './js/import.js',              /* 导入模块 */
   './js/delete.js',              /* 删除模块 */
   './js/pwa.js',                 /* PWA 模块 */
   './submit.html'                /* 提交页面 */
@@ -141,6 +140,15 @@ self.addEventListener('fetch', (event) => {
 
   /* 只处理同源 GET 请求 */
   if (request.method !== 'GET' || url.origin !== self.location.origin) {
+    return;
+  }
+
+  /* 导航请求（直接输入URL或链接跳转）直接走网络，不经过缓存策略
+     避免 Cloudflare Pages 重定向导致 SW 返回错误响应 */
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).catch(() => caches.match('./index.html'))
+    );
     return;
   }
 
