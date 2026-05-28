@@ -4,7 +4,7 @@
     粤拼歌词 | Cantonese Lyrics with Jyutping
     ========================================
     一个支持粤语拼音对照的歌词展示应用
-    功能包括：歌词浏览、粤拼显示、语音朗读(TTS)、纠错模式、歌词导入等
+    功能包括：歌词浏览、粤拼显示、语音朗读(TTS)、纠错模式等
 -->
 <html lang="zh-Hant">
 <head>
@@ -1705,204 +1705,6 @@
         .edit-lyrics-popup-btn.dismiss:hover { background: var(--bg-tertiary); }  /* 取消按钮悬停效果 */
 
         /* ========================================
-           导入歌词模态框样式
-           全屏遮罩 + 居中内容卡片
-           ======================================== */
-        .import-modal {
-            position: fixed;                             /* 固定定位 */
-            top: 0; left: 0; right: 0; bottom: 0;     /* 全屏覆盖 */
-            background: rgba(0,0,0,0.5);                /* 半透明黑色遮罩 */                /* 半透明黑色遮罩 */
-            /* 显示方式 */
-            display: flex;
-            align-items: center;                         /* 垂直居中 */
-            justify-content: center;                     /* 水平居中 */
-            z-index: 300;                              /* 最上层 */
-        }
-
-        /* 模态框内容卡片 */
-        .import-modal-content {
-            /* 背景 */
-            background: var(--bg-primary);
-            border-radius: 12px;                         /* 12px大圆角 */                        /* 大圆角 */
-            /* 内边距 */
-            padding: 24px;
-            width: 90%;                                 /* 宽度90%（移动端适配） */                                 /* 宽度90% */
-            max-width: 600px;                            /* 最大宽度600px */                           /* 最大宽度600px */
-            max-height: 80vh;                            /* 最大高度80%视口 */                          /* 最大高度80%视口 */
-            overflow-y: auto;                           /* 内容溢出滚动 */
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);     /* 阴影效果 */     /* 阴影效果 */
-        }
-
-        /* 模态框标题 */
-        /* 模态框标题（18px半粗体，模态框顶部的主要文字） */
-        .import-modal-title {
-            /* 字号 */
-            font-size: 18px;
-            /* 字重 */
-            font-weight: 600;
-            margin-bottom: 16px;                         /* 底部间距16px */
-            /* 文字颜色 */
-            color: var(--text-primary);
-        }
-
-        /* ========================================
-           导入表单样式
-           表单分组、标签和输入框
-           ======================================== */
-        .import-form-group {
-            margin-bottom: 16px;                       /* 组之间间距 */
-        }
-        /* 表单标签样式（块级显示，独占一行，灰色小号文字） */
-        .import-form-group label {
-            display: block;                             /* 块级显示 */
-            /* 字号 */
-            font-size: 13px;
-            /* 文字颜色 */
-            color: var(--text-secondary);
-            margin-bottom: 6px;                          /* 底部间距6px */                         /* 标签与输入框间距 */
-        }
-
-        /* 表单输入框和文本域 */
-        .import-form-group input,
-        /* 文本域特殊样式（歌词输入区域，最小高度200px，允许垂直调整大小） */
-        .import-form-group textarea {
-            width: 100%;                                /* 全宽 */
-            /* 内边距 */
-            padding: 10px 12px;
-            /* 边框 */
-            border: 1px solid var(--border-color);
-            border-radius: 8px;                        /* 圆角 */
-            /* 字号 */
-            font-size: 14px;
-            outline: none;                              /* 移除默认边框 */
-            transition: border-color 0.15s;             /* 过渡动画 */
-        }
-        /* 输入框聚焦状态（蓝色边框，提示用户当前正在编辑的输入框） */
-        .import-form-group input:focus,
-        .import-form-group textarea:focus {
-            border-color: var(--info);                  /* 聚焦时蓝色边框 */
-        }
-
-        /* 文本域特殊样式 */
-        .import-form-group textarea {
-            min-height: 200px;                           /* 最小高度200px */                          /* 最小高度 */
-            resize: vertical;                            /* 允许垂直调整大小 */                            /* 允许垂直调整大小 */
-            font-family: inherit;                         /* 继承父元素字体 */                       /* 继承字体 */
-            line-height: 1.6;                           /* 行高 */
-        }
-
-        /* 操作按钮组 */
-        /* 操作按钮组（右对齐，水平排列，位于表单底部） */
-        .import-actions {
-            /* 显示方式 */
-            display: flex;
-            gap: 12px;                                  /* 按钮间距 */
-            justify-content: flex-end;                   /* 右对齐 */
-            margin-top: 20px;                            /* 顶部间距20px */
-        }
-
-        /* 导入按钮样式 */
-        /* 导入按钮基础样式（圆角、无边框、带过渡动画，统一的按钮风格） */
-        .import-btn {
-            /* 内边距 */
-            padding: 10px 20px;
-            border-radius: 8px;                        /* 圆角 */
-            /* 边框 */
-            border: none;
-            /* 光标样式 */
-            cursor: pointer;
-            /* 字号 */
-            font-size: 14px;
-            /* 字重 */
-            font-weight: 500;
-            transition: all 0.15s;                      /* 过渡动画 */
-        }
-        /* 取消按钮（灰色背景，次要操作，关闭模态框） */
-        .import-btn.cancel {                           /* 取消按钮 */
-            /* 背景 */
-            background: var(--bg-secondary);
-            /* 文字颜色 */
-            color: var(--text-secondary);
-        }
-        .import-btn.cancel:hover { background: var(--bg-tertiary); }  /* 取消按钮悬停效果 */
-        .import-btn.confirm {                          /* 确认按钮 */
-            background: var(--info);                    /* 蓝色 */
-            /* 文字颜色 */
-            color: #fff;
-        }
-        .import-btn.confirm:hover { background: #3a8bee; }  /* 确认按钮悬停（稍深蓝色） */
-
-        /* ========================================
-           导入预览区域样式
-           显示歌词预览效果
-           ======================================== */
-        .import-preview {
-            /* 背景 */
-            background: var(--bg-secondary);
-            /* 边框 */
-            border: 1px solid var(--border-color);
-            /* 圆角 */
-            border-radius: 8px;
-            /* 内边距 */
-            padding: 12px;
-            margin-top: 12px;                            /* 顶部间距12px */                          /* 与表单间距 */
-            max-height: 200px;                           /* 最大高度200px */                         /* 最大高度 */
-            overflow-y: auto;                           /* 溢出滚动 */
-            /* 字号 */
-            font-size: 13px;
-        }
-        /* 预览区域标题（半粗体，与预览内容区分） */
-        .import-preview-title {
-            /* 字重 */
-            font-weight: 600;
-            margin-bottom: 8px;
-            /* 文字颜色 */
-            color: var(--text-primary);
-        }
-
-        /* 预览行样式 */
-        /* 预览行样式（每行歌词的预览，带虚线分隔） */
-        .import-preview-line {
-            /* 显示方式 */
-            display: flex;
-            flex-wrap: wrap;                            /* 允许换行 */
-            gap: 4px;                                   /* 字符间距 */
-            margin-bottom: 8px;
-            padding-bottom: 8px;                          /* 底部内边距8px */
-            border-bottom: 1px dashed var(--border-color);  /* 虚线分隔 */
-        }
-
-        /* 预览字符样式 */
-        /* 预览字符样式（汉字+粤拼上下排列，与歌词正文的显示结构一致） */
-        .import-preview-char {
-            /* 显示方式 */
-            display: inline-flex;
-            flex-direction: column;                      /* 上下排列 */
-            align-items: center;                         /* 水平居中 */
-            min-width: 24px;                             /* 最小宽度24px */                            /* 最小宽度 */
-        }
-        .import-preview-jp {
-            /* 字号 */
-            font-size: 10px;
-            /* 文字颜色 */
-            color: var(--text-tertiary);
-        }
-        .import-preview-hanzi {
-            /* 字号 */
-            font-size: 14px;
-        }
-
-        /* 导入提示文字 */
-        /* 导入提示文字（小号灰色，显示在输入框下方，说明输入格式要求） */
-        .import-tip {
-            /* 字号 */
-            font-size: 12px;
-            /* 文字颜色 */
-            color: var(--text-tertiary);
-            margin-top: 8px;                             /* 顶部间距8px */
-        }
-
-        /* ========================================
            设置菜单样式
            下拉菜单，包含主题切换和管理功能
            ======================================== */
@@ -2156,11 +1958,6 @@
                             <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
                             <span>投稿</span>
                         </button>
-                        <!-- 导入按钮（打开导入歌词模态框，支持粘贴歌词生成歌曲文件） -->
-                        <button class="toolbar-btn" onclick="ImportModule.show()">
-                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></span>
-                            <span>导入</span>
-                        </button>
                     </div>
                     <!-- 分享按钮（生成当前歌曲的链接并复制到剪贴板） -->
                     <button class="toolbar-btn" onclick="shareSong()">
@@ -2180,16 +1977,6 @@
     <!-- 粤拼字典：汉字到粤拼音的映射（核心数据，其他模块依赖） -->
     <script src="jyutping-dict.js?v=2"></script>
     <script src="jyutping-context.js?v=1"></script>
-    <script src="jyutping-matcher.js?v=1"></script>
-    <script>
-        // 页面加载后预加载 cantowords 字典
-        window.addEventListener('load', function() {
-            // 延迟 3 秒开始预加载，确保首屏渲染完成
-            setTimeout(function() {
-                loadCantowordsDictAsync();
-            }, 3000);
-        });
-    </script>
     <!-- 歌曲文件清单：包含所有歌曲文件的路径列表 -->
     <script src="songFiles.js"></script>
     <!-- 工具函数模块：通用辅助函数 -->
@@ -2199,8 +1986,6 @@
     <!-- TTS 语音播报模块：加载语音数据和播放控制 -->
     <script src="js/tts-loading.js"></script>
     <script src="js/tts.js"></script>
-    <!-- 导入歌词模块：粘贴歌词生成歌曲文件 -->
-    <script src="js/import.js"></script>
     <!-- 纠错模式模块：点击字符修改粤拼 -->
     <script src="js/correction.js"></script>
     <!-- 修改歌词模式模块：点击歌词行修改内容 -->
@@ -3361,68 +3146,6 @@
         }
     });
     </script>
-
-    <!-- ========================================
-         导入歌词模态框
-         ======================================== -->
-    <div class="import-modal" id="importModal" style="display:none;">
-        <div class="import-modal-content">
-            <div class="import-modal-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>导入新歌词</div>
-            
-            <div class="import-form-group">
-                <label>歌曲名称 *</label>
-                <input type="text" id="importTitle" placeholder="输入歌曲名称">
-            </div>
-            
-            <div class="import-form-group">
-                <label>歌手 *</label>
-                <input type="text" id="importArtist" placeholder="输入歌手名称（合唱用 / 分隔）">
-            </div>
-            
-            <div class="import-form-group">
-                <label>填词</label>
-                <input type="text" id="importLyricist" placeholder="填词人">
-            </div>
-            
-            <div class="import-form-group">
-                <label>作曲</label>
-                <input type="text" id="importComposer" placeholder="作曲人">
-            </div>
-            
-            <div class="import-form-group">
-                <label>歌词内容 *</label>
-                <textarea id="importLyrics" placeholder="粘贴歌词内容，换行表示新的一句，连续两个空行表示段落分隔" oninput="ImportModule.preview()"></textarea>
-                <div class="import-tip"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 单换行 = 新的一句歌词 &nbsp;|&nbsp; 双换行 = 段落分隔（更大间距）</div>
-            </div>
-            
-            <div class="import-preview" id="importPreview" style="display:none;">
-                <div class="import-preview-title">预览（粤拼自动匹配）</div>
-                <div id="importPreviewContent"></div>
-            </div>
-            
-            <div class="import-actions">
-                <button class="import-btn cancel" onclick="ImportModule.hide()">取消</button>
-                <button class="import-btn confirm" onclick="ImportModule.generate()">��成歌曲文件</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-         生成代码模态框（导入结果）
-         ======================================== -->
-    <div class="import-modal" id="codeModal" style="display:none;">
-        <div class="import-modal-content" style="max-width: 700px;">
-            <div class="import-modal-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>生成的歌曲文件代码</div>
-            <div class="import-form-group">
-                <label>复制以下代码，保存为 .js 文件到 lyrics 文件夹</label>
-                <textarea id="generatedCode" style="min-height: 300px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 12px;" readonly></textarea>
-            </div>
-            <div class="import-actions">
-                <button class="import-btn cancel" onclick="ImportModule.hideCode()">关闭</button>
-                <button class="import-btn confirm" onclick="ImportModule.copyCode()">复制代码</button>
-            </div>
-        </div>
-    </div>
 
     <!-- ========================================
          应用启动
