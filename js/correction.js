@@ -394,14 +394,20 @@ function syncSameWordCorrections(line, charIndex, correctedJp, char, sorted) {
             const syncCi = wi + charOffsetInWord;
             
             // 跳过当前选中的字符
+            let matchedSel = null;
             if (sorted.some(sel => {
                 const lyricLineElement = document.querySelector(`.lyric-line[data-line="${sel.lineIndex}"]`);
                 const actualSongIndex = parseInt(lyricLineElement?.dataset.songIndex);
-                return actualSongIndex === li && sel.charIndex === syncCi;
+                if (actualSongIndex === li && sel.charIndex === syncCi) {
+                    matchedSel = sel;
+                    return true;
+                }
+                return false;
             })) continue;
-            
+
             // 跳过已经同步过的字符
-            if (corrections.some(ex => ex.lineIndex === sel.lineIndex && ex.charIndex === syncCi && ex.newJp === correctedJp)) continue;
+            if (matchedSel && corrections.some(ex => ex.lineIndex === matchedSel.lineIndex && ex.charIndex === syncCi && ex.newJp === correctedJp)) continue;
+
             
             // 添加同步纠错记录
             corrections.push({
