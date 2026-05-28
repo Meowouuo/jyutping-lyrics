@@ -479,6 +479,8 @@ function matchJyutping(text) {
 // ============================================
 module.exports = {
     matchJyutping,     // 粤拼匹配函数
+    getWordJyutping,   // 词语粤拼匹配函数
+    JYUTPING_DICT,     // 粤拼字典
     getIssueInfo,        // 获取 Issue 信息
     parseTable,          // 解析 Markdown 表格
     parseCodeBlock,     // 解析代码块

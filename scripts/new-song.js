@@ -20,6 +20,8 @@ const {
     addComment,         // 添加 Issue 评论
     closeIssue,         // 关闭 Issue
     matchJyutping,     // 粤拼匹配函数
+    getWordJyutping,   // 词语粤匹匹配函数
+    JYUTPING_DICT,     // 粤拼字典
 } = require('./utils');
 
 // 加载繁简转换工具
@@ -278,12 +280,25 @@ ${lyricsStr}
         `| ${l.text} | ${l.jp} |`
     ).join('\n');
 
+    // 计算粤拼匹配层级统计
+    const layerStats = calculateLayerStats(lyrics);
+    const layerStatsMarkdown = `| 层级 | 匹配字数 |
+|------|----------|
+| 语境规则（第1层） | ${layerStats.layer1} 字 |
+| cantowords 词语（第2层） | ${layerStats.layer2} 字 |
+| cantowords 单字（第3层） | ${layerStats.layer3} 字 |
+| JYUTPING_DICT 后备（第4层） | ${layerStats.layer4} 字 |`;
+
     const prBody = `## 新歌投稿 #${issue.number}
 
 **歌曲：** ${title}
 **歌手：** ${artist}
 **填词：** ${lyricist || '未知'}
 **作曲：** ${composer || '未知'}
+
+### 粤拼匹配层级统计
+
+${layerStatsMarkdown}
 
 ### 歌词预览（前5行，请审核粤拼）
 
@@ -304,6 +319,86 @@ ${previewMarkdown}
 
 请等待管理员审核合并。`);
 
+}
+
+// ============================================
+// 计算粤拼匹配层级统计
+// 功能：统计歌词文本中各匹配层级的字数
+// ============================================
+function calculateLayerStats(text) {
+    const stats = { layer1: 0, layer2: 0, layer3: 0, layer4: 0 };
+    
+    if (!text) return stats;
+    
+    let i = 0;
+    const len = text.length;
+    
+    while (i < len) {
+        const char = text[i];
+        
+        if (char === ' ' || char === '\n' || char === '\r') {
+            i++;
+            continue;
+        }
+        
+        if (/^[a-zA-Z]$/.test(char)) {
+            i++;
+            continue;
+        }
+        
+        // 第2层：cantowords 词语匹配
+        let matched = false;
+        const maxWordLen = Math.min(8, len - i);
+        
+        for (let wordLen = maxWordLen; wordLen >= 2; wordLen--) {
+            if (i + wordLen > len) continue;
+            
+            const word = text.substring(i, i + wordLen);
+            const jyutping = getWordJyutping(word);
+            
+            if (jyutping) {
+                stats.layer2 += wordLen;
+                i += wordLen;
+                matched = true;
+                break;
+            }
+        }
+        
+        if (matched) continue;
+        
+        // 第3层：cantowords 单字匹配
+        const charJyutping = getWordJyutping(char);
+        if (charJyutping) {
+            stats.layer3++;
+            i++;
+            continue;
+        }
+        
+        // 第4层：JYUTPING_DICT 后备匹配
+        if (JYUTPING_DICT[char]) {
+            stats.layer4++;
+            i++;
+            continue;
+        }
+        
+        i++;
+    }
+    
+    // 第1层：语境规则统计
+    const { JYUTPING_CONTEXT_RULES } = require('../jyutping-context');
+    if (JYUTPING_CONTEXT_RULES) {
+        for (const phrase of Object.keys(JYUTPING_CONTEXT_RULES)) {
+            let searchFrom = 0;
+            while (true) {
+                const idx = text.indexOf(phrase, searchFrom);
+                if (idx === -1) break;
+                stats.layer1 += Object.keys(JYUTPING_CONTEXT_RULES[phrase]).length;
+                searchFrom = idx + 1;
+            }
+        }
+    }
+    
+    return stats;
 }
 
 // 导出模块，供其他脚本调用
