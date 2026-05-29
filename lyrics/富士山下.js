@@ -12,7 +12,7 @@
         composer: "Christopher Chak",
         composerJyutping: ["c","h","r","i","s","t","o","p","h","e","r","","c","h","a","k"],
         lyrics: [
-            { chars: ["拦","路","雨","偏","似","雪","花"," ","饮","泣","的","你","冻","吗","？"], jp: ["laan4","lou6","jyu5","pin1","ci5","syut3","faa1","","jam2","kap1","dik1","nei5","dung3","maa3",""] },
+            { chars: ["拦","路","雨","偏","似","雪","花"," ","饮","泣","的","你","冻","吗","？"], jp: ["laan4", "lou6", "jyu5", "pin1", "ci5", "syut3", "faa1", "", "jam2", "jap1", "dik1", "nei5", "dung3", "maa3", ""] },
             { chars: ["这","风","褛","我","给","你","磨","到","有","襟","花"], jp: ["ze5","fung1","lau6","ngo5","kap1","nei5","mo4","dou3","jau5","kam1","faa1"] },
             { chars: ["连","调","了","职","也","不","怕"," ","怎","么","始","终","牵","挂","？"], jp: ["lin4","diu4","liu5","zik1","jaa5","bat1","paa3","","zam2","mo1","ci2","zung1","hin1","gwaa3",""] },
             { chars: ["苦","心","选","中","今","天","想","车","你","回","家"], jp: ["fu2","sam1","syun2","zung1","gam1","tin1","soeng2","ce1","nei5","wui4","gaa1"] },
