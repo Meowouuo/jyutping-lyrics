@@ -111,26 +111,26 @@ function processJyutpingCorrection() {
             }
             // 检查当前行是否是歌词数据行（同时包含 chars 和 jp 字段）
             if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
-                // 如果逻辑行号计数器等于目标行号，说明找到了目标行
-                if (lineCount === lineNum) {
-                    lyricsLineIndex = i;  // 记录物理行索引
-                    break;                // 找到后立即退出循环
-                }
                 // 计算当前歌词行包含多少个 segment（用于逻辑行号累加）
                 // 书名号《》和括号内的空格不作为 segment 分割依据
                 const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                let segments = 1;  // 默认1个segment
                 if (charsMatch) {
                     // 使用正则提取 chars 数组中的所有带引号的字符
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                     // 去除引号，得到纯字符数组
                     const charsArray = chars.map(c => c.replace(/"/g, ''));
-                    // 调用 countSegments 计算 segment 数量并累加
-                    // 一行歌词可能包含多个 segment（如主歌+副歌合并行）
-                    lineCount += countSegments(charsArray);
-                } else {
-                    // 无法解析 chars 数组时，保守地按一行计算
-                    lineCount++;
+                    // 调用 countSegments 计算 segment 数量
+                    segments = countSegments(charsArray);
                 }
+                // 检查目标行号是否落在当前行的 segment 范围内
+                // 例如：当前行从 lineCount 开始，包含 segments 个 segment
+                // 如果 lineNum 在 [lineCount, lineCount + segments) 范围内，则找到目标行
+                if (lineNum >= lineCount && lineNum < lineCount + segments) {
+                    lyricsLineIndex = i;  // 记录物理行索引
+                    break;                // 找到后立即退出循环
+                }
+                lineCount += segments;  // 累加 segment 数量
             }
         }
 
