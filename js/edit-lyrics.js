@@ -554,7 +554,9 @@ function updateEditList() {
         
         // 显示修改项（截断过长的文本）
         const preview = item.newText.substring(0, 20);
-        html += `<div class="edit-list-item"><span class="edit-list-tag line">第${displayLine}行</span> ${preview}${item.newText.length > 20 ? '...' : ''} <button onclick="removeLineEdit(${idx})" class="edit-list-remove">删除</button></div>`;
+        const syncTag = item.isSync ? '<span class="edit-list-tag sync">同步</span>' : '';
+        const syncClass = item.isSync ? ' class="edit-list-item sync-item"' : ' class="edit-list-item"';
+        html += `<div${syncClass}><span class="edit-list-tag line">第${displayLine}行</span>${syncTag} ${preview}${item.newText.length > 20 ? '...' : ''} <button onclick="removeLineEdit(${idx})" class="edit-list-remove">删除</button></div>`;
         count++;
     });
     
@@ -680,11 +682,130 @@ function handleLineClick(event, displayLineIndex) {
                 newText: newText.trim()
             });
         }
+        
+        // 同步修改相同歌词（整首歌曲中所有相同的segment）
+        syncSameLyricsEdits(song, songIndex, segStart, segEnd, originalText, newText.trim());
     }
     
     // 刷新列表和状态显示
     updateEditList();
     updateEditStatus();
+}
+
+// ============================================
+// 同步修改相同歌词
+// 功能：在整首歌曲中查找所有与当前编辑相同的歌词，自动添加同步修改记录
+//
+// 参数：
+//   - song: 当前歌曲对象
+//   - lineIndex: 当前编辑的行索引
+//   - segStart: segment 起始位置
+//   - segEnd: segment 结束位置  
+//   - originalText: 原始歌词文本
+//   - newText: 修改后的歌词文本
+// ============================================
+function syncSameLyricsEdits(song, lineIndex, segStart, segEnd, originalText, newText) {
+    if (!song || !song.lyrics) return;
+    
+    // 遍历所有歌词行
+    song.lyrics.forEach((line, li) => {
+        if (!line || !line.chars) return;
+        if (li === lineIndex) return; // 跳过当前行（已添加）
+        
+        // 获取该行的所有 segment 范围
+        const segments = getLineSegments(line);
+        
+        segments.forEach((seg, segIdx) => {
+            const segChars = line.chars.slice(seg.start, seg.end + 1);
+            const segText = segChars.join('');
+            
+            // 如果 segment 文本与原始文本相同，添加同步修改
+            if (segText === originalText) {
+                const syncEditKey = li + '_' + seg.start;
+                
+                // 检查是否已有该 segment 的编辑记录
+                const existingIdx = editedLyrics.findIndex(e => e.editKey === syncEditKey);
+                if (existingIdx > -1) {
+                    // 更新已有记录
+                    editedLyrics[existingIdx].newText = newText;
+                } else {
+                    // 添加新的同步修改记录
+                    editedLyrics.push({
+                        editKey: syncEditKey,
+                        lineIndex: li,
+                        segStart: seg.start,
+                        segEnd: seg.end,
+                        originalText: originalText,
+                        newText: newText,
+                        isSync: true  // 标记为同步修改
+                    });
+                }
+            }
+        });
+    });
+}
+
+// ============================================
+// 获取歌词行的所有 segment 范围
+// 功能：解析一行歌词，返回所有 segment 的起始和结束位置
+//
+// 参数：
+//   - line: 歌词行对象
+// 返回：
+//   - [{start, end}, ...] segment 范围数组
+// ============================================
+function getLineSegments(line) {
+    if (!line || !line.chars) return [{start: 0, end: line.chars.length - 1}];
+    
+    const chars = line.chars;
+    const segments = [];
+    let segStart = 0;
+    let inBrackets = 0;
+    let charCountSinceLastSpace = 0;
+    let prevWord = '';
+    
+    for (let i = 0; i < chars.length; i++) {
+        const c = chars[i];
+        
+        // 处理括号
+        if (c === '《' || c === '(' || c === '（') inBrackets++;
+        if (c === '》' || c === ')' || c === '）') inBrackets = Math.max(0, inBrackets - 1);
+        
+        // 检查是否是 segment 分割点
+        if ((c === ' ' || c === '\u3000') && inBrackets === 0) {
+            let nextWord = '';
+            for (let ni = i + 1; ni < chars.length; ni++) {
+                if (chars[ni] === ' ' || chars[ni] === '\u3000') break;
+                nextWord += chars[ni];
+            }
+            
+            let shouldSplit = true;
+            if (nextWord && prevWord === nextWord) shouldSplit = false;
+            else if (/^[a-zA-Z]/.test(prevWord) && /^[a-zA-Z]/.test(nextWord)) shouldSplit = false;
+            else if (charCountSinceLastSpace < 3) shouldSplit = false;
+            
+            if (shouldSplit) {
+                segments.push({start: segStart, end: i - 1});
+                segStart = i + 1;
+            }
+            
+            charCountSinceLastSpace = 0;
+            prevWord = nextWord;
+        } else {
+            if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(c)) charCountSinceLastSpace++;
+            if (c !== ' ' && c !== '\u3000') {
+                if (!prevWord || chars[i - 1] === ' ' || chars[i - 1] === '\u3000') prevWord = c;
+                else prevWord += c;
+            }
+        }
+    }
+    
+    // 添加最后一个 segment
+    if (segStart < chars.length) {
+        segments.push({start: segStart, end: chars.length - 1});
+    }
+    
+    return segments.length > 0 ? segments : [{start: 0, end: chars.length - 1}];
 }
 
 // ============================================
@@ -1325,6 +1446,13 @@ function addEditStyles() {
         .edit-list-tag.line { background: #52c41a; }    /* 绿色：逐行纠错 */
         .edit-list-tag.full { background: #fa8c16; }     /* 橙色：整首替换 */
         .edit-list-tag.insert { background: #722ed1; }   /* 紫色：插入行 */
+        .edit-list-tag.sync { background: #fa8c16; }     /* 橙色：同步修改 */
+        
+        /* 同步修改项样式 */
+        .edit-list-item.sync-item {
+            background: rgba(250, 140, 22, 0.1);
+            border-left: 3px solid #fa8c16;
+        }
         
         /* 删除按钮 */
         .edit-list-remove { 
