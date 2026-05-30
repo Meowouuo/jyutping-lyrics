@@ -35,7 +35,7 @@
             { chars: ["何","必","怪","责","双","脚","未","够","伶","俐"," ","不","比","你","优","美"], jp: ["ho4","bit1","gwaai3","zaak3","soeng1","goek3","mei6","gau3","ling4","lei6","","bat1","bei2","nei5","jau1","mei5"] },
             { paragraphBreak: true },
             { chars: ["为","何","未","曾","让","我","得","够","便","要","损","失","你"], jp: ["wai4", "ho4", "mei6", "cang4", "joeng6", "ngo5", "dak1", "gau3", "bin6", "jiu3", "syun2", "sat1", "nei5"] },
-            { chars: ["捱","到","那","一","天","参","透","佛","理"," ","手","会","松","灯","会","灭","有","限","期"], jp: ["ngaai4","dou3","naa5","jat1","tin1","caam1","tau3","fat6","lei5","","sau2","wui6","cung4","dang1","wui6","mit6","jau5","haan6","kei4"] },
+            { chars: ["捱","到","那","一","天","参","透","佛","理"," ","手","会","松","灯","会","灭","有","限","期"], jp: ["ngaai4", "dou3", "naa5", "jat1", "tin1", "caam1", "tau3", "fat6", "lei5", "", "sau2", "wui6", "sung1", "dang1", "wui6", "mit6", "jau5", "haan6", "kei4"] },
             { chars: ["为","何","未","能","让","我","死","去","便","要","认","识","你"], jp: ["wai4","ho4","mei6","nang4","joeng6","ngo5","sei2","heoi3","bin6","jiu3","jing6","sik1","nei5"] },
             { chars: ["难","道","你","很","想","天","使","问","我"," ","我","的","舞","步","跳","得","可","美"], jp: ["naan4","dou6","nei5","han2","soeng2","tin1","si2","man6","ngo5","","ngo5","dik1","mou5","bou6","tiu3","dak1","ho2","mei5"] }
         ]
