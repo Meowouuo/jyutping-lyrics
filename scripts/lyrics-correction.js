@@ -574,15 +574,25 @@ function processFullReplace(content, body, songTitle) {
     // 构建新的歌词数组
     const newLyricsArray = [];
     
-    for (const line of lyricsLines) {
+    for (let i = 0; i < lyricsLines.length; i++) {
+        const line = lyricsLines[i];
         const trimmedLine = line.trim();
         
         if (trimmedLine === '') {
             // 空行生成 paragraphBreak
             newLyricsArray.push('        { paragraphBreak: true },');
         } else if (trimmedLine.endsWith('：') || trimmedLine.endsWith(':')) {
-            // 歌手标记行（如"陈奕迅："）生成 paragraphBreak
-            newLyricsArray.push('        { paragraphBreak: true },');
+            // 歌手标记行（如"陈奕迅："）
+            // 1. 先生成歌手标记的歌词行
+            const matched = matchJyutping(trimmedLine);
+            const chars = matched.map(m => `"${m.char}"`).join(', ');
+            const jp = matched.map(m => /[\u4e00-\u9fff\u3400-\u4dbfa-zA-Z0-9]/.test(m.char) ? `"${m.jp}"` : `""`).join(', ');
+            newLyricsArray.push(`        { chars: [${chars}], jp: [${jp}] },`);
+            // 2. 然后生成 paragraphBreak（除非下一行也是空行）
+            const nextLine = lyricsLines[i + 1];
+            if (!nextLine || nextLine.trim() !== '') {
+                newLyricsArray.push('        { paragraphBreak: true },');
+            }
         } else {
             // 普通歌词行
             const matched = matchJyutping(trimmedLine);
