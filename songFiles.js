@@ -106,4 +106,5 @@ const songFiles = [
     { id: 686, title: "日与夜", artist: "林忆莲", lyricist: "黄伟文", composer: "陈辉阳", file: "lyrics/日与夜.js" },
     { id: 690, title: "情意结", artist: "陈慧娴", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/情意结.js" },
     { id: 701, title: "吴哥窟（live）", artist: "张敬轩", lyricist: "林若宁", composer: "陈珀", file: "lyrics/吴哥窟（live）.js" },
+    { id: 705, title: "好好恋爱", artist: "方力申", lyricist: "方杰", composer: "雷颂德", file: "lyrics/好好恋爱.js" },
 ];
