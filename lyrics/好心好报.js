@@ -3,13 +3,13 @@
 (function() {
     const song = {
         id: 705,
-        title: "好好恋爱",
+        title: "好心好报",
         titleJyutping: ["hou2","hou2","lyun2","ngoi3"],
         artist: "方力申",
         artistJyutping: ["fong1","lik6","san1"],
         lyricist: "方杰",
         lyricistJyutping: ["fong1","git6"],
-        composer: "Horan Chan",
+        composer: "雷颂德",
         composerJyutping: ["leoi4","zung6","dak1"],
         lyrics: [
             { chars: ["落","力","为","你","好"], jp: ["lok6","lik6","wai4","nei5","hou2"] },
