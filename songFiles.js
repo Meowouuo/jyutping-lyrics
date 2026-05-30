@@ -94,4 +94,5 @@ const songFiles = [
     { id: 579, title: "一个灵魂的独白", artist: "陈奕迅", lyricist: "潘源良", composer: "江海迦", file: "lyrics/一个灵魂的独白.js" },
     { id: 589, title: "幸福摩天轮（live）", artist: "陈奕迅", lyricist: "林夕", composer: "Eric Kwok", file: "lyrics/幸福摩天轮（live）.js" },
     { id: 596, title: "渐渐", artist: "陈奕迅", lyricist: "陈咏谦", composer: "张杰邦", file: "lyrics/渐渐.js" },
+    { id: 609, title: "葡萄成熟时", artist: "陈奕迅", lyricist: "黄伟文", composer: "周炳辉/Anfernee Cheung", file: "lyrics/葡萄成熟时.js" },
 ];
