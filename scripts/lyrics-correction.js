@@ -470,14 +470,18 @@ function processLyricsCorrection() {
     const filePath = path.join(__dirname, '..', 'lyrics', `${song.fileName}.js`);
     let content = fs.readFileSync(filePath, 'utf8');
     
-    // 检测是否是插入行模式
+    // 检测处理模式
     const isInsertMode = issue.title.includes('插入行') || issue.body.includes('## 插入歌词');
+    const isFullReplaceMode = issue.title.includes('整首替换') || issue.body.includes('## 整首歌词替换');
     
     let result;
     if (isInsertMode) {
         // 解析插入行数据
         const insertions = parseInsertions(issue.body);
         result = processInsertions(content, insertions, songTitle);
+    } else if (isFullReplaceMode) {
+        // 整首替换模式
+        result = processFullReplace(content, issue.body, songTitle);
     } else {
         // 调用 processLineByLine 处理逐行纠错
         result = processLineByLine(content, issue.body, songTitle);
