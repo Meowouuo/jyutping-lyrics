@@ -1,0 +1,50 @@
+// 歌曲：孤儿仔（live）
+
+(function() {
+    const song = {
+        id: 635,
+        title: "孤儿仔（live）",
+        titleJyutping: ["gu1","ji4","zai2","","","","","",""],
+        artist: "陈奕迅/苦荣",
+        artistJyutping: ["can4","jik6","seon3","","fu2","wing4"],
+        lyricist: "李竣一",
+        lyricistJyutping: ["lei5","zeon3","jat1"],
+        composer: "李竣一",
+        composerJyutping: ["lei5","zeon3","jat1"],
+        lyrics: [
+            { chars: ["苦","荣","：","　","传","说","世","间","每","个","人"], jp: ["fu2","wing4","","","cyun4","syut3","sai3","gaan1","mui5","go3","jan4"] },
+            { chars: ["也","会","有","一","位","天","使","护","荫"], jp: ["jaa5","wui6","jau5","jat1","wai6","tin1","si3","wu6","jam1"] },
+            { chars: ["陈","奕","迅","：","纵","使","渺","小","彷","如","微","尘"], jp: ["can4","jik6","seon3","","zung3","si2","miu5","siu2","pong4","jyu4","mei4","can4"] },
+            { chars: ["仍","可","栖","身","当","爱","人","呼","吸"], jp: ["jing4","ho2","cai1","san1","dong1","ngoi3","jan4","fu1","kap1"] },
+            { paragraphBreak: true },
+            { chars: ["苦","荣","：","　","可","惜","像","我","这","一","种","人"], jp: ["fu2","wing4","","","ho2","sik1","zoeng6","ngo5","ze5","jat1","zung2","jan4"] },
+            { chars: ["圣","母","永","远","不","肯","给","予","怜","悯"], jp: ["sing3","mou5","wing5","jyun5","bat1","hang2","kap1","jyu4","lin4","man5"] },
+            { chars: ["陈","奕","迅","：","每","天","如","像","苦","儿","祈","求"], jp: ["can4","jik6","seon3","","mui5","tin1","jyu4","zoeng6","fu2","ji4","kei4","kau4"] },
+            { chars: ["谁","可","真","心","的","逗","我","开","心"], jp: ["seoi4","ho2","zan1","sam1","dik1","dau6","ngo5","hoi1","sam1"] },
+            { paragraphBreak: true },
+            { chars: ["苦","荣","：","　","谁","说","会","与","我","骑","回","旋","木","马"], jp: ["fu2","wing4","","","seoi4","syut3","wui6","jyu5","ngo5","ke4","wui4","syun4","muk6","maa5"] },
+            { chars: ["天","黑","透","了","伴","我","一","起","归","家"], jp: ["tin1","hak1","tau3","liu5","bun6","ngo5","jat1","hei2","gwai1","gaa1"] },
+            { chars: ["陈","奕","迅","：","是","我","或","你","犯","错","了","吗"], jp: ["can4","jik6","seon3","","si6","ngo5","waak6","nei5","faan6","co3","liu5","maa1"] },
+            { chars: ["人","被","半","路","撇","下"], jp: ["jan4","bei6","bun3","lou2","pit3","haa6"] },
+            { chars: ["合","唱","：","　","受","那","风","吹","雨","打"], jp: ["hap6","coeng3","","","sau6","naa5","fung1","ceoi1","jyu5","daa2"] },
+            { paragraphBreak: true },
+            { chars: ["合","唱","：","　","谁","人","会","爱","我","这","种","孤","儿","仔"], jp: ["hap6","coeng3","","","seoi4","jan4","wui6","ngoi3","ngo5","ze5","zung2","gu1","ji4","zai2"] },
+            { chars: ["陈","奕","迅","：","流","落","到","谷","底"], jp: ["can4","jik6","seon3","","lau4","lok6","dou3","guk1","dai2"] },
+            { chars: ["苦","荣","：","　","恐","怕","我","已","是","个","热","恋","的","后","遗"], jp: ["fu2","wing4","","","hung2","paa3","ngo5","ji5","si6","go3","jit6","lyun2","dik1","hau6","wai4"] },
+            { chars: ["陈","奕","迅","：","无","人","前","来","认","领","肮","脏","的","身","体"], jp: ["can4","jik6","seon3","","mou4","jan4","cin4","loi4","jing6","ling5","kon3","zong1","dik1","san1","tai2"] },
+            { chars: ["若","想","抱","抱","就","等","下","一","世"], jp: ["joek6","soeng2","pou5","pou5","zau6","dang2","haa6","jat1","sai3"] },
+            { chars: ["合","唱","：","　","谁","要","我","这","种","孤","儿","仔"], jp: ["hap6","coeng3","","","seoi4","jiu3","ngo5","ze5","zung2","gu1","ji4","zai2"] },
+            { chars: ["陈","奕","迅","：","谁","赠","我","安","慰"], jp: ["can4","jik6","seon3","","seoi4","zang6","ngo5","on1","wai3"] },
+            { chars: ["苦","荣","：","　","当","我","至","爱","路","过"], jp: ["fu2","wing4","","","dong1","ngo5","zi3","ngoi3","lou6","gwo3"] },
+            { chars: ["亦","不","想","拾","遗"], jp: ["jik6","bat1","soeng2","sap6","wai4"] },
+            { chars: ["陈","奕","迅","：","谁","在","从","前","话","我","贫","穷","但","美","丽"], jp: ["can4","jik6","seon3","","seoi4","zoi6","cung4","cin4","waa6","ngo5","pan4","kung4","daan6","mei5","lai6"] },
+            { chars: ["但","想","抱","抱","就","等","待","转","世"], jp: ["daan6","soeng2","pou5","pou5","zau6","dang2","doi6","zyun2","sai3"] },
+            { chars: ["合","唱","：","　","我","这","种","身","世"], jp: ["hap6","coeng3","","","ngo5","ze5","zung2","san1","sai3"] }
+        ]
+    };
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
+})();
