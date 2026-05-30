@@ -41,7 +41,7 @@
             { chars: ["还","记","得","当","天","结","他","的","和","弦"], jp: ["waan4","gei3","dak1","dong1","tin1","git3","taa1","dik1","wo4","jin4"] },
             { chars: ["还","明","白","每","段","旋","律","的","伏","线"], jp: ["waan4","ming4","baak6","mui5","dyun6","syun4","leot6","dik1","fuk6","sin3"] },
             { chars: ["当","天","街","角","流","过","你","声","线"], jp: ["dong1","tin1","gaai1","gok3","lau4","gwo3","nei5","sing1","sin3"] },
-            { chars: ["沿","路","旅","程","如","歌","褪","变"], jp: ["jyun4","lou6","leoi5","cing4","jyu4","go1","tan3","bin3"] },
+            { chars: ["沿","路","旅","程","如","歌","褪","变"], jp: ["jyun4", "lou6", "leoi5", "cing4", "jyu4", "go1", "teoi3", "bin3"] },
             { paragraphBreak: true },
             { chars: ["忘","掉","天","地"], jp: ["mong4","diu6","tin1","dei6"] },
             { chars: ["仿","佛","也","想","不","起","自","己"], jp: ["fong2","fat6","jaa5","soeng2","bat1","hei2","zi6","gei2"] },
