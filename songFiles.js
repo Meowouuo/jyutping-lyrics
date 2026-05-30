@@ -100,4 +100,5 @@ const songFiles = [
     { id: 619, title: "黄金时代", artist: "陈奕迅", lyricist: "林夕", composer: "柳重言", file: "lyrics/黄金时代.js" },
     { id: 623, title: "我的快乐时代（live）", artist: "陈奕迅", lyricist: "林夕", composer: "林健华", file: "lyrics/我的快乐时代（live）.js" },
     { id: 627, title: "阿牛", artist: "陈奕迅", lyricist: "林夕", composer: "雷颂德", file: "lyrics/阿牛.js" },
+    { id: 631, title: "月球上的人", artist: "陈奕迅", lyricist: "林若宁", composer: "苏耀宗", file: "lyrics/月球上的人.js" },
 ];
