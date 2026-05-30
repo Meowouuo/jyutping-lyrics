@@ -12,10 +12,7 @@
         composer: "陈辉阳",
         composerJyutping: ["can4","fai1","joeng4"],
         lyrics: [
-            { chars: ["情","意","結"], jp: ["cing4","ji3","git3"] },
-            { chars: ["歌","曲","创","作",":"], jp: ["go1","kuk1","cong3","zok3",""] },
             { paragraphBreak: true },
-            { chars: ["陳","慧","嫻"], jp: ["can4","wai6","haan4"] },
             { paragraphBreak: true },
             { chars: ["为","何","每","次","早","餐"], jp: ["wai4","ho4","mui5","ci3","zou2","caan1"] },
             { chars: ["仍","然","魂","离","魄","散"], jp: ["jing4","jin4","wan4","lei4","paak3","saan3"] },
