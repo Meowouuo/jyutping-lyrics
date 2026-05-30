@@ -121,8 +121,16 @@ function parseField(body, fieldName) {
     for (const pattern of patterns) {
         const match = body.match(pattern);
         if (match) {
-            // 去除 Markdown 粗体格式（**value** → value）
-            return match[1].trim().replace(/^\*\*|\*\*$/g, '');
+            let value = match[1].trim();
+            // 如果值包含 "**字段名：**"，需要进一步提取
+            // 例如：**歌曲名称：** 海阔天空 → 海阔天空
+            const nestedMatch = value.match(/\*\*[^*]+[:：]\*\*\s*(.+)/);
+            if (nestedMatch) {
+                value = nestedMatch[1].trim();
+            }
+            // 去除首尾的 Markdown 粗体格式
+            value = value.replace(/^\*\*|\*\*$/g, '');
+            return value;
         }
     }
     return '';
