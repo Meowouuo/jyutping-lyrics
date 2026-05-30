@@ -543,6 +543,76 @@ function processLyricsCorrection() {
     addComment(issue.number, result.comment);
 }
 
+
+// ============================================
+// 整首替换处理
+// 功能：根据用户提供的完整歌词，替换整首歌曲
+//
+// 参数：
+//   - content: 当前歌曲文件的内容
+//   - body: Issue 的 body 内容
+//   - songTitle: 歌曲名称
+//
+// 返回值：
+//   - 对象，包含 success、content、commitMsg、prTitle、prBody、comment 等字段
+// ============================================
+function processFullReplace(content, body, songTitle) {
+    // 解析完整歌词（从代码块中提取）
+    const lyricsMatch = body.match(/```\n?([\s\S]*?)```/);
+    if (!lyricsMatch) {
+        return { success: false, message: '❌ 未检测到完整歌词，请确保歌词在代码块中。' };
+    }
+    
+    const fullLyrics = lyricsMatch[1].trim();
+    if (!fullLyrics) {
+        return { success: false, message: '❌ 歌词内容为空。' };
+    }
+    
+    // 按行分割歌词
+    const lyricsLines = fullLyrics.split('\n');
+    
+    // 构建新的歌词数组
+    const newLyricsArray = [];
+    
+    for (const line of lyricsLines) {
+        const trimmedLine = line.trim();
+        
+        if (trimmedLine === '') {
+            // 空行生成 paragraphBreak
+            newLyricsArray.push('        { paragraphBreak: true },');
+        } else if (trimmedLine.endsWith('：') || trimmedLine.endsWith(':')) {
+            // 歌手标记行（如"陈奕迅："）生成 paragraphBreak
+            newLyricsArray.push('        { paragraphBreak: true },');
+        } else {
+            // 普通歌词行
+            const matched = matchJyutping(trimmedLine);
+            const chars = matched.map(m => `"${m.char}"`).join(', ');
+            const jp = matched.map(m => /[\u4e00-\u9fff\u3400-\u4dbfa-zA-Z0-9]/.test(m.char) ? `"${m.jp}"` : `""`).join(', ');
+            newLyricsArray.push(`        { chars: [${chars}], jp: [${jp}] },`);
+        }
+    }
+    
+    // 替换原文件中的 lyrics 数组
+    // 找到 lyrics: [ 和 ] 之间的内容并替换
+    const newContent = content.replace(
+        /(lyrics:\s*\[)([\s\S]*?)(\];)/,
+        `$1\n${newLyricsArray.join('\n')}\n    $3`
+    );
+    
+    if (newContent === content) {
+        return { success: false, message: '❌ 未能替换歌词，请检查文件格式。' };
+    }
+    
+    return {
+        success: true,
+        content: newContent,
+        commitMsg: 'fix: 整首歌词替换',
+        prTitle: `[歌词纠错-整首替换] ${songTitle}`,
+        prBody: `## 整首歌词替换\n\n**歌曲名称：** ${songTitle}\n\n已替换整首歌词。`,
+        comment: '✅ 已成功替换整首歌词。'
+    };
+}
+
 module.exports = {
     processLyricsCorrection,
     processLineByLine,
