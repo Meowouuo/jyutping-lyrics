@@ -415,6 +415,11 @@
                             <input type="radio" name="correctionType" value="insert" onchange="switchCorrectionType('insert')" style="margin:0;">
                             <span>插入行</span>
                         </label>
+                        <!-- 删除行选项 -->
+                        <label class="type-label" id="type-delete-label" onclick="selectCorrectionType('delete')" style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:8px 16px;border:2px solid #e0e0e0;border-radius:6px;white-space:nowrap;">
+                            <input type="radio" name="correctionType" value="delete" onchange="switchCorrectionType('delete')" style="margin:0;">
+                            <span>删除行</span>
+                        </label>
                     </div>
                 </div>
 
@@ -447,6 +452,13 @@
                     </div>
                 </div>
 
+                <!-- 删除行区域 - 默认隐藏 -->
+                <div id="correction-delete" class="correction-section" style="display:none;">
+                    <div class="form-group">
+                        <label>已标记删除的行</label>
+                        <div id="lc-delete-list" style="min-height:60px;border:1px dashed #d9d9d9;border-radius:6px;padding:12px;margin-bottom:12px;"></div>
+                    </div>
+                </div>
                 <!-- 插入行区域 - 默认隐藏 -->
                 <div id="correction-insert" class="correction-section" style="display:none;">
                     <!-- 已添加的插入项列表 - 动态渲染 -->
@@ -890,6 +902,13 @@
                     return;
                 }
                 payload.insertions = insertItems;
+            } else if (correctionType === 'delete') {
+                // 删除行模式：收集所有删除项
+                if (deleteItems.length === 0) {
+                    showResult('lc-result', false, '请至少标记一行删除');
+                    return;
+                }
+                payload.deletions = deleteItems;
             }
 
             // 设置按钮加载状态，防止重复提交
@@ -936,6 +955,7 @@
          *   每个元素包含 position（插入位置）、line（行号）、lyrics（歌词内容）
          */
         let insertItems = [];
+        let deleteItems = [];
 
         /**
          * 添加插入项到列表
@@ -1012,6 +1032,36 @@
             // 重新渲染列表，更新显示
             renderInsertList();
             // renderInsertList会自动处理手动输入区域的显示/隐藏
+        }
+
+        // ===== 删除行功能 =====
+
+        /**
+         * 渲染删除项列表
+         */
+        function renderDeleteList() {
+            const container = document.getElementById('lc-delete-list');
+            if (deleteItems.length === 0) {
+                container.innerHTML = '<div style="color:#999;font-size:13px;">暂无删除项</div>';
+                return;
+            }
+            container.innerHTML = deleteItems.map((item, i) => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:8px;background:#fff1f0;border-radius:6px;border-left:3px solid #ff4d4f;">
+                    <div>
+                        <span style="font-weight:500;color:#ff4d4f;">删除第${item.line}行：</span>
+                        <span style="color:#666;">${item.originalText.substring(0, 30)}${item.originalText.length > 30 ? '...' : ''}</span>
+                    </div>
+                    <button onclick="removeDeleteItem(${i})" style="border:none;background:#ff4d4f;color:#fff;padding:2px 8px;border-radius:4px;cursor:pointer;">移除</button>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * 移除指定索引的删除项
+         */
+        function removeDeleteItem(index) {
+            deleteItems.splice(index, 1);
+            renderDeleteList();
         }
 
         // ===== 粤拼匹配层级统计 =====
@@ -1329,6 +1379,12 @@
                             // 延迟执行renderInsertList，确保DOM已更新
                             setTimeout(() => renderInsertList(), 0);
                         }
+                    } else if (data.correctionType === 'delete' && data.deletions) {
+                        // 删除行模式 - 选中radio并填充删除项
+                        document.querySelector('input[name="correctionType"][value="delete"]').checked = true;
+                        switchCorrectionType('delete');
+                        deleteItems = data.deletions;
+                        setTimeout(() => renderDeleteList(), 0);
                     } else if (data.corrections && data.corrections.length > 0) {
                         // 逐行修改模式 - 清空现有行并逐行填充
                         document.getElementById('lc-rows').innerHTML = '';

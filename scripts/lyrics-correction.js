@@ -473,6 +473,7 @@ function processLyricsCorrection() {
     // 检测处理模式
     const isInsertMode = issue.title.includes('插入行') || issue.body.includes('## 插入歌词');
     const isFullReplaceMode = issue.title.includes('整首替换') || issue.body.includes('## 整首歌词替换');
+    const isDeleteMode = issue.title.includes('删除行') || issue.body.includes('## 删除行');
     
     let result;
     if (isInsertMode) {
@@ -482,6 +483,9 @@ function processLyricsCorrection() {
     } else if (isFullReplaceMode) {
         // 整首替换模式
         result = processFullReplace(content, issue.body, songTitle);
+    } else if (isDeleteMode) {
+        // 删除行模式
+        result = processDeletions(content, issue.body, songTitle);
     } else {
         // 调用 processLineByLine 处理逐行纠错
         result = processLineByLine(content, issue.body, songTitle);
@@ -624,11 +628,117 @@ function processFullReplace(content, body, songTitle) {
     };
 }
 
+
+// ============================================
+// 解析删除行数据
+// 功能：从 Issue body 中提取删除行信息
+//
+// 返回值：数组，每项包含 { line, originalText }
+// ============================================
+function parseDeletions(body) {
+    const deletions = [];
+    const lines = body.split('\n');
+    
+    for (const line of lines) {
+        // 匹配表格行：| 第X行 | 原歌词 |
+        const match = line.match(/\|\s*第?(\d+)行?\s*\|\s*([^|]+)\|/);
+        if (match) {
+            const [, lineNum, originalText] = match;
+            deletions.push({
+                line: parseInt(lineNum.trim()),
+                originalText: originalText.trim()
+            });
+        }
+    }
+    
+    return deletions;
+}
+
+// ============================================
+// 删除行处理
+// 功能：根据用户提供的行号，删除对应的歌词行
+//
+// 参数：
+//   - content: 当前歌曲文件的内容
+//   - body: Issue 的 body 内容
+//   - songTitle: 歌曲名称
+//
+// 返回值：
+//   - 对象，包含 success、content、commitMsg、prTitle、prBody、comment 等字段
+// ============================================
+function processDeletions(content, body, songTitle) {
+    const deletions = parseDeletions(body);
+    
+    if (deletions.length === 0) {
+        return { success: false, message: '❌ 未检测到删除内容。' };
+    }
+    
+    const lines = content.split('\n');
+    let appliedCount = 0;
+    let failedDeletions = [];
+    
+    // 按行号从大到小排序，避免删除后行号偏移
+    const sortedDeletions = [...deletions].sort((a, b) => b.line - a.line);
+    
+    for (const del of sortedDeletions) {
+        const targetLine = del.line;
+        
+        // 找到目标行（使用与逐行纠错相同的segment计算逻辑）
+        let lineCount = 1;
+        let targetIndex = -1;
+        
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].includes('paragraphBreak')) continue;
+            if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
+                const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                let segments = 1;
+                if (charsMatch) {
+                    const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
+                    const charsArray = chars.map(c => c.replace(/"/g, ''));
+                    segments = countSegments(charsArray);
+                }
+                
+                if (targetLine >= lineCount && targetLine < lineCount + segments) {
+                    targetIndex = i;
+                    break;
+                }
+                
+                lineCount += segments;
+            }
+        }
+        
+        if (targetIndex === -1) {
+            failedDeletions.push(del);
+            continue;
+        }
+        
+        // 删除该行
+        lines.splice(targetIndex, 1);
+        appliedCount++;
+    }
+    
+    if (appliedCount === 0) {
+        return {
+            success: false,
+            message: '❌ 未能删除任何行。请检查行号是否正确。\n\n失败的删除：\n' + failedDeletions.map(d => '第' + d.line + '行').join('\n')
+        };
+    }
+    
+    return {
+        success: true,
+        content: lines.join('\n'),
+        commitMsg: 'fix: 删除歌词行 (' + appliedCount + '处)',
+        prTitle: '[歌词纠错-删除行] ' + songTitle + '（' + appliedCount + '处）',
+        prBody: '## 删除行\n\n**歌曲名称：** ' + songTitle + '\n\n**删除数量：** ' + appliedCount + ' 处\n\n已删除指定歌词行。',
+        comment: '✅ 已成功删除 ' + appliedCount + ' 处歌词行。\n\n' + (failedDeletions.length > 0 ? '以下行未能删除（请检查行号是否正确）：\n' + failedDeletions.map(d => '- 第' + d.line + '行').join('\n') : '')
+    };
+}
 module.exports = {
     processLyricsCorrection,
     processLineByLine,
     processInsertions,
     processFullReplace,
+    processDeletions,
     parseTable,
     parseInsertions
 };

@@ -12,6 +12,7 @@ let editLyricsType = null;       // 当前编辑类型：'line'（逐行）、'f
 let editedLyrics = [];           // 逐行纠错的汇总数组 [{lineIndex, originalText, newText}]
 let fullReplacements = [];       // 整首替换的汇总数组 [{lyrics}]
 let insertions = [];             // 插入行的汇总数组 [{position, line, lyrics}]
+let deletions = [];              // 删除行的汇总数组 [{editKey, lineIndex, segStart, segEnd, originalText}]
 let editedMeta = {};             // 标题修改对象 {title, artist, lyricist, composer}
 let currentEdit = null;          // 当前正在编辑的内容（临时存储）
 
@@ -81,6 +82,12 @@ function showEditTypeSelector() {
                 <div class="edit-type-name">插入行</div>
                 <div class="edit-type-desc">在指定位置插入新歌词</div>
             </div>
+            <!-- 删除行选项：点击歌词行标记删除 -->
+            <div class="edit-type-option" onclick="selectEditType('delete')">
+                <div class="edit-type-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></div>
+                <div class="edit-type-name">删除行</div>
+                <div class="edit-type-desc">点击歌词行标记删除</div>
+            </div>
         </div>
         <!-- 取消按钮 -->
         <button class="edit-type-cancel" onclick="hideEditTypeSelector()">取消</button>
@@ -129,7 +136,8 @@ function selectEditType(type) {
     editedLyrics = [];
     fullReplacements = [];
     insertions = [];
-    editedMeta = {};
+    deletions = [];
+    editedMeta = {}
     currentEdit = null;
     
     // 更新工具栏按钮状态
@@ -148,6 +156,10 @@ function selectEditType(type) {
         case 'insert':
             // 插入行：在指定位置添加新歌词
             enterInsertMode();
+            break;
+        case 'delete':
+            // 删除行：点击歌词行标记删除
+            enterDeleteMode();
             break;
     }
 }
@@ -577,6 +589,92 @@ function updateEditList() {
         count++;
     });
     
+    // 显示删除行项
+    deletions.forEach((item, idx) => {
+        let displayLine = 0;
+        for (let i = 0; i < item.lineIndex; i++) {
+            if (song.lyrics[i].paragraphBreak) continue;
+            if (!song.lyrics[i].chars) continue;
+            let segments = 1;
+            let inBrackets = 0;
+            let charCountSinceLastSpace = 0;
+            let prevWord = '';
+            for (let ci = 0; ci < song.lyrics[i].chars.length; ci++) {
+                const c = song.lyrics[i].chars[ci];
+                if (c === '《' || c === '(' || c === '（') inBrackets++;
+                if (c === '》' || c === ')' || c === '）') inBrackets = Math.max(0, inBrackets - 1);
+                if ((c === ' ' || c === '\u3000') && inBrackets === 0) {
+                    let nextWord = '';
+                    for (let ni = ci + 1; ni < song.lyrics[i].chars.length; ni++) {
+                        if (song.lyrics[i].chars[ni] === ' ' || song.lyrics[i].chars[ni] === '\u3000') break;
+                        nextWord += song.lyrics[i].chars[ni];
+                    }
+                    if (nextWord && prevWord === nextWord) { /* 不分割 */ }
+                    else if (/^[a-zA-Z]/.test(prevWord) && /^[a-zA-Z]/.test(nextWord)) { /* 不分割 */ }
+                    else if (charCountSinceLastSpace < 3) { /* 不分割 */ }
+                    else { segments++; }
+                    charCountSinceLastSpace = 0;
+                    prevWord = '';
+                    for (let ni = ci + 1; ni < song.lyrics[i].chars.length; ni++) {
+                        if (song.lyrics[i].chars[ni] === ' ' || song.lyrics[i].chars[ni] === '\u3000') break;
+                        prevWord += song.lyrics[i].chars[ni];
+                    }
+                } else {
+                    if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(c)) charCountSinceLastSpace++;
+                    if (c !== ' ' && c !== '\u3000') {
+                        if (!prevWord || song.lyrics[i].chars[ci - 1] === ' ' || song.lyrics[i].chars[ci - 1] === '\u3000') prevWord = c;
+                        else prevWord += c;
+                    }
+                }
+            }
+            displayLine += segments;
+        }
+        displayLine += 1;
+        
+        if (item.segStart !== null && item.segStart !== undefined) {
+            const editLine = song.lyrics[item.lineIndex];
+            if (editLine && editLine.chars) {
+                let segBefore = 0;
+                let inB = 0;
+                let ccSinceLast = 0;
+                let pw = '';
+                for (let ci = 0; ci < item.segStart; ci++) {
+                    const c = editLine.chars[ci];
+                    if (c === '\u3000' || c === '《' || c === '(' || c === '（') { if (c === '《' || c === '(' || c === '（') inB++; }
+                    if (c === '》' || c === ')' || c === '）') inB = Math.max(0, inB - 1);
+                    if ((c === ' ' || c === '\u3000') && inB === 0) {
+                        let nw = '';
+                        for (let ni = ci + 1; ni < editLine.chars.length; ni++) {
+                            if (editLine.chars[ni] === ' ' || editLine.chars[ni] === '\u3000') break;
+                            nw += editLine.chars[ni];
+                        }
+                        if (nw && pw === nw) { /* 不分割 */ }
+                        else if (/^[a-zA-Z]/.test(pw) && /^[a-zA-Z]/.test(nw)) { /* 不分割 */ }
+                        else if (ccSinceLast < 3) { /* 不分割 */ }
+                        else { segBefore++; }
+                        ccSinceLast = 0;
+                        pw = '';
+                        for (let ni = ci + 1; ni < editLine.chars.length; ni++) {
+                            if (editLine.chars[ni] === ' ' || editLine.chars[ni] === '\u3000') break;
+                            pw += editLine.chars[ni];
+                        }
+                    } else {
+                        if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(c)) ccSinceLast++;
+                        if (c !== ' ' && c !== '\u3000') {
+                            if (!pw || editLine.chars[ci - 1] === ' ' || editLine.chars[ci - 1] === '\u3000') pw = c;
+                            else pw += c;
+                        }
+                    }
+                }
+                displayLine += segBefore;
+            }
+        }
+        
+        const preview = item.originalText.substring(0, 15);
+        html += `<div class="edit-list-item"><span class="edit-list-tag delete">删除</span> 第${displayLine}行 ${preview}${item.originalText.length > 15 ? '...' : ''} <button onclick="removeDeletion(${idx})" class="edit-list-remove">删除</button></div>`;
+        count++;
+    });
+    
     // 如果没有修改，显示空状态提示
     if (count === 0) {
         html = '<div class="edit-list-empty">暂无修改，请在上方操作</div>';
@@ -808,6 +906,102 @@ function getLineSegments(line) {
     return segments.length > 0 ? segments : [{start: 0, end: chars.length - 1}];
 }
 
+
+// ============================================
+// 删除行模式
+// 功能：进入删除行模式，用户可以点击歌词行标记为待删除
+// 点击已标记的行可取消删除
+// ============================================
+function enterDeleteMode() {
+    const lyricsContent = document.getElementById('lyricsContent');
+    lyricsContent.classList.add('edit-lyrics-mode');
+    
+    // 显示编辑横幅提示
+    showEditBanner('删除行', '点击歌词行标记删除，再次点击取消');
+    // 启用标题编辑功能
+    enableTitleEditing();
+    // 显示已确认修改列表面板
+    showEditListPanel();
+    
+    // 为每行歌词添加点击事件
+    document.querySelectorAll('.lyric-line').forEach((line) => {
+        const lineIndex = parseInt(line.dataset.line);
+        if (isNaN(lineIndex)) return;
+        line.onclick = (e) => selectDeleteLine(e, lineIndex);
+        line.style.cursor = 'pointer';
+    });
+}
+
+// ============================================
+// 选择删除行
+// 功能：用户点击某行歌词时，标记/取消标记为待删除
+//
+// 参数：
+//   - event: 点击事件对象
+//   - displayLineIndex: 显示行索引（0-based）
+// ============================================
+function selectDeleteLine(event, displayLineIndex) {
+    event.stopPropagation();
+    
+    const song = window.currentSong;
+    const songIndex = parseInt(event.currentTarget.dataset.songIndex);
+    if (isNaN(songIndex)) return;
+    const line = song.lyrics[songIndex];
+    if (!line || !line.chars) return;
+    
+    const segStart = parseInt(event.currentTarget.dataset.segmentStart);
+    const segEnd = parseInt(event.currentTarget.dataset.segmentEnd);
+    
+    let segmentChars;
+    if (!isNaN(segStart) && !isNaN(segEnd)) {
+        segmentChars = line.chars.slice(segStart, segEnd + 1);
+    } else {
+        segmentChars = line.chars;
+    }
+    const originalText = segmentChars.join('');
+    
+    const editKey = isNaN(segStart) ? songIndex : songIndex + '_' + segStart;
+    
+    // 检查是否已在删除列表中
+    const existingIdx = deletions.findIndex(d => d.editKey === editKey);
+    if (existingIdx > -1) {
+        // 取消删除
+        deletions.splice(existingIdx, 1);
+        event.currentTarget.style.background = '';
+    } else {
+        // 添加删除
+        deletions.push({
+            editKey: editKey,
+            lineIndex: songIndex,
+            segStart: isNaN(segStart) ? null : segStart,
+            segEnd: isNaN(segEnd) ? null : segEnd,
+            originalText: originalText
+        });
+        event.currentTarget.style.background = '#fff1f0';
+    }
+    
+    updateEditList();
+    updateEditStatus();
+}
+
+// 删除删除行项
+function removeDeletion(idx) {
+    // 恢复对应行的高亮
+    const item = deletions[idx];
+    if (item) {
+        document.querySelectorAll('.lyric-line').forEach(line => {
+            const si = parseInt(line.dataset.songIndex);
+            const ss = parseInt(line.dataset.segmentStart);
+            const key = isNaN(ss) ? si : si + '_' + ss;
+            if (key === item.editKey) {
+                line.style.background = '';
+            }
+        });
+    }
+    deletions.splice(idx, 1);
+    updateEditList();
+    updateEditStatus();
+}
 // ============================================
 // 选择插入行
 // 功能：用户点击某行歌词时，将其设置为插入位置
@@ -986,7 +1180,7 @@ function updateEditStatus() {
     
     // 计算总修改数（标题 + 逐行 + 整首 + 插入）
     const metaCount = Object.keys(editedMeta).length;
-    const totalCount = metaCount + editedLyrics.length + fullReplacements.length + insertions.length;
+    const totalCount = metaCount + editedLyrics.length + fullReplacements.length + insertions.length + deletions.length;
     
     // 更新状态文本（显示修改数量）
     if (statusText) {
@@ -1132,6 +1326,91 @@ function submitEdit() {
             // 传递所有插入项
             submitData.insertions = insertions;
             break;
+        case 'delete':
+            // 删除行模式：添加删除列表
+            if (deletions.length === 0 && Object.keys(editedMeta).length === 0) return;  // 没有修改则不提交
+            // 将删除记录转换为提交格式（计算displayLine）
+            submitData.deletions = deletions.map(d => {
+                let displayLine = 0;
+                for (let i = 0; i < d.lineIndex; i++) {
+                    if (song.lyrics[i].paragraphBreak) continue;
+                    if (!song.lyrics[i].chars) continue;
+                    let segments = 1;
+                    let inBrackets = 0;
+                    let charCountSinceLastSpace = 0;
+                    let prevWord = '';
+                    for (let ci = 0; ci < song.lyrics[i].chars.length; ci++) {
+                        const c = song.lyrics[i].chars[ci];
+                        if (c === '《' || c === '(' || c === '（') inBrackets++;
+                        if (c === '》' || c === ')' || c === '）') inBrackets = Math.max(0, inBrackets - 1);
+                        if ((c === ' ' || c === '\u3000') && inBrackets === 0) {
+                            let nextWord = '';
+                            for (let ni = ci + 1; ni < song.lyrics[i].chars.length; ni++) {
+                                if (song.lyrics[i].chars[ni] === ' ' || song.lyrics[i].chars[ni] === '\u3000') break;
+                                nextWord += song.lyrics[i].chars[ni];
+                            }
+                            if (nextWord && prevWord === nextWord) { /* 不分割 */ }
+                            else if (/^[a-zA-Z]/.test(prevWord) && /^[a-zA-Z]/.test(nextWord)) { /* 不分割 */ }
+                            else if (charCountSinceLastSpace < 3) { /* 不分割 */ }
+                            else { segments++; }
+                            charCountSinceLastSpace = 0;
+                            prevWord = '';
+                            for (let ni = ci + 1; ni < song.lyrics[i].chars.length; ni++) {
+                                if (song.lyrics[i].chars[ni] === ' ' || song.lyrics[i].chars[ni] === '\u3000') break;
+                                prevWord += song.lyrics[i].chars[ni];
+                            }
+                        } else {
+                            if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(c)) charCountSinceLastSpace++;
+                            if (c !== ' ' && c !== '\u3000') {
+                                if (!prevWord || song.lyrics[i].chars[ci - 1] === ' ' || song.lyrics[i].chars[ci - 1] === '\u3000') prevWord = c;
+                                else prevWord += c;
+                            }
+                        }
+                    }
+                    displayLine += segments;
+                }
+                displayLine += 1;
+                if (d.segStart !== null && d.segStart !== undefined) {
+                    const editLine = song.lyrics[d.lineIndex];
+                    if (editLine && editLine.chars) {
+                        let segBefore = 0;
+                        let inB = 0;
+                        let ccSinceLast = 0;
+                        let pw = '';
+                        for (let ci = 0; ci < d.segStart; ci++) {
+                            const c = editLine.chars[ci];
+                            if (c === '\u3000' || c === '《' || c === '(' || c === '（') { if (c === '《' || c === '(' || c === '（') inB++; }
+                            if (c === '》' || c === ')' || c === '）') inB = Math.max(0, inB - 1);
+                            if ((c === ' ' || c === '\u3000') && inB === 0) {
+                                let nw = '';
+                                for (let ni = ci + 1; ni < editLine.chars.length; ni++) {
+                                    if (editLine.chars[ni] === ' ' || editLine.chars[ni] === '\u3000') break;
+                                    nw += editLine.chars[ni];
+                                }
+                                if (nw && pw === nw) { /* 不分割 */ }
+                                else if (/^[a-zA-Z]/.test(pw) && /^[a-zA-Z]/.test(nw)) { /* 不分割 */ }
+                                else if (ccSinceLast < 3) { /* 不分割 */ }
+                                else { segBefore++; }
+                                ccSinceLast = 0;
+                                pw = '';
+                                for (let ni = ci + 1; ni < editLine.chars.length; ni++) {
+                                    if (editLine.chars[ni] === ' ' || editLine.chars[ni] === '\u3000') break;
+                                    pw += editLine.chars[ni];
+                                }
+                            } else {
+                                if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(c)) ccSinceLast++;
+                                if (c !== ' ' && c !== '\u3000') {
+                                    if (!pw || editLine.chars[ci - 1] === ' ' || editLine.chars[ci - 1] === '\u3000') pw = c;
+                                    else pw += c;
+                                }
+                            }
+                        }
+                        displayLine += segBefore;
+                    }
+                }
+                return { line: displayLine, originalText: d.originalText };
+            });
+            break;
     }
     
     // 保存到 localStorage（供提交页面读取）
@@ -1152,7 +1431,8 @@ function exitEditMode() {
     editedLyrics = [];
     fullReplacements = [];
     insertions = [];
-    editedMeta = {};
+    deletions = [];
+    editedMeta = {}
     currentEdit = null;
     
     // 移除所有编辑相关UI元素
@@ -1446,6 +1726,7 @@ function addEditStyles() {
         .edit-list-tag.line { background: #52c41a; }    /* 绿色：逐行纠错 */
         .edit-list-tag.full { background: #fa8c16; }     /* 橙色：整首替换 */
         .edit-list-tag.insert { background: #722ed1; }   /* 紫色：插入行 */
+        .edit-list-tag.delete { background: #ff4d4f; }     /* 红色：删除行 */
         .edit-list-tag.sync { background: #fa8c16; }     /* 橙色：同步修改 */
         
         /* 同步修改项样式 */

@@ -325,6 +325,14 @@ async function handleSubmit(request, env) {
           issueTitle = `[歌词纠错-插入行] ${songName}（${insertions.length}处）`;
           labels = ['歌词纠错'];
           issueBody = buildInsertBody({ songName, insertions });
+        } else if (correctionType === 'delete') {
+          const deletions = data.deletions;
+          if (!deletions || deletions.length === 0) {
+            return jsonResponse({ error: '删除行需要标记至少一行' }, 400);
+          }
+          issueTitle = `[歌词纠错-删除行] ${songName}（${deletions.length}处）`;
+          labels = ['歌词纠错'];
+          issueBody = buildDeleteBody({ songName, deletions });
         } else {
           const meta = data.meta;
           if ((!corrections || corrections.length === 0) && (!meta || Object.keys(meta).length === 0)) {
@@ -549,6 +557,27 @@ ${fullLyrics}
 /**
  * 生成插入歌词的 Issue 正文
  */
+
+
+function buildDeleteBody({ songName, deletions }) {
+  let body = `## 歌曲名称
+**歌曲名称：** ${songName}
+
+## 删除行
+
+`;
+  body += `| 行号 | 原歌词 |
+|------|--------|
+`;
+  deletions.forEach(d => {
+    body += `| 第${d.line}行 | ${d.originalText} |
+`;
+  });
+  body += `
+---
+*由网站投稿表单自动提交*`;
+  return body;
+}
 function buildInsertBody({ songName, insertions }) {
   const insertList = insertions.map((ins, i) => {
     const posText = ins.position === 'before' ? '前' : '后';
