@@ -66,7 +66,7 @@
             { paragraphBreak: true },
             { chars: ["恋", "爱", "是", "容", "易", "谈", "容", "易", "淡", " ", "从", "来", "是", "十", "分", "花", "时", "间"], jp: ["lyun2", "ngoi3", "si6", "jung4", "ji6", "taam4", "jung4", "ji6", "daam6", "", "cung4", "loi4", "si6", "sap6", "fan1", "faa1", "si4", "gaan1"] },
             { chars: ["明", "了", "历", "尽", "几", "多", "难", "关", " ", "快", "乐", "过", "悲", "伤", "要", "用", "年", "月", "去", "摊", "还"], jp: ["ming4", "liu5", "lik6", "zeon6", "gei2", "do1", "naan4", "gwaan1", "", "faai3", "lok6", "gwo3", "bei1", "soeng1", "jiu3", "jung6", "nin4", "jyut6", "heoi3", "taan1", "waan4"] },
-            { chars: ["心", "痛", "是", "容", "易", "烦", "容", "易", "惯", " ", "为", "何", "日", "落", "担", "心", "傍", "晚"], jp: ["sam1", "tung3", "si6", "jung4", "ji6", "faan4", "jung4", "ji6", "gwaan3", "", "wai4", "ho4", "jat6", "lok6", "daam1", "sam1", "bong6", "maan5"] },
+            { chars: ["心", "痛", "是", "容", "易", "烦", "容", "易", "惯", " ", "为", "何", "日", "落", "担", "心", "傍", "晚"], jp: ["sam1", "tung3", "si6", "jung4", "ji6", "faan4", "jung4", "ji6", "gwaan3", "", "wai4", "ho4", "jat6", "lok6", "daam1", "sam1", "pong4", "maan5"] },
             { chars: ["明", "明", "道", "别", "不", "需", "留", "一", "眼", " ", "别", "多", "关", "心", "我", "睡", "眠", "太", "冷"], jp: ["ming4", "ming4", "dou6", "bit6", "bat1", "seoi1", "lau4", "jat1", "ngaan5", "", "bit6", "do1", "gwaan1", "sam1", "ngo5", "seoi6", "min4", "taai3", "laang5"] },
             { paragraphBreak: true },
             { chars: ["《", "借", "》"], jp: ["", "ze3", ""] },
