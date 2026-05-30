@@ -96,4 +96,6 @@ const songFiles = [
     { id: 596, title: "渐渐", artist: "陈奕迅", lyricist: "陈咏谦", composer: "张杰邦", file: "lyrics/渐渐.js" },
     { id: 609, title: "葡萄成熟时", artist: "陈奕迅", lyricist: "黄伟文", composer: "周炳辉/Anfernee Cheung", file: "lyrics/葡萄成熟时.js" },
     { id: 613, title: "防不胜防", artist: "陈奕迅", lyricist: "黄伟文", composer: "张继聪", file: "lyrics/防不胜防.js" },
+    { id: 617, title: "打回原形", artist: "陈奕迅", lyricist: "黄伟文", composer: "阿飞", file: "lyrics/打回原形.js" },
+    { id: 619, title: "黄金时代", artist: "陈奕迅", lyricist: "林夕", composer: "柳重言", file: "lyrics/黄金时代.js" },
 ];
