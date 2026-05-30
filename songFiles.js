@@ -99,4 +99,5 @@ const songFiles = [
     { id: 617, title: "打回原形", artist: "陈奕迅", lyricist: "黄伟文", composer: "阿飞", file: "lyrics/打回原形.js" },
     { id: 619, title: "黄金时代", artist: "陈奕迅", lyricist: "林夕", composer: "柳重言", file: "lyrics/黄金时代.js" },
     { id: 623, title: "我的快乐时代（live）", artist: "陈奕迅", lyricist: "林夕", composer: "林健华", file: "lyrics/我的快乐时代（live）.js" },
+    { id: 627, title: "阿牛", artist: "陈奕迅", lyricist: "林夕", composer: "雷颂德", file: "lyrics/阿牛.js" },
 ];
