@@ -1,0 +1,77 @@
+// 歌曲：黄金时代
+
+(function() {
+    const song = {
+        id: 619,
+        title: "黄金时代",
+        titleJyutping: ["wong4","gam1","si4","doi6"],
+        artist: "陈奕迅",
+        artistJyutping: ["can4","jik6","seon3"],
+        lyricist: "林夕",
+        lyricistJyutping: ["lam4","zik6"],
+        composer: "柳重言",
+        composerJyutping: ["lau5","cung5","jin4"],
+        lyrics: [
+            { chars: ["买","了","球","鞋","再","买","玩","具"], jp: ["maai5","liu5","kau4","haai4","zoi3","maai5","wun6","geoi6"] },
+            { chars: ["甚","至","想"], jp: ["sam6","zi3","soeng2"] },
+            { chars: ["花","光","一","切","买","新","居"], jp: ["faa1","gwong1","jat1","cai3","maai5","san1","geoi1"] },
+            { chars: ["爱","上","谈","情","再","爱","入","睡"], jp: ["ngoi3","soeng6","taam4","cing4","zoi3","ngoi3","jap6","seoi6"] },
+            { chars: ["直","到","想"], jp: ["zik6","dou3","soeng2"] },
+            { chars: ["躺","进","陌","生","者","的","家","里"], jp: ["tong2","zeon3","mak6","sang1","ze2","dik1","gaa1","leoi5"] },
+            { paragraphBreak: true },
+            { chars: ["你","我","永","远","不","肯","定","爱","不","爱","谁"], jp: ["nei5","ngo5","wing5","jyun5","bat1","hang2","ding6","ngoi3","bat1","ngoi3","seoi4"] },
+            { chars: ["约","不","约","定","谁"], jp: ["joek3","bat1","joek3","ding6","seoi4"] },
+            { chars: ["黄","金","广","场","内","分","手"], jp: ["wong4","gam1","gwong2","coeng4","noi6","fan1","sau2"] },
+            { chars: ["在","时","代","门","外","再","聚"], jp: ["zoi6","si4","doi6","mun4","ngoi6","zoi3","zeoi6"] },
+            { chars: ["你","和","谁","结","伴","前","来"], jp: ["nei5","wo4","seoi4","git3","bun6","cin4","loi4"] },
+            { chars: ["是","否","比","我","精","采"], jp: ["si6","fau2","bei2","ngo5","zing1","coi2"] },
+            { paragraphBreak: true },
+            { chars: ["自","从","前","爱","到","现","在"], jp: ["zi6","cung4","cin4","ngoi3","dou3","jin6","zoi6"] },
+            { chars: ["是","哪","个","可","一","可","再"], jp: ["si6","naa5","go3","ho2","jat1","ho2","zoi3"] },
+            { chars: ["你","回","来","你","不","回","来"], jp: ["nei5","wui4","loi4","nei5","bat1","wui4","loi4"] },
+            { chars: ["尽","管","天","蹋","下","来"], jp: ["zeon6","gun2","tin1","daap6","haa6","loi4"] },
+            { chars: ["但","仍","然","值","得","与","你"], jp: ["daan6","jing4","jin4","zik6","dak1","jyu5","nei5"] },
+            { chars: ["用","余","下","时","间","谈","论","爱"], jp: ["jung6","jyu4","haa6","si4","gaan1","taam4","leon6","ngoi3"] },
+            { paragraphBreak: true },
+            { chars: ["吃","喝","完","成","再","去","玩","乐"], jp: ["hek3","hot3","jyun4","sing4","zoi3","heoi3","wun6","lok6"] },
+            { chars: ["甚","至","想"], jp: ["sam6","zi3","soeng2"] },
+            { chars: ["天","光","之","际","看","星","光"], jp: ["tin1","gwong1","zi1","zai3","hon3","sing1","gwong1"] },
+            { chars: ["吻","你","眉","头","吻","至","寂","寞"], jp: ["man5","nei5","mei4","tau4","man5","zi3","zik6","mok6"] },
+            { chars: ["直","到","想"], jp: ["zik6","dou3","soeng2"] },
+            { chars: ["拥","吻","漫","画","中","的","主","角"], jp: ["jung2","man5","maan6","waak6","zung1","dik1","zyu2","gok3"] },
+            { paragraphBreak: true },
+            { chars: ["你","我","永","远","不","肯","定","爱","不","爱","谁"], jp: ["nei5","ngo5","wing5","jyun5","bat1","hang2","ding6","ngoi3","bat1","ngoi3","seoi4"] },
+            { chars: ["约","不","约","定","谁"], jp: ["joek3","bat1","joek3","ding6","seoi4"] },
+            { chars: ["黄","金","广","场","内","分","手"], jp: ["wong4","gam1","gwong2","coeng4","noi6","fan1","sau2"] },
+            { chars: ["在","时","代","门","外","再","聚"], jp: ["zoi6","si4","doi6","mun4","ngoi6","zoi3","zeoi6"] },
+            { chars: ["你","和","谁","结","伴","前","来"], jp: ["nei5","wo4","seoi4","git3","bun6","cin4","loi4"] },
+            { chars: ["是","否","比","我","精","采"], jp: ["si6","fau2","bei2","ngo5","zing1","coi2"] },
+            { paragraphBreak: true },
+            { chars: ["自","从","前","爱","到","现","在"], jp: ["zi6","cung4","cin4","ngoi3","dou3","jin6","zoi6"] },
+            { chars: ["是","哪","个","可","一","可","再"], jp: ["si6","naa5","go3","ho2","jat1","ho2","zoi3"] },
+            { chars: ["你","回","来","你","不","回","来"], jp: ["nei5","wui4","loi4","nei5","bat1","wui4","loi4"] },
+            { chars: ["尽","管","天","蹋","下","来"], jp: ["zeon6","gun2","tin1","daap6","haa6","loi4"] },
+            { chars: ["但","仍","然","值","得","与","你"], jp: ["daan6","jing4","jin4","zik6","dak1","jyu5","nei5"] },
+            { chars: ["没","错","过","什","么","再","分","开"], jp: ["mut6","co3","gwo3","sap6","mo1","zoi3","fan1","hoi1"] },
+            { paragraphBreak: true },
+            { chars: ["你","与","我","凑","巧","经","过"], jp: ["nei5","jyu5","ngo5","cau3","haau2","ging1","gwo3"] },
+            { chars: ["就","像","在","咖","啡","座"], jp: ["zau6","zoeng6","zoi6","gaa3","fe1","zo6"] },
+            { chars: ["一","个","两","个","三","个"], jp: ["jat1","go3","loeng5","go3","saam1","go3"] },
+            { chars: ["太","闷","或","是","太","多"], jp: ["taai3","mun6","waak6","si6","taai3","do1"] },
+            { paragraphBreak: true },
+            { chars: ["你","和","谁","结","伴","前","来"], jp: ["nei5","wo4","seoi4","git3","bun6","cin4","loi4"] },
+            { chars: ["是","否","比","我","精","采"], jp: ["si6","fau2","bei2","ngo5","zing1","coi2"] },
+            { chars: ["自","从","前","爱","到","现","在"], jp: ["zi6","cung4","cin4","ngoi3","dou3","jin6","zoi6"] },
+            { chars: ["是","哪","个","可","一","可","再"], jp: ["si6","naa5","go3","ho2","jat1","ho2","zoi3"] },
+            { chars: ["你","回","来","你","不","回","来"], jp: ["nei5","wui4","loi4","nei5","bat1","wui4","loi4"] },
+            { chars: ["尽","管","天","蹋","下","来"], jp: ["zeon6","gun2","tin1","daap6","haa6","loi4"] },
+            { chars: ["但","仍","然","值","得","与","你"], jp: ["daan6","jing4","jin4","zik6","dak1","jyu5","nei5"] },
+            { chars: ["没","错","过","什","么","再","分","开"], jp: ["mut6","co3","gwo3","sap6","mo1","zoi3","fan1","hoi1"] }
+        ]
+    };
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
+})();
