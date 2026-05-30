@@ -103,4 +103,5 @@ const songFiles = [
     { id: 631, title: "月球上的人", artist: "陈奕迅", lyricist: "林若宁", composer: "苏耀宗", file: "lyrics/月球上的人.js" },
     { id: 635, title: "孤儿仔（live）", artist: "陈奕迅/苦荣", lyricist: "李竣一", composer: "李竣一", file: "lyrics/孤儿仔（live）.js" },
     { id: 643, title: "漂流教室", artist: "古巨基", lyricist: "林夕", composer: "张佳添", file: "lyrics/漂流教室.js" },
+    { id: 686, title: "日与夜", artist: "林忆莲", lyricist: "黄伟文", composer: "陈辉阳", file: "lyrics/日与夜.js" },
 ];
