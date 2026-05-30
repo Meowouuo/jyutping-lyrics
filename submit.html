@@ -1379,11 +1379,11 @@
                             // 延迟执行renderInsertList，确保DOM已更新
                             setTimeout(() => renderInsertList(), 0);
                         }
-                    } else if (data.correctionType === 'delete' && data.deletions) {
+                    } else if (data.correctionType === 'delete') {
                         // 删除行模式 - 选中radio并填充删除项
                         document.querySelector('input[name="correctionType"][value="delete"]').checked = true;
                         switchCorrectionType('delete');
-                        deleteItems = data.deletions;
+                        deleteItems = data.deletions || [];
                         setTimeout(() => renderDeleteList(), 0);
                     } else if (data.corrections && data.corrections.length > 0) {
                         // 逐行修改模式 - 清空现有行并逐行填充
