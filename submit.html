@@ -1238,7 +1238,7 @@
             // 从数组中移除指定索引的歌曲
             deleteSongs.splice(index, 1);
             // 重新渲染列表，更新显示
-            renderDeleteList();
+            renderDeleteSongList();
         }
 
         // ===== 页面初始化 =====
@@ -1333,7 +1333,7 @@
                 else if (data.type === 'delete' && data.songs) {
                     switchTab('delete');
                     deleteSongs = data.songs;
-                    renderDeleteList();
+                    renderDeleteSongList();
                     return true;
                 }
             } catch (e) {
@@ -1451,7 +1451,7 @@
                     // 将歌曲列表赋值给全局数组
                     deleteSongs = data.songs;
                     // 渲染删除列表
-                    renderDeleteList();
+                    renderDeleteSongList();
                 }
             } catch (e) {
                 // JSON解析失败时输出错误日志
