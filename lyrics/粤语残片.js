@@ -23,7 +23,7 @@
             { chars: ["骇","人","场","面","相","当","讽","刺"], jp: ["haai5","jan4","coeng4","min6","soeng1","dong1","fung3","ci3"] },
             { paragraphBreak: true },
             { chars: ["你","及","时","递","上","餐","纸","去","为","我","清","洗","衬","衣"], jp: ["nei5","kap6","si4","dai6","soeng6","caan1","zi2","heoi3","wai4","ngo5","cing1","sai2","can3","ji1"] },
-            { chars: ["刹","那","间","身","体","的","触","碰"," ","大","件","事"], jp: ["caat3","naa5","gaan1","san1","tai2","dik1","zuk1","pung3","","daai6","gin6","si6"] },
+            { chars: ["刹","那","间","身","体","的","触","碰"," ","大","件","事"], jp: ["saat3", "naa5", "gaan1", "san1", "tai2", "dik1", "zuk1", "pung3", "", "daai6", "gin6", "si6"] },
             { paragraphBreak: true },
             { chars: ["今","天","看","这","段","历","史","像","褪","色","午","夜","残","片"], jp: ["gam1","tin1","hon3","ze5","dyun6","lik6","si2","zoeng6","tan3","sik1","ng5","je6","caan4","pin3"] },
             { chars: ["笑","话","情","节"," ","此","刻","变","窝","心","故","事"], jp: ["siu3","waa6","cing4","zit3","","ci2","hak1","bin3","wo1","sam1","gu3","si6"] },
