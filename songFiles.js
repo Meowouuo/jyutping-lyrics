@@ -102,4 +102,5 @@ const songFiles = [
     { id: 627, title: "阿牛", artist: "陈奕迅", lyricist: "林夕", composer: "雷颂德", file: "lyrics/阿牛.js" },
     { id: 631, title: "月球上的人", artist: "陈奕迅", lyricist: "林若宁", composer: "苏耀宗", file: "lyrics/月球上的人.js" },
     { id: 635, title: "孤儿仔（live）", artist: "陈奕迅/苦荣", lyricist: "李竣一", composer: "李竣一", file: "lyrics/孤儿仔（live）.js" },
+    { id: 643, title: "漂流教室", artist: "古巨基", lyricist: "林夕", composer: "张佳添", file: "lyrics/漂流教室.js" },
 ];
