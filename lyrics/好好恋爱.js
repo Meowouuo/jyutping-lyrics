@@ -9,7 +9,7 @@
         artistJyutping: ["fong1","lik6","san1"],
         lyricist: "方杰",
         lyricistJyutping: ["fong1","git6"],
-        composer: "雷颂德",
+        composer: "Horan Chan",
         composerJyutping: ["leoi4","zung6","dak1"],
         lyrics: [
             { chars: ["落","力","为","你","好"], jp: ["lok6","lik6","wai4","nei5","hou2"] },
