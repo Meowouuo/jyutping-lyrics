@@ -98,4 +98,5 @@ const songFiles = [
     { id: 613, title: "防不胜防", artist: "陈奕迅", lyricist: "黄伟文", composer: "张继聪", file: "lyrics/防不胜防.js" },
     { id: 617, title: "打回原形", artist: "陈奕迅", lyricist: "黄伟文", composer: "阿飞", file: "lyrics/打回原形.js" },
     { id: 619, title: "黄金时代", artist: "陈奕迅", lyricist: "林夕", composer: "柳重言", file: "lyrics/黄金时代.js" },
+    { id: 623, title: "我的快乐时代（live）", artist: "陈奕迅", lyricist: "林夕", composer: "林健华", file: "lyrics/我的快乐时代（live）.js" },
 ];
