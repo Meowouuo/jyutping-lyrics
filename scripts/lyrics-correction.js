@@ -594,8 +594,9 @@ function processFullReplace(content, body, songTitle) {
     
     // 替换原文件中的 lyrics 数组
     // 找到 lyrics: [ 和 ] 之间的内容并替换
+    // 注意：lyrics 数组以 ] 结尾（后面没有分号），然后是 }; 
     const newContent = content.replace(
-        /(lyrics:\s*\[)([\s\S]*?)(\];)/,
+        /(lyrics:\s*\[)([\s\S]*?)(\n\s*\])/,
         `$1\n${newLyricsArray.join('\n')}\n    $3`
     );
     
