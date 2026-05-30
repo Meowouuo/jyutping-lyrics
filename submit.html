@@ -773,11 +773,13 @@
          *   - 'insert': 插入行
          */
         function selectCorrectionType(type) {
-            // 重置所有选项的样式 - 移除蓝色高亮
+            // 重置所有选项的样式 - 移除蓝色高亮，同时取消 radio 的 checked
             document.querySelectorAll('.type-label').forEach(label => {
                 label.style.borderColor = '#e0e0e0';   // 恢复灰色边框
                 label.style.background = '#fff';        // 恢复白色背景
                 label.classList.remove('active');        // 移除激活状态
+                const radio = label.querySelector('input[type="radio"]');
+                if (radio) radio.checked = false;       // 取消选中
             });
 
             // 高亮选中的类型 - 设置蓝色边框和淡蓝色背景
@@ -785,6 +787,9 @@
             selectedLabel.style.borderColor = '#1890ff';
             selectedLabel.style.background = '#e6f7ff';
             selectedLabel.classList.add('active');
+            // 选中对应的 radio button
+            const selectedRadio = selectedLabel.querySelector('input[type="radio"]');
+            if (selectedRadio) selectedRadio.checked = true;
         }
 
         /**
