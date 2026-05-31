@@ -31,7 +31,7 @@
         { chars: ["谁", "又", "会", "知", "道", " ", "凭", "每", "下", "心", "跳", "继", "续", "数", " ", "继", "续", "数"], jp: ["seoi4", "jau6", "wui6", "zi1", "dou3", "", "pang4", "mui5", "haa6", "sam1", "tiu3", "gai3", "zuk6", "sou3", "", "gai3", "zuk6", "sou3"] },
         { chars: ["只", "愿", "延", "续", "下", "去", "数", "得", "到", "苍", "老"], jp: ["zi2", "jyun6", "jin4", "zuk6", "haa6", "heoi3", "sou3", "dak1", "dou3", "cong1", "lou5"] },
         { paragraphBreak: true },
-        { chars: ["想", " ", "从", "汹", "涌", "的", "发", "堆", "逐", "公", "分", "看", "下", "去"], jp: ["soeng2", "", "cung4", "hung1", "cung1", "dik1", "faat3", "deoi1", "zuk6", "gung1", "fan1", "hon3", "haa6", "heoi3"] },
+        { chars: ["想", " ", "从", "汹", "涌", "的", "发", "堆", "逐", "公", "分", "看", "下", "去"], jp: ["soeng2", "", "cung4", "hung1", "jung2", "dik1", "faat3", "deoi1", "zuk6", "gung1", "fan1", "hon3", "haa6", "heoi3"] },
         { chars: ["直", "到", "拥", "抱", "着", "沉", "睡"], jp: ["zik6", "dou3", "jung2", "pou5", "zoek6", "cam4", "seoi6"] },
         { chars: ["命", "与", "运", "埋", "在", "你", "手", "里"], jp: ["ming6", "jyu5", "wan6", "maai4", "zoi6", "nei5", "sau2", "leoi5"] },
         { chars: ["你", "那", "些", "掌", "纹", "有", "多", "少", "爱", "侣"], jp: ["nei5", "naa5", "se1", "zoeng2", "man4", "jau5", "do1", "siu2", "ngoi3", "leoi5"] },
