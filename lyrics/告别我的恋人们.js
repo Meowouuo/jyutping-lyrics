@@ -40,7 +40,6 @@
             { chars: ["坚","拒","被","割","损"," ","怎","可","磨","合","到"," ","那","一","半"], jp: ["gin1","keoi5","bei6","got3","syun2","","zam2","ho2","mo4","hap6","dou3","","naa5","jat1","bun3"] },
             { paragraphBreak: true },
             { chars: ["总","会","复","元","吧"," ","痛","快","得","快","乐","吗"], jp: ["zung2","wui5","fuk6","jyun4","baa6","","tung3","faai3","dak1","faai3","lok6","maa1"] },
-            { paragraphBreak: true },
             { chars: ["曾","经","风","吹","雨","打"," ","才","对","得","住","炎","夏"], jp: ["cang4","ging1","fung1","ceoi1","jyu5","daa2","","coi4","deoi3","dak1","zyu6","jim4","haa6"] },
             { chars: ["要","是","从","未","伤","心","到","害","怕"], jp: ["jiu3","si6","cung4","mei6","soeng1","sam1","dou3","hoi6","paa3"] },
             { chars: ["没","有","承","受","过","多","少","牵","挂"], jp: ["mut6","jau5","sing4","sau6","gwo3","do1","siu2","hin1","gwaa3"] },
