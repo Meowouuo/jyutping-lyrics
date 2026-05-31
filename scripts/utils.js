@@ -473,6 +473,14 @@ function matchJyutping(text) {
     }
     
     // 应用语境规则修正粤拼（如"千里"中的"里"读 lei5 而非 leoi5）
+    // 特殊处理："汹涌"中的"涌"读 jung2
+    for (let i = 0; i < result.length - 1; i++) {
+        if (result[i].char === '汹' && result[i + 1].char === '涌') {
+            result[i].jp = 'hung1';
+            result[i + 1].jp = 'jung2';
+        }
+    }
+    
     if (typeof applyContextRules === 'function') {
         return applyContextRules(result);
     }
