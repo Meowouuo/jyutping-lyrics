@@ -310,6 +310,7 @@ function processLineByLine(content, body, songTitle) {
         }
         
         // 获取当前行的 chars（跨行匹配）
+        const line = lines[targetIndex];
         let charsContent = '';
         let j = targetIndex;
         while (j < lines.length && !lines[j].includes(']')) {
