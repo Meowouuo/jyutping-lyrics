@@ -1387,7 +1387,11 @@ function submitEdit() {
             submitData.deletions = deletions.map(d => {
                 let displayLine = 0;
                 for (let i = 0; i < d.lineIndex; i++) {
-                    if (song.lyrics[i].paragraphBreak) continue;
+                    // 空白行也计入行号（与后端一致）
+                    if (song.lyrics[i].paragraphBreak) {
+                        displayLine++;
+                        continue;
+                    }
                     if (!song.lyrics[i].chars) continue;
                     let segments = 1;
                     let inBrackets = 0;
