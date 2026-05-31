@@ -166,7 +166,7 @@ function processInsertions(content, insertions, songTitle) {
             if (lines[i].includes('paragraphBreak')) {
                 continue;
             }
-            if (lines[i].includes('"chars":')) {
+            if (lines[i].includes('chars:')) {
                 lineCount++;
                 if (lineCount === targetLine) {
                     targetIndex = i;
@@ -272,7 +272,7 @@ function processLineByLine(content, body, songTitle) {
             if (lines[i].includes('paragraphBreak')) {
                 continue; // paragraphBreak 不算行
             }
-            if (lines[i].includes('"chars":')) {
+            if (lines[i].includes('chars:')) {
                 // 收集多行 chars 数组内容（跨行匹配）
                 let charsContent = '';
                 let j = i;
@@ -285,7 +285,7 @@ function processLineByLine(content, body, songTitle) {
                 }
                 
                 // 提取 chars 数组内容
-                const charsMatch = charsContent.match(/"chars":\s*\[([\s\S]*?)\]/);
+                const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
                 let segments = 1;
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
@@ -320,7 +320,7 @@ function processLineByLine(content, body, songTitle) {
         if (j < lines.length) {
             charsContent += lines[j];
         }
-        const charsMatch = charsContent.match(/"chars":\s*\[([\s\S]*?)\]/);
+        const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
         if (!charsMatch) {
             failedRows.push(row);
             continue;
@@ -361,14 +361,14 @@ function processLineByLine(content, body, songTitle) {
             // 跨行匹配 jp 数组
             let jpContent = '';
             let k = targetIndex;
-            while (k < lines.length && !lines[k].includes('"jp":')) k++;
+            while (k < lines.length && !lines[k].includes('jp:')) k++;
             while (k < lines.length && !lines[k].includes(']')) {
                 jpContent += lines[k];
                 k++;
             }
             if (k < lines.length) jpContent += lines[k];
             
-            const jpMatch = jpContent.match(/"jp":\s*\[([\s\S]*?)\]/);
+            const jpMatch = jpContent.match(/jp:\s*\[([\s\S]*?)\]/);
             if (!jpMatch) {
                 failedRows.push(row);
                 continue;
@@ -719,7 +719,7 @@ function processDeletions(content, body, songTitle) {
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) continue;
-            if (lines[i].includes('"chars":')) {
+            if (lines[i].includes('chars:')) {
                 // 收集多行 chars 数组内容（跨行匹配）
                 let charsContent = '';
                 let j = i;
@@ -731,7 +731,7 @@ function processDeletions(content, body, songTitle) {
                     charsContent += lines[j];
                 }
                 
-                const charsMatch = charsContent.match(/"chars":\s*\[([\s\S]*?)\]/);
+                const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
                 let segments = 1;
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
