@@ -56,7 +56,7 @@ const songFiles = [
     { id: 327, title: "火鸟", artist: "杨千嬅", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/火鸟.js" },
     { id: 329, title: "假如让我说下去", artist: "杨千嬅", lyricist: "林夕", composer: "于逸尧", file: "lyrics/假如让我说下去.js" },
     { id: 331, title: "少女的祈祷", artist: "杨千嬅", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/少女的祈祷.js" },
-    { id: 340, title: "数你", artist: "杨千嬅", lyricist: "林夕", composer: "蔡德才", file: "lyrics/数你.js" },
+    { id: 340, title: "数你（live）", artist: "杨千嬅", lyricist: "林夕", composer: "蔡德才", file: "lyrics/数你（live）.js" },
     { id: 343, title: "野孩子", artist: "杨千嬅", lyricist: "黄伟文", composer: "雷颂德", file: "lyrics/野孩子.js" },
     { id: 346, title: "河童", artist: "杨千嬅", lyricist: "林夕", composer: "黄丹仪", file: "lyrics/河童.js" },
     { id: 355, title: "可惜我是水瓶座", artist: "杨千嬅", lyricist: "黄伟文", composer: "雷颂德", file: "lyrics/可惜我是水瓶座.js" },
