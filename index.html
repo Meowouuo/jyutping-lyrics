@@ -2721,8 +2721,7 @@
         currentSong.lyrics.forEach((line, index) => {
             // 段落分隔：连续两个空行会产生 paragraphBreak 标记
             if (line.paragraphBreak) {
-                lyricsHtml += `<div class="lyric-paragraph-break" data-song-index="${index}" data-line="${displayLineIndex}"></div>`;
-                displayLineIndex++;  // 空白行也计入行号
+                lyricsHtml += `<div class="lyric-paragraph-break" data-song-index="${index}"></div>`;
                 return;
             }
 
