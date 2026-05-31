@@ -3,7 +3,7 @@
 (function() {
     const song = {
         id: 340,
-        title: "数你",
+        title: "数你（live）",
         titleJyutping: ["sou3","nei5"],
         artist: "杨千嬅",
         artistJyutping: ["joeng4","cin1","waa6"],
