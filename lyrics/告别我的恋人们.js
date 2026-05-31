@@ -45,7 +45,6 @@
             { chars: ["要","是","从","未","伤","心","到","害","怕"], jp: ["jiu3","si6","cung4","mei6","soeng1","sam1","dou3","hoi6","paa3"] },
             { chars: ["没","有","承","受","过","多","少","牵","挂"], jp: ["mut6","jau5","sing4","sau6","gwo3","do1","siu2","hin1","gwaa3"] },
             { chars: ["又","怎","证","实","感","情","开","过","花"], jp: ["jau6","zam2","zing3","sat6","gam2","cing4","hoi1","gwo3","faa1"] },
-            { paragraphBreak: true },
             { chars: ["又","怎","容","纳","下","个","她"], jp: ["jau6","zam2","jung4","naap6","haa6","go3","taa1"] },
             { chars: ["回","望","初","恋","为","何","未","杀","出","血","路"], jp: ["wui4","mong6","co1","lyun2","wai4","ho4","mei6","saat3","ceot1","hyut3","lou6"] },
             { chars: ["才","能","体","会","到"], jp: ["coi4","nang4","tai2","wui5","dou3"] },
