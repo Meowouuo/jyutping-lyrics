@@ -743,15 +743,60 @@ function processDeletions(content, body, songTitle) {
         let targetIndex = -1;
         
         if (isBlankLine) {
-            // 删除空白行：找到第 targetLine 个 paragraphBreak
-            let blankLineCount = 0;
+            // 删除空白行：按行号查找（空白行也计入行号）
+            // 先尝试精确匹配
+            let lineCount = 1;
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i].includes('paragraphBreak')) {
-                    blankLineCount++;
-                    if (blankLineCount === targetLine) {
+                    if (lineCount === targetLine) {
                         targetIndex = i;
                         break;
                     }
+                    lineCount++;
+                    continue;
+                }
+                if (lines[i].includes('chars:')) {
+                    const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                    let segments = 1;
+                    if (charsMatch) {
+                        const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
+                        const charsArray = chars.map(c => c.replace(/"/g, ''));
+                        segments = countSegments(charsArray);
+                    }
+                    lineCount += segments;
+                }
+            }
+            
+            // 如果精确匹配没找到，查找目标行号前后的空白行
+            if (targetIndex === -1) {
+                let prevBlank = -1, nextBlank = -1;
+                let prevBlankLine = -1, nextBlankLine = -1;
+                lineCount = 1;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('paragraphBreak')) {
+                        if (lineCount < targetLine) { prevBlank = i; prevBlankLine = lineCount; }
+                        if (lineCount > targetLine && nextBlank === -1) { nextBlank = i; nextBlankLine = lineCount; }
+                        lineCount++;
+                        continue;
+                    }
+                    if (lines[i].includes('chars:')) {
+                        const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                        let segments = 1;
+                        if (charsMatch) {
+                            const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
+                            const charsArray = chars.map(c => c.replace(/"/g, ''));
+                            segments = countSegments(charsArray);
+                        }
+                        lineCount += segments;
+                    }
+                }
+                // 优先选择最近的空白行（按行号距离）
+                if (prevBlank !== -1 && nextBlank !== -1) {
+                    targetIndex = (targetLine - prevBlankLine) <= (nextBlankLine - targetLine) ? prevBlank : nextBlank;
+                } else if (prevBlank !== -1) {
+                    targetIndex = prevBlank;
+                } else if (nextBlank !== -1) {
+                    targetIndex = nextBlank;
                 }
             }
         } else {
