@@ -166,7 +166,7 @@ function processInsertions(content, insertions, songTitle) {
             if (lines[i].includes('paragraphBreak')) {
                 continue;
             }
-            if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
+            if (lines[i].includes('"chars":')) {
                 lineCount++;
                 if (lineCount === targetLine) {
                     targetIndex = i;
@@ -272,7 +272,7 @@ function processLineByLine(content, body, songTitle) {
             if (lines[i].includes('paragraphBreak')) {
                 continue; // paragraphBreak 不算行
             }
-            if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
+            if (lines[i].includes('"chars":')) {
                 // 计算这行歌词有多少个segment
                 const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
                 let segments = 1;
@@ -689,7 +689,7 @@ function processDeletions(content, body, songTitle) {
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) continue;
-            if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
+            if (lines[i].includes('"chars":')) {
                 const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
                 let segments = 1;
                 if (charsMatch) {
