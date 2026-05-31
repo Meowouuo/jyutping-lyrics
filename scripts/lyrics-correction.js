@@ -273,8 +273,19 @@ function processLineByLine(content, body, songTitle) {
                 continue; // paragraphBreak 不算行
             }
             if (lines[i].includes('"chars":')) {
-                // 计算这行歌词有多少个segment
-                const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                // 收集多行 chars 数组内容（跨行匹配）
+                let charsContent = '';
+                let j = i;
+                while (j < lines.length && !lines[j].includes(']')) {
+                    charsContent += lines[j];
+                    j++;
+                }
+                if (j < lines.length) {
+                    charsContent += lines[j]; // 包含 ] 的行
+                }
+                
+                // 提取 chars 数组内容
+                const charsMatch = charsContent.match(/"chars":\s*\[([\s\S]*?)\]/);
                 let segments = 1;
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
@@ -298,9 +309,17 @@ function processLineByLine(content, body, songTitle) {
             continue;
         }
         
-        // 获取当前行的 chars
-        const line = lines[targetIndex];
-        const charsMatch = line.match(/chars:\s*\[([^\]]+)\]/);
+        // 获取当前行的 chars（跨行匹配）
+        let charsContent = '';
+        let j = targetIndex;
+        while (j < lines.length && !lines[j].includes(']')) {
+            charsContent += lines[j];
+            j++;
+        }
+        if (j < lines.length) {
+            charsContent += lines[j];
+        }
+        const charsMatch = charsContent.match(/"chars":\s*\[([\s\S]*?)\]/);
         if (!charsMatch) {
             failedRows.push(row);
             continue;
@@ -690,7 +709,18 @@ function processDeletions(content, body, songTitle) {
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) continue;
             if (lines[i].includes('"chars":')) {
-                const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                // 收集多行 chars 数组内容（跨行匹配）
+                let charsContent = '';
+                let j = i;
+                while (j < lines.length && !lines[j].includes(']')) {
+                    charsContent += lines[j];
+                    j++;
+                }
+                if (j < lines.length) {
+                    charsContent += lines[j];
+                }
+                
+                const charsMatch = charsContent.match(/"chars":\s*\[([\s\S]*?)\]/);
                 let segments = 1;
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
