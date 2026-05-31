@@ -461,7 +461,7 @@ function updateEditList() {
         // 遍历之前的所有歌词行
         for (let i = 0; i < item.lineIndex; i++) {
             // 跳过段落分隔符
-            if (song.lyrics[i].paragraphBreak) continue;
+            if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
             if (!song.lyrics[i].chars) continue;
             
             // 统计这行的segment数（与前端渲染逻辑一致）
@@ -593,7 +593,7 @@ function updateEditList() {
     deletions.forEach((item, idx) => {
         let displayLine = 0;
         for (let i = 0; i < item.lineIndex; i++) {
-            if (song.lyrics[i].paragraphBreak) continue;
+            if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
             if (!song.lyrics[i].chars) continue;
             let segments = 1;
             let inBrackets = 0;
@@ -1280,7 +1280,7 @@ function submitEdit() {
                 // 计算displayLine（基于segment的行号，与渲染逻辑一致）
                 let displayLine = 0;
                 for (let i = 0; i < e.lineIndex; i++) {
-                    if (song.lyrics[i].paragraphBreak) continue;
+                    if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
                     if (!song.lyrics[i].chars) continue;
                     
                     let segments = 1;
