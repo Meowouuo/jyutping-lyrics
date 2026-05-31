@@ -158,8 +158,8 @@ function processInsertions(content, insertions, songTitle) {
         // 解析歌词，生成 chars 和 jp 数组
         const lines = newContent.split('\n');
         
-        // 找到目标行的位置
-        let lineCount = 0;
+        // 找到目标行的位置（使用 countSegments 计算行号）
+        let lineCount = 1;
         let targetIndex = -1;
         
         for (let i = 0; i < lines.length; i++) {
@@ -167,17 +167,39 @@ function processInsertions(content, insertions, songTitle) {
                 continue;
             }
             if (lines[i].includes('chars:')) {
-                lineCount++;
-                if (lineCount === targetLine) {
+                const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                let segments = 1;
+                if (charsMatch) {
+                    const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
+                    const charsArray = chars.map(c => c.replace(/"/g, ''));
+                    segments = countSegments(charsArray);
+                }
+                
+                if (targetLine >= lineCount && targetLine < lineCount + segments) {
                     targetIndex = i;
                     break;
                 }
+                
+                lineCount += segments;
             }
         }
         
+        // 如果没找到目标行，检查是否想在最后一行后插入
         if (targetIndex === -1) {
-            failedInserts.push(ins);
-            continue;
+            // 允许在最后一行后插入（targetLine === lineCount 且 position === '后'）
+            if (targetLine === lineCount && position === '后') {
+                // 找到最后一个 chars 行
+                for (let i = lines.length - 1; i >= 0; i--) {
+                    if (lines[i].includes('chars:')) {
+                        targetIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (targetIndex === -1) {
+                failedInserts.push(ins);
+                continue;
+            }
         }
         
         // 为每行歌词生成 chars 和 jp
