@@ -14,7 +14,7 @@
         lyrics: [
     { chars: ["曾", "经", " ", "念", "念", "未", "忘", "于", "三", "点"], jp: ["cang4", "ging1", "", "nim6", "nim6", "mei6", "mong4", "jyu1", "saam1", "dim2"] },
     { chars: ["响", "起", "轻", "软", "的", "声", "线"], jp: ["hoeng2", "hei2", "hing1", "jyun5", "dik1", "sing1", "sin3"] },
-    { chars: ["问", "我", "可", "会", "弄", "冷", "面"], jp: ["man6", "ngo5", "ho2", "wui5", "lung6", "laang5", "min6"] },
+    { chars: ["问", "我", "可", "会", "弄", "冷", "面"], jp: ["man6", "ngo5", "ho2", "wui5", "nung6", "laang5", "min6"] },
     { chars: ["是", "你", " ", "在", "我", "家", "过", "路", "望", "见"], jp: ["si6", "nei5", "", "zoi6", "ngo5", "gaa1", "gwo3", "lou6", "mong6", "gin3"] },
     { paragraphBreak: true },
     { chars: ["尚", "有", "一", "丝", "灯", "光"], jp: ["soeng6", "jau5", "jat1", "si1", "dang1", "gwong1"] },
