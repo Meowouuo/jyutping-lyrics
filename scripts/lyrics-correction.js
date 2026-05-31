@@ -696,9 +696,13 @@ function parseDeletions(body) {
         const match = line.match(/\|\s*第?(\d+)行?\s*\|\s*([^|]+)\|/);
         if (match) {
             const [, lineNum, originalText] = match;
+            const trimmedText = originalText.trim();
+            // 识别 [空白行] 标记
+            const isBlankLine = trimmedText.includes('[空白行]');
             deletions.push({
                 line: parseInt(lineNum.trim()),
-                originalText: originalText.trim()
+                originalText: trimmedText,
+                isBlankLine: isBlankLine
             });
         }
     }
@@ -734,39 +738,55 @@ function processDeletions(content, body, songTitle) {
     
     for (const del of sortedDeletions) {
         const targetLine = del.line;
+        const isBlankLine = del.isBlankLine;
         
-        // 找到目标行（使用与逐行纠错相同的segment计算逻辑）
-        let lineCount = 1;
         let targetIndex = -1;
         
-        for (let i = 0; i < lines.length; i++) {
-            if (lines[i].includes('paragraphBreak')) continue;
-            if (lines[i].includes('chars:')) {
-                // 收集多行 chars 数组内容（跨行匹配）
-                let charsContent = '';
-                let j = i;
-                while (j < lines.length && !lines[j].includes(']')) {
-                    charsContent += lines[j];
-                    j++;
+        if (isBlankLine) {
+            // 删除空白行：找到第 targetLine 个 paragraphBreak
+            let blankLineCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].includes('paragraphBreak')) {
+                    blankLineCount++;
+                    if (blankLineCount === targetLine) {
+                        targetIndex = i;
+                        break;
+                    }
                 }
-                if (j < lines.length) {
-                    charsContent += lines[j];
+            }
+        } else {
+            // 删除歌词行（使用与逐行纠错相同的segment计算逻辑）
+            let lineCount = 1;
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].includes('paragraphBreak')) continue;
+                if (lines[i].includes('chars:')) {
+                    // 收集多行 chars 数组内容（跨行匹配）
+                    let charsContent = '';
+                    let j = i;
+                    while (j < lines.length && !lines[j].includes(']')) {
+                        charsContent += lines[j];
+                        j++;
+                    }
+                    if (j < lines.length) {
+                        charsContent += lines[j];
+                    }
+                    
+                    const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
+                    let segments = 1;
+                    if (charsMatch) {
+                        const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
+                        const charsArray = chars.map(c => c.replace(/"/g, ''));
+                        segments = countSegments(charsArray);
+                    }
+                    
+                    if (targetLine >= lineCount && targetLine < lineCount + segments) {
+                        targetIndex = i;
+                        break;
+                    }
+                    
+                    lineCount += segments;
                 }
-                
-                const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
-                let segments = 1;
-                if (charsMatch) {
-                    const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
-                    const charsArray = chars.map(c => c.replace(/"/g, ''));
-                    segments = countSegments(charsArray);
-                }
-                
-                if (targetLine >= lineCount && targetLine < lineCount + segments) {
-                    targetIndex = i;
-                    break;
-                }
-                
-                lineCount += segments;
             }
         }
         
