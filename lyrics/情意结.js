@@ -14,8 +14,6 @@
         lyrics: [
             { paragraphBreak: true },
             { paragraphBreak: true },
-            { chars: ["为","何","每","次","早","餐"], jp: ["wai4","ho4","mui5","ci3","zou2","caan1"] },
-            { chars: ["仍","然","魂","离","魄","散"], jp: ["jing4","jin4","wan4","lei4","paak3","saan3"] },
             { chars: ["原","来","那","朝","分","手","都","要","啜","泣","中","上","班"], jp: ["jyun4","loi4","naa5","ciu4","fan1","sau2","dou1","jiu3","zyut3","jap1","zung1","soeng6","baan1"] },
             { chars: ["明","明","能","够","过","得","这","关"], jp: ["ming4","ming4","nang4","gau3","gwo3","dak1","ze5","gwaan1"] },
             { chars: ["赢","回","旁","人","盛","赞"], jp: ["jing4","wui4","pong4","jan4","sing6","zaan3"] },
