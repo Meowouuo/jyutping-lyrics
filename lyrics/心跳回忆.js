@@ -20,7 +20,7 @@
     { chars: ["尚", "有", "一", "丝", "灯", "光"], jp: ["soeng6", "jau5", "jat1", "si1", "dang1", "gwong1"] },
     { chars: ["以", "为", "还", "未", "沉", "睡", "便", "至", "电"], jp: ["ji5", "wai4", "waan4", "mei6", "cam4", "seoi6", "bin6", "zi3", "din6"] },
     { chars: ["从", "此", " ", "踏", "入", "二", "时", "差", "一", "点"], jp: ["cung4", "ci2", "", "daap6", "jap6", "ji6", "si4", "caa1", "jat1", "dim2"] },
-    { chars: ["一", "屋", "闪", "砾", "的", "光", "线"], jp: ["jat1", "uk1", "sim2", "lik1", "dik1", "gwong1", "sin3"] },
+    { chars: ["一", "屋", "闪", "烁", "的", "光", "线"], jp: ["jat1", "uk1", "sim2", "soek3", "dik1", "gwong1", "sin3"] },
     { paragraphBreak: true },
     { chars: ["让", "你", "估", "我", "这", "夜", "失", "眠"], jp: ["joeng6", "nei5", "gu2", "ngo5", "ze5", "je6", "sat1", "min4"] },
     { chars: ["无", "论", "彼", "此", "怎", "样", "变", " ", "回", "忆", "总", "会"], jp: ["mou4", "leon6", "bei2", "ci2", "zam2", "joeng6", "bin3", "", "wui4", "jik1", "zung2", "wui5"] },
