@@ -47,17 +47,17 @@
     { chars: ["往", "后", "情", "侣", "一", "如", "每", "次", "所", "料"], jp: ["wong5", "hau6", "cing4", "leoi5", "jat1", "jyu4", "mui5", "ci3", "so2", "liu6"] },
     { chars: ["我", "爱", "的", "不", "少", " ", "遗", "憾", "也", "不", "过", "是"], jp: ["ngo5", "ngoi3", "dik1", "bat1", "siu2", "", "wai4", "ham6", "jaa5", "bat1", "gwo3", "si6"] },
     { paragraphBreak: true },
-    { chars: ["并", "没", "法", "使", "我", "的", "心", "这", "样", "跳"], jp: ["bing6", "mut6", "faat3", "si2", "ngo5", "dik1", "sam1", "ze5", "joeng6", "tiu3"] }
-        { chars: ["无", "论", "事", "隔", "多", "年", "我", "也", "心", "跳"], jp: ["mou4", "leon6", "si6", "gaak3", "do1", "nin4", "ngo5", "jaa5", "sam1", "tiu3"] },
-        { chars: ["最", "后", "和", "你", "虽", "如", "我", "那", "所", "料"], jp: ["zeoi3", "hau6", "wo4", "nei5", "seoi1", "jyu4", "ngo5", "naa5", "so2", "liu6"] },
-        { chars: ["先", "挑", "引", "我", "的", "人", "爱", "得", "比", "我", "少"], jp: ["sin1", "tiu1", "jan5", "ngo5", "dik1", "jan4", "ngoi3", "dak1", "bei2", "ngo5", "siu2"] },
-        { chars: ["然", "后", "见", "面", "更", "少"], jp: ["jin4", "hau6", "gin3", "min6", "gang1", "siu2"] },
-        { chars: ["让", "我", "多", "谢", "你", "那", "几", "秒"], jp: ["joeng6", "ngo5", "do1", "ze6", "nei5", "naa5", "gei2", "miu5"] },
-        { chars: ["往", "后", "和", "每", "位", "也", "差", "些", "少"], jp: ["wong5", "hau6", "wo4", "mui5", "wai6", "jaa5", "caa1", "se1", "siu2"] },
-        { chars: ["仿", "佛", "我", "的", "心", "如", "不", "见", "了"], jp: ["fong2", "fat6", "ngo5", "dik1", "sam1", "jyu4", "bat1", "gin3", "liu5"] },
-        { chars: ["才", "能", "明", "白", "爱", "情"], jp: ["coi4", "nang4", "ming4", "baak6", "ngoi3", "cing4"] },
-        { chars: ["比", "所", "想", "加", "倍", "震", "撼", "再", "苦", "都", "会", "笑"], jp: ["bei2", "so2", "soeng2", "gaa1", "pui5", "zan3", "ham6", "zoi3", "fu2", "dou1", "wui6", "siu3"] },
-        { paragraphBreak: true },
+    { chars: ["并", "没", "法", "使", "我", "的", "心", "这", "样", "跳"], jp: ["bing6", "mut6", "faat3", "si2", "ngo5", "dik1", "sam1", "ze5", "joeng6", "tiu3"] },
+    { chars: ["无", "论", "事", "隔", "多", "年", "我", "也", "心", "跳"], jp: ["mou4", "leon6", "si6", "gaak3", "do1", "nin4", "ngo5", "jaa5", "sam1", "tiu3"] },
+    { chars: ["最", "后", "和", "你", "虽", "如", "我", "那", "所", "料"], jp: ["zeoi3", "hau6", "wo4", "nei5", "seoi1", "jyu4", "ngo5", "naa5", "so2", "liu6"] },
+    { chars: ["先", "挑", "引", "我", "的", "人", "爱", "得", "比", "我", "少"], jp: ["sin1", "tiu1", "jan5", "ngo5", "dik1", "jan4", "ngoi3", "dak1", "bei2", "ngo5", "siu2"] },
+    { chars: ["然", "后", "见", "面", "更", "少"], jp: ["jin4", "hau6", "gin3", "min6", "gang1", "siu2"] },
+    { chars: ["让", "我", "多", "谢", "你", "那", "几", "秒"], jp: ["joeng6", "ngo5", "do1", "ze6", "nei5", "naa5", "gei2", "miu5"] },
+    { chars: ["往", "后", "和", "每", "位", "也", "差", "些", "少"], jp: ["wong5", "hau6", "wo4", "mui5", "wai6", "jaa5", "caa1", "se1", "siu2"] },
+    { chars: ["仿", "佛", "我", "的", "心", "如", "不", "见", "了"], jp: ["fong2", "fat6", "ngo5", "dik1", "sam1", "jyu4", "bat1", "gin3", "liu5"] },
+    { chars: ["才", "能", "明", "白", "爱", "情"], jp: ["coi4", "nang4", "ming4", "baak6", "ngoi3", "cing4"] },
+    { chars: ["比", "所", "想", "加", "倍", "震", "撼", "再", "苦", "都", "会", "笑"], jp: ["bei2", "so2", "soeng2", "gaa1", "pui5", "zan3", "ham6", "zoi3", "fu2", "dou1", "wui6", "siu3"] },
+    { paragraphBreak: true },
 ]
     };
     // 【方案A】通过 __songPush 接口注册歌曲数据
