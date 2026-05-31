@@ -930,6 +930,49 @@ function enterDeleteMode() {
         line.onclick = (e) => selectDeleteLine(e, lineIndex);
         line.style.cursor = 'pointer';
     });
+    
+    // 为空白行（段落分隔）添加点击事件
+    document.querySelectorAll('.lyric-paragraph-break').forEach((line) => {
+        const songIndex = parseInt(line.dataset.songIndex);
+        if (isNaN(songIndex)) return;
+        line.onclick = (e) => selectDeleteParagraphBreak(e, songIndex);
+        line.style.cursor = 'pointer';
+    });
+}
+
+
+// ============================================
+// 选择删除空白行（段落分隔）
+// 功能：用户点击空白行时，标记/取消标记为待删除
+// ============================================
+function selectDeleteParagraphBreak(event, songIndex) {
+    event.stopPropagation();
+    
+    const song = window.currentSong;
+    const line = song.lyrics[songIndex];
+    if (!line || !line.paragraphBreak) return;
+    
+    const editKey = 'pb_' + songIndex;
+    
+    // 检查是否已在删除列表中
+    const existingIdx = deletions.findIndex(d => d.editKey === editKey);
+    if (existingIdx > -1) {
+        // 取消删除
+        deletions.splice(existingIdx, 1);
+        event.currentTarget.style.background = '';
+    } else {
+        // 添加删除
+        deletions.push({
+            editKey: editKey,
+            lineIndex: songIndex,
+            isParagraphBreak: true,
+            originalText: '[空白行]'
+        });
+        event.currentTarget.style.background = '#fff1f0';
+    }
+    
+    updateEditList();
+    updateEditStatus();
 }
 
 // ============================================
@@ -989,14 +1032,25 @@ function removeDeletion(idx) {
     // 恢复对应行的高亮
     const item = deletions[idx];
     if (item) {
-        document.querySelectorAll('.lyric-line').forEach(line => {
-            const si = parseInt(line.dataset.songIndex);
-            const ss = parseInt(line.dataset.segmentStart);
-            const key = isNaN(ss) ? si : si + '_' + ss;
-            if (key === item.editKey) {
-                line.style.background = '';
-            }
-        });
+        if (item.isParagraphBreak) {
+            // 空白行
+            document.querySelectorAll('.lyric-paragraph-break').forEach(line => {
+                const si = parseInt(line.dataset.songIndex);
+                if (si === item.lineIndex) {
+                    line.style.background = '';
+                }
+            });
+        } else {
+            // 普通歌词行
+            document.querySelectorAll('.lyric-line').forEach(line => {
+                const si = parseInt(line.dataset.songIndex);
+                const ss = parseInt(line.dataset.segmentStart);
+                const key = isNaN(ss) ? si : si + '_' + ss;
+                if (key === item.editKey) {
+                    line.style.background = '';
+                }
+            });
+        }
     }
     deletions.splice(idx, 1);
     updateEditList();
