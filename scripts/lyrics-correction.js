@@ -358,7 +358,17 @@ function processLineByLine(content, body, songTitle) {
         let newChars, newJp;
         if (isSegmentEdit) {
             // segment 编辑：只替换 segment 部分，保留其他字符的粤拼
-            const jpMatch = line.match(/jp:\s*\[([^\]]+)\]/);
+            // 跨行匹配 jp 数组
+            let jpContent = '';
+            let k = targetIndex;
+            while (k < lines.length && !lines[k].includes('"jp":')) k++;
+            while (k < lines.length && !lines[k].includes(']')) {
+                jpContent += lines[k];
+                k++;
+            }
+            if (k < lines.length) jpContent += lines[k];
+            
+            const jpMatch = jpContent.match(/"jp":\s*\[([\s\S]*?)\]/);
             if (!jpMatch) {
                 failedRows.push(row);
                 continue;
