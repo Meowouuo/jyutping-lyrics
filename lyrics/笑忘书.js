@@ -32,6 +32,8 @@
             { chars: ["彼","此","堕","进","灰","网"], jp: ["bei2","ci2","do6","zeon3","fui1","mong5"] },
             { chars: ["沉","溺","　","烦","扰","　","磨","折","　","何","苦","　","多","讲"], jp: ["cam4","nik6","","faan4","jiu2","","mo4","zit3","","ho4","fu2","","do1","gong2"] },
         { paragraphBreak: true },
+        { paragraphBreak: true },
+        { paragraphBreak: true },
             { chars: ["我","　","快","乐","到","孤","独"], jp: ["ngo5","","faai3","lok6","dou3","gu1","duk6"] },
             { chars: ["我","　","缺","乏","到","满","足"], jp: ["ngo5","","kyut3","fat6","dou3","mun5","zuk1"] },
             { chars: ["游","戏","　","就","算","愉","快","不","会","幸","福"], jp: ["jau4","hei3","","zau6","syun3","jyu4","faai3","bat1","wui6","hang6","fuk1"] },
