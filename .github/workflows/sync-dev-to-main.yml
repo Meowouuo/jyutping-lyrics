@@ -184,8 +184,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 获取所有以 fix/ 或 new-song/ 开头的远程分支
-          for branch in $(git branch -r | grep -E "origin/(fix/|new-song/|auto/|delete/)" | sed 's/origin\///' | tr -d ' '); do
+          # 获取所有临时分支（排除 main 和 dev）
+          # 匹配格式：fix/xxx, new-song/xxx, auto/xxx, delete/xxx, fix-xxx, new-song-xxx 等
+          for branch in $(git branch -r | grep -E "origin/(fix/|new-song/|auto/|delete/|fix-|new-song-|auto-|delete-)" | sed 's/origin\///' | tr -d ' '); do
             # 尝试删除远程分支
             if gh api "repos/{owner}/{repo}/git/refs/heads/$branch" --silent 2>/dev/null; then
               git push origin --delete "$branch" 2>/dev/null && echo "已删除分支: $branch" || echo "无法删除分支: $branch"
