@@ -211,8 +211,20 @@ function processInsertions(content, insertions, songTitle) {
                 // 空行生成 paragraphBreak
                 newLines.push('        { paragraphBreak: true },');
             } else {
+                // 检查行内是否有空格（空格 = 1个空白行）
+                const spaceParts = lyricLine.split(/(\s+)/);
+                let hasSpace = false;
+                for (const part of spaceParts) {
+                    if (/^\s+$/.test(part)) {
+                        // 空格生成 paragraphBreak
+                        newLines.push('        { paragraphBreak: true },');
+                        hasSpace = true;
+                    }
+                }
+                // 如果有空格，去掉空格后再匹配粤拼
+                const textToMatch = hasSpace ? lyricLine.replace(/\s+/g, '') : lyricLine;
                 // 匹配粤拼
-                const matched = matchJyutping(lyricLine);
+                const matched = matchJyutping(textToMatch);
                 const chars = matched.map(m => `"${m.char}"`).join(', ');
                 const jp = matched.map(m => /[\u4e00-\u9fff\u3400-\u4dbfa-zA-Z0-9]/.test(m.char) ? `"${m.jp}"` : `""`).join(', ');
                 newLines.push(`        { chars: [${chars}], jp: [${jp}] },`);
