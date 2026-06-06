@@ -304,7 +304,8 @@ function processLineByLine(content, body, songTitle) {
         // 遍历文件行，找到目标行
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                continue; // paragraphBreak 不算行
+                lineCount++; // paragraphBreak 也计入行号（与前端一致）
+                continue;
             }
             if (lines[i].includes('chars:')) {
                 // 收集多行 chars 数组内容（跨行匹配）
@@ -816,7 +817,7 @@ function processDeletions(content, body, songTitle) {
             let lineCount = 1;
             
             for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes('paragraphBreak')) continue;
+                if (lines[i].includes('paragraphBreak')) { lineCount++; continue; }
                 if (lines[i].includes('chars:')) {
                     // 收集多行 chars 数组内容（跨行匹配）
                     let charsContent = '';
