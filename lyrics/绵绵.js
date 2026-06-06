@@ -35,7 +35,7 @@
             { paragraphBreak: true },
             { chars: ["和","你","也","许","不","会","再","拥","抱"], jp: ["wo4","nei5","jaa5","heoi2","bat1","wui6","zoi3","jung2","pou5"] },
             { chars: ["待","你","我","都","苍","老"], jp: ["doi6","nei5","ngo5","dou1","cong1","lou5"] },
-            { chars: ["散","半","里","的","步"], jp: ["saan3","bun3","leoi5","dik1","bou6"] },
+            { chars: ["散","半","里","的","步"], jp: ["saan3", "bun3", "lei5", "dik1", "bou6"] },
             { chars: ["前","尘","就","似","轻","于","鸿","毛"], jp: ["cin4","can4","zau6","ci5","hing1","jyu1","hung4","mou4"] },
             { chars: ["提","及","心","底","苦","恼"], jp: ["tai4","kap6","sam1","dai2","fu2","nou5"] },
             { chars: ["如","像","自","言","自","语","说","他","人","是","非","多","么","好"], jp: ["jyu4","zoeng6","zi6","jin4","zi6","jyu5","syut3","taa1","jan4","si6","fei1","do1","mo1","hou2"] },
