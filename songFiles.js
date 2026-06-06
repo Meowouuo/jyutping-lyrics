@@ -113,4 +113,6 @@ const songFiles = [
     { id: 796, title: "无人之境", artist: "陈奕迅", lyricist: "黄伟文", composer: "Eric Kwok", file: "lyrics/无人之境.js" },
     { id: 802, title: "绵绵", artist: "陈奕迅", lyricist: "林夕", composer: "柳重言", file: "lyrics/绵绵.js" },
     { id: 806, title: "落花流水", artist: "陈奕迅", lyricist: "黄伟文", composer: "郭伟亮/陈奕迅", file: "lyrics/落花流水.js" },
+    { id: 818, title: "大个女", artist: "陈奕迅", lyricist: "林夕", composer: "江志仁", file: "lyrics/大个女.js" },
+    { id: 820, title: "于心有愧", artist: "陈奕迅", lyricist: "林夕", composer: "钟达茵", file: "lyrics/于心有愧.js" },
 ];
