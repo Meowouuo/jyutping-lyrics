@@ -6,6 +6,8 @@
 const JYUTPING_CONTEXT_RULES = {
     "千里": { "里": "lei5" },
     "万里": { "里": "lei5" },
+    "半里": { "里": "lei5" },
+    "公里": { "里": "lei5" },
 };
 
 /**
