@@ -490,9 +490,10 @@ function matchJyutping(text) {
         }
     }
     
-    // 特殊处理："半里"中的"里"读 lei5
+
+    // 数字+里 的通用规则（十里、百里、一里、两里等）
     for (let i = 0; i < result.length - 1; i++) {
-        if (result[i].char === '半' && result[i + 1].char === '里') {
+        if (result[i + 1].char === '里' && /^[一二三四五六七八九十百千万零两\d]$/.test(result[i].char)) {
             result[i + 1].jp = 'lei5';
         }
     }
