@@ -490,6 +490,13 @@ function matchJyutping(text) {
         }
     }
     
+    // 特殊处理："半里"中的"里"读 lei5
+    for (let i = 0; i < result.length - 1; i++) {
+        if (result[i].char === '半' && result[i + 1].char === '里') {
+            result[i + 1].jp = 'lei5';
+        }
+    }
+    
     if (typeof applyContextRules === 'function') {
         return applyContextRules(result);
     }
