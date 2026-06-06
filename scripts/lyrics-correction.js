@@ -164,6 +164,7 @@ function processInsertions(content, insertions, songTitle) {
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
+                lineCount++; // paragraphBreak 也计入行号（与前端一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
