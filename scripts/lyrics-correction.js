@@ -161,10 +161,11 @@ function processInsertions(content, insertions, songTitle) {
         // 找到目标行的位置（使用 countSegments 计算行号）
         let lineCount = 1;
         let targetIndex = -1;
+        let prevWord = '';  // 跨行传递 prevWord
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++; // paragraphBreak 也计入行号（与前端一致）
+                lineCount++; // paragraphBreak 计入行号（与前端逐行纠错面板一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -173,7 +174,9 @@ function processInsertions(content, insertions, songTitle) {
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                     const charsArray = chars.map(c => c.replace(/"/g, ''));
-                    segments = countSegments(charsArray);
+                    const result = countSegments(charsArray, prevWord);
+                    segments = result.segments;
+                    prevWord = result.prevWord;
                 }
                 
                 if (targetLine >= lineCount && targetLine < lineCount + segments) {
@@ -301,11 +304,12 @@ function processLineByLine(content, body, songTitle) {
         const lines = newContent.split('\n');
         let lineCount = 1;
         let targetIndex = -1;
+        let prevWord = '';  // 跨行传递 prevWord
         
         // 遍历文件行，找到目标行
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++; // paragraphBreak 也计入行号（与前端一致）
+                lineCount++; // paragraphBreak 计入行号（与前端逐行纠错面板一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -326,7 +330,9 @@ function processLineByLine(content, body, songTitle) {
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                     const charsArray = chars.map(c => c.replace(/"/g, ''));
-                    segments = countSegments(charsArray);
+                    const result = countSegments(charsArray, prevWord);
+                    segments = result.segments;
+                    prevWord = result.prevWord;
                 }
                 
                 // 检查目标行号是否在当前行的segment范围内
@@ -339,7 +345,32 @@ function processLineByLine(content, body, songTitle) {
             }
         }
         
-        // 未找到目标行，记录失败
+        // 未找到目标行，尝试用原歌词文本在整个文件中搜索（fallback）
+        if (targetIndex === -1) {
+            const simplifiedOriginal = toSimplified(originalText.toString().trim());
+            for (let i = 0; i < lines.length; i++) {
+                if (!lines[i].includes('chars:')) continue;
+                let charsContent = '';
+                let j = i;
+                while (j < lines.length && !lines[j].includes(']')) {
+                    charsContent += lines[j];
+                    j++;
+                }
+                if (j < lines.length) charsContent += lines[j];
+                const cm = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
+                if (cm) {
+                    const ci = cm[1].match(/"([^"]*)"/g) || [];
+                    const currentChars = ci.map(c => c.replace(/"/g, '')).join('');
+                    const sc = toSimplified(currentChars);
+                    if (sc.includes(simplifiedOriginal)) {
+                        targetIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // 仍未找到，记录失败
         if (targetIndex === -1) {
             failedRows.push(row);
             continue;
@@ -760,6 +791,7 @@ function processDeletions(content, body, songTitle) {
             // 删除空白行：按行号查找（空白行也计入行号）
             // 先尝试精确匹配
             let lineCount = 1;
+            let prevWord = '';  // 跨行传递 prevWord
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i].includes('paragraphBreak')) {
                     if (lineCount === targetLine) {
@@ -775,7 +807,9 @@ function processDeletions(content, body, songTitle) {
                     if (charsMatch) {
                         const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                         const charsArray = chars.map(c => c.replace(/"/g, ''));
-                        segments = countSegments(charsArray);
+                        const result = countSegments(charsArray, prevWord);
+                        segments = result.segments;
+                        prevWord = result.prevWord;
                     }
                     lineCount += segments;
                 }

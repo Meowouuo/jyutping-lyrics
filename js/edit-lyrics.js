@@ -458,6 +458,7 @@ function updateEditList() {
         // 计算displayLine（基于segment的行号，与渲染逻辑一致）
         // 确保用户看到的行号与前端显示一致
         let displayLine = 0;
+        let prevWord = '';  // 跨行传递 prevWord
         // 遍历之前的所有歌词行
         for (let i = 0; i < item.lineIndex; i++) {
             // 跳过段落分隔符
@@ -473,7 +474,6 @@ function updateEditList() {
             let segments = 1;
             let inBrackets = 0;
             let charCountSinceLastSpace = 0;
-            let prevWord = '';
             // 提取上一个词（用于规则1判断）
             let lastWord = '';
             for (let ci = song.lyrics[i].chars.length - 1; ci >= 0; ci--) {
@@ -518,6 +518,13 @@ function updateEditList() {
                         }
                     }
                 }
+            }
+            // 更新 prevWord 用于下一行判断（当前行最后一个词）
+            prevWord = '';
+            for (let k = song.lyrics[i].chars.length - 1; k >= 0; k--) {
+                const c = song.lyrics[i].chars[k];
+                if (c === ' ' || c === '　') break;
+                prevWord = c + prevWord;
             }
             displayLine += segments;
         }
@@ -592,13 +599,13 @@ function updateEditList() {
     // 显示删除行项
     deletions.forEach((item, idx) => {
         let displayLine = 0;
+        let prevWord = '';  // 跨行传递 prevWord
         for (let i = 0; i < item.lineIndex; i++) {
             if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
             if (!song.lyrics[i].chars) continue;
             let segments = 1;
             let inBrackets = 0;
             let charCountSinceLastSpace = 0;
-            let prevWord = '';
             for (let ci = 0; ci < song.lyrics[i].chars.length; ci++) {
                 const c = song.lyrics[i].chars[ci];
                 if (c === '《' || c === '(' || c === '（') inBrackets++;
@@ -626,6 +633,13 @@ function updateEditList() {
                         else prevWord += c;
                     }
                 }
+            }
+            // 更新 prevWord 用于下一行判断
+            prevWord = '';
+            for (let k = song.lyrics[i].chars.length - 1; k >= 0; k--) {
+                const c = song.lyrics[i].chars[k];
+                if (c === ' ' || c === '　') break;
+                prevWord = c + prevWord;
             }
             displayLine += segments;
         }
