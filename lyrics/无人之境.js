@@ -1,0 +1,75 @@
+// 歌曲：无人之境
+
+(function() {
+    const song = {
+        id: 796,
+        title: "无人之境",
+        titleJyutping: ["mou4","jan4","zi1","ging2"],
+        artist: "陈奕迅",
+        artistJyutping: ["can4","jik6","seon3"],
+        lyricist: "黄伟文",
+        lyricistJyutping: ["wong4","wai5","man4"],
+        composer: "Eric Kwok",
+        composerJyutping: ["","","","","","","","",""],
+        lyrics: [
+            { chars: ["让","理","智","在","叫","着","冷","静","冷","静"], jp: ["joeng6","lei5","zi3","zoi6","giu3","zoek6","laang5","zing6","laang5","zing6"] },
+            { chars: ["还","恃","住","年","少","气","盛"], jp: ["waan4","ci5","zyu6","nin4","siu3","hei3","sing6"] },
+            { chars: ["让","我","对","着","冲","动"], jp: ["joeng6","ngo5","deoi3","zoek6","cung1","dung6"] },
+            { chars: ["背","着","宿","命"], jp: ["bui3","zoek6","suk1","ming6"] },
+            { chars: ["遗","忘","自","己","的","姓"], jp: ["wai4","mong4","zi6","gei2","dik1","sing3"] },
+            { paragraphBreak: true },
+            { chars: ["沉","睡","的","凶","猛","在","甦","醒"], jp: ["cam4","seoi6","dik1","hung1","maang5","zoi6","sou1","sing2"] },
+            { chars: ["完","全","为","你","现","形"], jp: ["jyun4","cyun4","wai4","nei5","jin6","jing4"] },
+            { chars: ["这","个","世","界","最","坏","罪","名"], jp: ["ze5","go3","sai3","gaai3","zeoi3","waai6","zeoi6","ming4"] },
+            { chars: ["叫","太","易","动","情"], jp: ["giu3","taai3","ji6","dung6","cing4"] },
+            { chars: ["但","我","喜","欢","这","罪","名"], jp: ["daan6","ngo5","hei2","fun1","ze5","zeoi6","ming4"] },
+            { paragraphBreak: true },
+            { chars: ["惊","天","动","地"], jp: ["ging1","tin1","dung6","dei6"] },
+            { chars: ["只","可","惜","天","地","亦","无","情"], jp: ["zi2","ho2","sik1","tin1","dei6","jik6","mou4","cing4"] },
+            { chars: ["不","敢","有","风"], jp: ["bat1","gam2","jau5","fung1"] },
+            { chars: ["不","敢","有","声"], jp: ["bat1","gam2","jau5","sing1"] },
+            { chars: ["这","爱","情","无","人","证"], jp: ["ze5","ngoi3","cing4","mou4","jan4","zing3"] },
+            { chars: ["飞","天","遁","地"], jp: ["fei1","tin1","deon6","dei6"] },
+            { chars: ["贪","一","刻","的","乐","极","忘","形"], jp: ["taam1","jat1","haak1","dik1","lok6","gik6","mong4","jing4"] },
+            { chars: ["好","想","说","谎","不","眨","眼","睛"], jp: ["hou2","soeng2","syut3","fong1","bat1","zaam2","ngaan5","zing1"] },
+            { chars: ["这","爱","情","无","人","性"], jp: ["ze5","ngoi3","cing4","mou4","jan4","sing3"] },
+            { paragraphBreak: true },
+            { chars: ["若","世","界","陷","进","大","骗","局","里","面"], jp: ["joek6","sai3","gaai3","haam6","zeon3","daai6","pin3","guk6","leoi5","min6"] },
+            { chars: ["朋","友","亦","难","以","发","现"], jp: ["pang4","jau5","jik6","naan4","ji5","faat3","jin6"] },
+            { chars: ["共","你","隔","着","空","在","秘","密","通","电"], jp: ["gung6","nei5","gaak3","zoek6","hung1","zoi6","bei3","mat6","tung1","din6"] },
+            { chars: ["挑","战","道","德","底","线"], jp: ["tiu1","zin3","dou6","dak1","dai2","sin3"] },
+            { paragraphBreak: true },
+            { chars: ["如","若","早","三","五","年","相","见"], jp: ["jyu4","joek6","zou2","saam1","ng5","nin4","soeng1","gin3"] },
+            { chars: ["何","来","内","心","交","战","？"], jp: ["ho4","loi4","noi6","sam1","gaau1","zin3",""] },
+            { chars: ["我","信","与","你","继","续","乱","缠"], jp: ["ngo5","seon3","jyu5","nei5","gai3","zuk6","lyun6","cin4"] },
+            { chars: ["难","再","有","发","展"], jp: ["naan4","zoi3","jau5","faat3","zin2"] },
+            { chars: ["但","我","想","跟","你","乱","缠"], jp: ["daan6","ngo5","soeng2","gan1","nei5","lyun6","cin4"] },
+            { paragraphBreak: true },
+            { chars: ["惊","天","动","地"], jp: ["ging1","tin1","dung6","dei6"] },
+            { chars: ["只","可","惜","天","地","亦","无","情"], jp: ["zi2","ho2","sik1","tin1","dei6","jik6","mou4","cing4"] },
+            { chars: ["不","敢","有","风"], jp: ["bat1","gam2","jau5","fung1"] },
+            { chars: ["不","敢","有","声"], jp: ["bat1","gam2","jau5","sing1"] },
+            { chars: ["这","爱","情","无","人","证"], jp: ["ze5","ngoi3","cing4","mou4","jan4","zing3"] },
+            { chars: ["飞","天","遁","地"], jp: ["fei1","tin1","deon6","dei6"] },
+            { chars: ["贪","一","刻","的","乐","极","忘","形"], jp: ["taam1","jat1","haak1","dik1","lok6","gik6","mong4","jing4"] },
+            { chars: ["好","想","说","谎","不","眨","眼","睛"], jp: ["hou2","soeng2","syut3","fong1","bat1","zaam2","ngaan5","zing1"] },
+            { chars: ["似","进","入","无","人","境"], jp: ["ci5","zeon3","jap6","mou4","jan4","ging2"] },
+            { paragraphBreak: true },
+            { chars: ["即","使","间","整","个","约","会","情","调","幽","暗","似","地","下","城"], jp: ["zik1","si2","gaan1","zing2","go3","joek3","wui6","cing4","diu6","jau1","am3","ci5","dei6","haa6","sing4"] },
+            { chars: ["还","是","算","温","馨"], jp: ["waan4","si6","syun3","wan1","hing1"] },
+            { chars: ["多","么","想","跟","你","散","步","桥","上","把","臂","看","着","风","景"], jp: ["do1","mo1","soeng2","gan1","nei5","saan3","bou6","kiu4","soeng6","baa2","bei3","hon3","zoek6","fung1","ging2"] },
+            { chars: ["但","是","我","清","醒"], jp: ["daan6","si6","ngo5","cing1","sing2"] },
+            { chars: ["月","亮","总","不","肯","照","亮","情","欲","深","处","那","道","背","影"], jp: ["jyut6","loeng6","zung2","bat1","hang2","ziu3","loeng6","cing4","juk6","sam1","cyu5","naa5","dou6","bui3","jing2"] },
+            { chars: ["你","我","像","快","快","乐","乐","同","游","在","异","境"], jp: ["nei5","ngo5","zoeng6","faai3","faai3","lok6","lok6","tung4","jau4","zoi6","ji6","ging2"] },
+            { chars: ["浪","漫","到","一","起","惹","绝","症"], jp: ["long6","maan6","dou3","jat1","hei2","je5","zyut6","zing3"] },
+            { paragraphBreak: true },
+            { chars: ["不","想","说","明"], jp: ["bat1","soeng2","syut3","ming4"] },
+            { chars: ["只","想","反","应"], jp: ["zi2","soeng2","faan2","jing3"] }
+        ]
+    };
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
+})();
