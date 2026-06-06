@@ -119,14 +119,14 @@ function toTraditional(text) {
 //
 // 返回值：分割后的段数
 // ============================================
-function countSegments(chars) {
+function countSegments(chars, initialPrevWord = '') {
     // 特殊情况处理
-    if (!chars || !chars.length) return 0;
+    if (!chars || !chars.length) return { segments: 0, prevWord: initialPrevWord };
 
     let segments = 1;  // 至少有一段
     let inBrackets = 0;  // 括号嵌套层级
     let charCountSinceLastSpace = 0;  // 自上次空格以来的汉字计数
-    let prevWord = '';  // 空格前的累积词
+    let prevWord = initialPrevWord;  // 空格前的累积词（支持跨行传递）
 
     // 遍历每个字符
     for (let i = 0; i < chars.length; i++) {
@@ -184,7 +184,8 @@ function countSegments(chars) {
         }
     }
 
-    return segments;
+    // 返回 segment 数和更新后的 prevWord
+    return { segments, prevWord };
 }
 
 // ============================================

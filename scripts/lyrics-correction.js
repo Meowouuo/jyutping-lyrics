@@ -161,10 +161,11 @@ function processInsertions(content, insertions, songTitle) {
         // 找到目标行的位置（使用 countSegments 计算行号）
         let lineCount = 1;
         let targetIndex = -1;
+        let prevWord = '';  // 跨行传递 prevWord
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++; // paragraphBreak 也计入行号（与前端一致）
+                // paragraphBreak 不计入行号（与前端渲染一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -173,7 +174,9 @@ function processInsertions(content, insertions, songTitle) {
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                     const charsArray = chars.map(c => c.replace(/"/g, ''));
-                    segments = countSegments(charsArray);
+                    const result = countSegments(charsArray, prevWord);
+                    segments = result.segments;
+                    prevWord = result.prevWord;
                 }
                 
                 if (targetLine >= lineCount && targetLine < lineCount + segments) {
@@ -301,11 +304,12 @@ function processLineByLine(content, body, songTitle) {
         const lines = newContent.split('\n');
         let lineCount = 1;
         let targetIndex = -1;
+        let prevWord = '';  // 跨行传递 prevWord
         
         // 遍历文件行，找到目标行
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++; // paragraphBreak 也计入行号（与前端一致）
+                // paragraphBreak 不计入行号（与前端渲染一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -326,7 +330,9 @@ function processLineByLine(content, body, songTitle) {
                 if (charsMatch) {
                     const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                     const charsArray = chars.map(c => c.replace(/"/g, ''));
-                    segments = countSegments(charsArray);
+                    const result = countSegments(charsArray, prevWord);
+                    segments = result.segments;
+                    prevWord = result.prevWord;
                 }
                 
                 // 检查目标行号是否在当前行的segment范围内
@@ -760,6 +766,7 @@ function processDeletions(content, body, songTitle) {
             // 删除空白行：按行号查找（空白行也计入行号）
             // 先尝试精确匹配
             let lineCount = 1;
+            let prevWord = '';  // 跨行传递 prevWord
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i].includes('paragraphBreak')) {
                     if (lineCount === targetLine) {
@@ -775,7 +782,9 @@ function processDeletions(content, body, songTitle) {
                     if (charsMatch) {
                         const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                         const charsArray = chars.map(c => c.replace(/"/g, ''));
-                        segments = countSegments(charsArray);
+                        const result = countSegments(charsArray, prevWord);
+                        segments = result.segments;
+                        prevWord = result.prevWord;
                     }
                     lineCount += segments;
                 }
@@ -818,7 +827,10 @@ function processDeletions(content, body, songTitle) {
             let lineCount = 1;
             
             for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes('paragraphBreak')) { lineCount++; continue; }
+                if (lines[i].includes('paragraphBreak')) {
+                    // paragraphBreak 不计入行号（与前端渲染一致）
+                    continue;
+                }
                 if (lines[i].includes('chars:')) {
                     // 收集多行 chars 数组内容（跨行匹配）
                     let charsContent = '';
