@@ -165,7 +165,7 @@ function processInsertions(content, insertions, songTitle) {
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                // paragraphBreak 不计入行号（与前端渲染一致）
+                lineCount++; // paragraphBreak 计入行号（与前端逐行纠错面板一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -309,7 +309,7 @@ function processLineByLine(content, body, songTitle) {
         // 遍历文件行，找到目标行
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                // paragraphBreak 不计入行号（与前端渲染一致）
+                lineCount++; // paragraphBreak 计入行号（与前端逐行纠错面板一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -345,7 +345,32 @@ function processLineByLine(content, body, songTitle) {
             }
         }
         
-        // 未找到目标行，记录失败
+        // 未找到目标行，尝试用原歌词文本在整个文件中搜索（fallback）
+        if (targetIndex === -1) {
+            const simplifiedOriginal = toSimplified(originalText.toString().trim());
+            for (let i = 0; i < lines.length; i++) {
+                if (!lines[i].includes('chars:')) continue;
+                let charsContent = '';
+                let j = i;
+                while (j < lines.length && !lines[j].includes(']')) {
+                    charsContent += lines[j];
+                    j++;
+                }
+                if (j < lines.length) charsContent += lines[j];
+                const cm = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
+                if (cm) {
+                    const ci = cm[1].match(/"([^"]*)"/g) || [];
+                    const currentChars = ci.map(c => c.replace(/"/g, '')).join('');
+                    const sc = toSimplified(currentChars);
+                    if (sc.includes(simplifiedOriginal)) {
+                        targetIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // 仍未找到，记录失败
         if (targetIndex === -1) {
             failedRows.push(row);
             continue;
@@ -827,10 +852,7 @@ function processDeletions(content, body, songTitle) {
             let lineCount = 1;
             
             for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes('paragraphBreak')) {
-                    // paragraphBreak 不计入行号（与前端渲染一致）
-                    continue;
-                }
+                if (lines[i].includes('paragraphBreak')) { lineCount++; continue; }
                 if (lines[i].includes('chars:')) {
                     // 收集多行 chars 数组内容（跨行匹配）
                     let charsContent = '';
