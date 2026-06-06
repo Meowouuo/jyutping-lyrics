@@ -21,7 +21,7 @@
             { chars: ["多","得","你","原","谅","我","肮","脏"], jp: ["do1","dak1","nei5","jyun4","loeng6","ngo5","kon3","zong1"] },
             { paragraphBreak: true },
             { chars: ["送","你","破","黑","胶"], jp: ["sung3","nei5","po3","hak1","gaau1"] },
-            { chars: ["廉","价","发","出","歌","声","依","稀"], jp: ["lim4","gaai3","faat3","ceot1","go1","sing1","ji1","hei1"] },
+            { chars: ["廉","价","发","出","歌","声","依","稀"], jp: ["lim4", "gaa3", "faat3", "ceot1", "go1", "sing1", "ji1", "hei1"] },
             { chars: ["送","你","破","灯","泡"], jp: ["sung3","nei5","po3","dang1","paau1"] },
             { chars: ["便","宜","地","照","亮","你","天","地"], jp: ["bin6","ji4","dei6","ziu3","loeng6","nei5","tin1","dei6"] },
             { chars: ["一","箱","卡","式","带","一","直","没","落","仍","能","回","味"], jp: ["jat1","soeng1","kaa1","sik1","daai3","jat1","zik6","mut6","lok6","jing4","nang4","wui4","mei6"] },

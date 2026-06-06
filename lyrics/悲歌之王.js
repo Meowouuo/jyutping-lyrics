@@ -35,7 +35,7 @@
             { chars: ["从","来","吃","不","到","味","美","葡","萄"], jp: ["cung4","loi4","hek3","bat1","dou3","mei6","mei5","pou4","tou4"] },
             { chars: ["问","我","怎","懂","得","讲","句","好"], jp: ["man6","ngo5","zam2","dung2","dak1","gong2","geoi3","hou2"] },
             { chars: ["凭","借","你","味","道"], jp: ["pang4","ze3","nei5","mei6","dou6"] },
-            { chars: ["明","白","我","的","价","值","高"], jp: ["ming4","baak6","ngo5","dik1","gaai3","zik6","gou1"] },
+            { chars: ["明","白","我","的","价","值","高"], jp: ["ming4", "baak6", "ngo5", "dik1", "gaa3", "zik6", "gou1"] },
             { chars: ["好","到","使","得","我","焦","躁"], jp: ["hou2","dou3","si2","dak1","ngo5","ziu1","cou3"] },
             { paragraphBreak: true },
             { chars: ["神","只","会","惩","罚","我"], jp: ["san4","zi2","wui6","cing4","fat6","ngo5"] },

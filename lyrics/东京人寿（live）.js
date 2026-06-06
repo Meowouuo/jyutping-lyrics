@@ -30,7 +30,7 @@
             { paragraphBreak: true },
             { chars: ["快","乐"," ","会","不","会","重","来"], jp: ["faai3","lok6","","wui6","bat1","wui6","cung5","loi4"] },
             { chars: ["这","刻","你","再","忍","一","下"], jp: ["ze5","hak1","nei5","zoi3","jan2","jat1","haa6"] },
-            { chars: ["怎","会","毫","无","代","价"], jp: ["zam2","wui6","hou4","mou4","doi6","gaai3"] },
+            { chars: ["怎","会","毫","无","代","价"], jp: ["zam2", "wui6", "hou4", "mou4", "doi6", "gaa3"] },
             { paragraphBreak: true },
             { chars: ["明","年","保","了","寿","命"], jp: ["ming4","nin4","bou2","liu5","sau6","ming6"] },
             { chars: ["谁","说","一","定"], jp: ["seoi4","syut3","jat1","ding6"] },

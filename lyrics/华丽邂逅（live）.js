@@ -67,7 +67,7 @@
             { chars: ["来","日","你","我"], jp: ["loi4","jat6","nei5","ngo5"] },
             { chars: ["老","掉","了","牙"], jp: ["lou5","diu6","liu5","ngaa4"] },
             { chars: ["还","是","有","个","最","完","美","印","象","留","下"], jp: ["waan4","si6","jau5","go3","zeoi3","jyun4","mei5","jan3","zoeng6","lau4","haa6"] },
-            { chars: ["从","没","旅","行","没","票","价"], jp: ["cung4","mut6","leoi5","hang4","mut6","piu3","gaai3"] },
+            { chars: ["从","没","旅","行","没","票","价"], jp: ["cung4", "mut6", "leoi5", "hang4", "mut6", "piu3", "gaa3"] },
             { chars: ["与","你","我","愿","付","上","它"], jp: ["jyu5","nei5","ngo5","jyun6","fu6","soeng6","taa1"] },
             { paragraphBreak: true },
             { chars: ["浮","游","在","无","限","宇","宙"], jp: ["fau4","jau4","zoi6","mou4","haan6","jyu5","zau6"] },
