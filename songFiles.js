@@ -111,4 +111,5 @@ const songFiles = [
     { id: 711, title: "你在何地", artist: "张国荣", lyricist: "潘源良", composer: "卢冠廷", file: "lyrics/你在何地.js" },
     { id: 795, title: "K歌之王", artist: "陈奕迅", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/K歌之王.js" },
     { id: 796, title: "无人之境", artist: "陈奕迅", lyricist: "黄伟文", composer: "Eric Kwok", file: "lyrics/无人之境.js" },
+    { id: 802, title: "绵绵", artist: "陈奕迅", lyricist: "林夕", composer: "柳重言", file: "lyrics/绵绵.js" },
 ];
