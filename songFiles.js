@@ -109,4 +109,6 @@ const songFiles = [
     { id: 705, title: "好心好报", artist: "方力申", lyricist: "方杰", composer: "雷颂德", file: "lyrics/好心好报.js" },
     { id: 709, title: "电灯胆", artist: "邓丽欣", lyricist: "李竣一", composer: "李竣一", file: "lyrics/电灯胆.js" },
     { id: 711, title: "你在何地", artist: "张国荣", lyricist: "潘源良", composer: "卢冠廷", file: "lyrics/你在何地.js" },
+    { id: 795, title: "K歌之王", artist: "陈奕迅", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/K歌之王.js" },
+    { id: 796, title: "无人之境", artist: "陈奕迅", lyricist: "黄伟文", composer: "Eric Kwok", file: "lyrics/无人之境.js" },
 ];
