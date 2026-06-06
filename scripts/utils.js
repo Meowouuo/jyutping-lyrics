@@ -258,6 +258,15 @@ function commitAndPush(branchName, message) {
     execSync('git add -A', { stdio: 'pipe' });
     // 提交更改
     execSync(`git commit -m "${message}"`, { stdio: 'pipe' });
+    // 检查远程分支是否已存在，存在则先删除
+    try {
+        execSync(`git ls-remote --heads origin ${branchName}`, { stdio: 'pipe' });
+        // 如果存在，删除远程分支
+        execSync(`git push origin --delete ${branchName}`, { stdio: 'pipe' });
+        console.log(`已删除存在的远程分支: ${branchName}`);
+    } catch (e) {
+        // 分支不存在，忽略错误
+    }
     // 推送到远程仓库
     execSync(`git push origin ${branchName}`, { stdio: 'pipe' });
 }
