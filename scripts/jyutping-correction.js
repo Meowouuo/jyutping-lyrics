@@ -105,8 +105,9 @@ function processJyutpingCorrection() {
 
         // 遍历文件的所有行，找到目标逻辑行号对应的物理行
         for (let i = 0; i < lines.length; i++) {
-            // 跳过段落分隔符（paragraphBreak 是段落标记，不计入行号）
+            // 段落分隔符也计入行号（与前端一致）
             if (lines[i].includes('paragraphBreak')) {
+                lineCount++;
                 continue;
             }
             // 检查当前行是否是歌词数据行（同时包含 chars 和 jp 字段）
