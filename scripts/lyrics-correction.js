@@ -165,7 +165,6 @@ function processInsertions(content, insertions, songTitle) {
         
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++; // paragraphBreak 计入行号（与前端逐行纠错面板一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
@@ -307,9 +306,9 @@ function processLineByLine(content, body, songTitle) {
         let prevWord = '';  // 跨行传递 prevWord
         
         // 遍历文件行，找到目标行
+        // 注意：paragraphBreak 不计入行号（与前端渲染逻辑一致）
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++; // paragraphBreak 计入行号（与前端逐行纠错面板一致）
                 continue;
             }
             if (lines[i].includes('chars:')) {
