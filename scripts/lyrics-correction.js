@@ -413,6 +413,18 @@ function processLineByLine(content, body, songTitle) {
             // 可能是 segment 编辑：originalText 是某行的一部分
             segmentStart = currentChars.indexOf(simplifiedOriginal);
             segmentEnd = segmentStart + simplifiedOriginal.length;
+            
+            // 安全检查：如果 currentChars 已经包含了 simplifiedNew 的完整内容，
+            // 说明用户想要的内容已经存在，无需修改
+            // 例如：currentChars="最爱的主角是Me and You"，
+            //       original="主角是Me"，new="主角是Me and You"
+            //       currentChars 已经包含了 "主角是Me and You"，无需替换
+            // 注意：使用 toLowerCase() 进行大小写不敏感比较，因为英文字母大小写可能不一致
+            if (currentChars.toLowerCase().includes(simplifiedNew.toLowerCase())) {
+                // 目标内容已存在，跳过此行
+                failedRows.push(row);
+                continue;
+            }
             isSegmentEdit = true;
         } else {
             // 完全不匹配
