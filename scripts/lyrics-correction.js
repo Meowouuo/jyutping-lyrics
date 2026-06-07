@@ -848,10 +848,12 @@ function processDeletions(content, body, songTitle) {
             }
         } else {
             // 删除歌词行（使用与逐行纠错相同的segment计算逻辑）
+            // 注意：paragraphBreak 不计入行号（与前端渲染逻辑一致）
             let lineCount = 1;
+            let prevWord = '';  // 跨行传递 prevWord
             
             for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes('paragraphBreak')) { lineCount++; continue; }
+                if (lines[i].includes('paragraphBreak')) { continue; }
                 if (lines[i].includes('chars:')) {
                     // 收集多行 chars 数组内容（跨行匹配）
                     let charsContent = '';
@@ -869,7 +871,9 @@ function processDeletions(content, body, songTitle) {
                     if (charsMatch) {
                         const chars = charsMatch[1].match(/"([^"]*)"/g) || [];
                         const charsArray = chars.map(c => c.replace(/"/g, ''));
-                        segments = countSegments(charsArray);
+                        const result = countSegments(charsArray, prevWord);
+                        segments = result.segments;
+                        prevWord = result.prevWord;
                     }
                     
                     if (targetLine >= lineCount && targetLine < lineCount + segments) {
