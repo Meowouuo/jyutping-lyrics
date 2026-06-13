@@ -529,8 +529,20 @@ function processLineByLine(content, body, songTitle) {
                 const afterChars = charsArray.slice(arrayEnd + 1);
                 const afterJp = originalJp.slice(arrayEnd + 1);
                 
-                newChars = [...beforeChars, ...newSegmentChars, ...afterChars].join(', ');
-                newJp = [...beforeJp, ...newSegmentJp, ...afterJp].join(', ');
+                // 安全检查：确保替换后的内容不会导致重复
+                // 例如：original="主角是Me"，new="主角是Me And You"，currentChars="最爱的 主角是Me And You"
+                // 如果 new 已经包含了 afterChars 的内容，就不再追加 afterChars
+                const newCharsStr = newSegmentChars.map(c => c.replace(/"/g, '')).join('');
+                const afterCharsStr = afterChars.map(c => c.replace(/"/g, '')).join('');
+                
+                if (afterCharsStr && newCharsStr.endsWith(afterCharsStr)) {
+                    // 新内容已经包含了 afterChars，不再重复追加
+                    newChars = [...beforeChars, ...newSegmentChars].join(', ');
+                    newJp = [...beforeJp, ...newSegmentJp].join(', ');
+                } else {
+                    newChars = [...beforeChars, ...newSegmentChars, ...afterChars].join(', ');
+                    newJp = [...beforeJp, ...newSegmentJp, ...afterJp].join(', ');
+                }
             }
         } else {
             // 整行编辑：重新匹配整行粤拼
