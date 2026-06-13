@@ -369,6 +369,38 @@ function processLineByLine(content, body, songTitle) {
             }
         }
         
+        // 第二次 fallback：尝试模糊匹配（忽略空格和标点差异）
+        // 适用于用户输入与文件内容有空格差异的情况
+        if (targetIndex === -1) {
+            const simplifiedOriginal = toSimplified(originalText.toString().trim());
+            // 移除所有空格和标点进行比较
+            const normalizedOriginal = simplifiedOriginal.replace(/[\s\p{P}]/gu, '');
+            if (normalizedOriginal) {
+                for (let i = 0; i < lines.length; i++) {
+                    if (!lines[i].includes('chars:')) continue;
+                    let charsContent = '';
+                    let j = i;
+                    while (j < lines.length && !lines[j].includes(']')) {
+                        charsContent += lines[j];
+                        j++;
+                    }
+                    if (j < lines.length) charsContent += lines[j];
+                    const cm = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
+                    if (cm) {
+                        const ci = cm[1].match(/"([^"]*)"/g) || [];
+                        const currentChars = ci.map(c => c.replace(/"/g, '')).join('');
+                        const sc = toSimplified(currentChars);
+                        const normalizedChars = sc.replace(/[\s\p{P}]/gu, '');
+                        // 检查是否包含（允许部分匹配）
+                        if (normalizedChars.includes(normalizedOriginal) || normalizedOriginal.includes(normalizedChars)) {
+                            targetIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
         // 仍未找到，记录失败
         if (targetIndex === -1) {
             failedRows.push(row);
@@ -414,14 +446,25 @@ function processLineByLine(content, body, songTitle) {
             segmentStart = currentChars.indexOf(simplifiedOriginal);
             segmentEnd = segmentStart + simplifiedOriginal.length;
             
-            // 安全检查：如果 currentChars 已经包含了 simplifiedNew 的完整内容，
-            // 说明用户想要的内容已经存在，无需修改
-            // 例如：currentChars="最爱的主角是Me and You"，
-            //       original="主角是Me"，new="主角是Me and You"
-            //       currentChars 已经包含了 "主角是Me and You"，无需替换
+            // 安全检查：只有当新内容与原始内容完全相同时才跳过
+            // 避免无意义的重复修改
             // 注意：使用 toLowerCase() 进行大小写不敏感比较，因为英文字母大小写可能不一致
-            if (currentChars.toLowerCase().includes(simplifiedNew.toLowerCase())) {
-                // 目标内容已存在，跳过此行
+            if (currentChars.toLowerCase() === simplifiedNew.toLowerCase()) {
+                // 新内容与当前内容完全相同，无需修改
+                failedRows.push(row);
+                continue;
+            }
+            // 额外检查：只有当新内容已经完整存在于当前行中，且新内容与原始内容无关时才跳过
+            // 判断"无关"的标准：simplifiedNew 中不包含 simplifiedOriginal 的任何部分
+            // 例如：original="主角是Me"，new="主角是" → 允许（删除 "Me"，new 包含 original 的部分）
+            // 例如：original="And You"，new="Me And You" → 允许（new 包含 original）
+            // 例如：original="abc"，new="xyz"，currentChars="abc xyz" → 跳过（new 已存在且与 original 无关）
+            const newIncludesOriginal = simplifiedNew.toLowerCase().includes(simplifiedOriginal.toLowerCase()) ||
+                                        simplifiedOriginal.toLowerCase().includes(simplifiedNew.toLowerCase());
+            if (currentChars.toLowerCase().includes(simplifiedNew.toLowerCase()) && 
+                !newIncludesOriginal &&
+                simplifiedNew.length > 0) {
+                // 新内容已存在于当前行中，且与原始内容无关，可能是重复添加
                 failedRows.push(row);
                 continue;
             }
