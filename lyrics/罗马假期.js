@@ -31,6 +31,7 @@
     { chars: ["挤", "拥", "得", "很", " ", "要", "和", "大", "街", "合", "照", "吗"], jp: ["zai1", "jung2", "dak1", "han2", "", "jiu3", "wo4", "daai6", "gaai1", "hap6", "ziu3", "maa1"] },
     { chars: ["再", "跟", "你", "观", "光", "这", "小", "酒", "吧"], jp: ["zoi3", "gan1", "nei5", "gun1", "gwong1", "ze5", "siu2", "zau2", "baa6"] },
     { chars: ["我", "跟", "你", "分", "享", "这", "啖", "茶", "漫", "天", "落", "霞"], jp: ["ngo5", "gan1", "nei5", "fan1", "hoeng2", "ze5", "daam6", "caa4", "maan6", "tin1", "lok6", "haa4"] },
+        { paragraphBreak: true },
     { paragraphBreak: true },
     { chars: ["还", "要", "共", "你", "到", "许", "愿", "池"], jp: ["waan4", "jiu3", "gung6", "nei5", "dou3", "heoi2", "jyun6", "ci4"] },
     { chars: ["愿", "你", "我", " ", "守", "这", "辈", "子", "下", "辈", "子"], jp: ["jyun6", "nei5", "ngo5", "", "sau2", "ze5", "bui3", "zi2", "haa6", "bui3", "zi2"] }
