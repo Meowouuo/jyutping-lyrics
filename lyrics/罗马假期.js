@@ -33,7 +33,7 @@
     { chars: ["我", "跟", "你", "分", "享", "这", "啖", "茶", "漫", "天", "落", "霞"], jp: ["ngo5", "gan1", "nei5", "fan1", "hoeng2", "ze5", "daam6", "caa4", "maan6", "tin1", "lok6", "haa4"] },
     { paragraphBreak: true },
     { chars: ["还", "要", "共", "你", "到", "许", "愿", "池"], jp: ["waan4", "jiu3", "gung6", "nei5", "dou3", "heoi2", "jyun6", "ci4"] },
-    { chars: ["愿", "你", "我", " ", "守", "这", "辈", "子", "下", "辈", "子"], jp: ["jyun6", "nei5", "ngo5", "", "sau2", "ze5", "bui3", "zi2", "haa6", "bui3", "zi2"] }
+    { chars: [" ", "守", "这", "辈", "子", "下", "辈", "子"], jp: ["", "sau2", "ze5", "bui3", "zi2", "haa6", "bui3", "zi2"] },
 ]
     };
     // 【方案A】通过 __songPush 接口注册歌曲数据
