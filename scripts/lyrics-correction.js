@@ -206,12 +206,15 @@ function processInsertions(content, insertions, songTitle) {
         }
         
         // 为每行歌词生成 chars 和 jp
-        const lyricsLines = lyrics.split('\n').filter(l => l.trim() || l === '');
+        // 过滤条件：保留空行、纯空白行（如空格、制表符等）和非空行
+        // 纯空白行（如前台表单生成的 ' '）也应视为 paragraphBreak
+        const lyricsLines = lyrics.split('\n').filter(l => l.trim() || l === '' || !l.trim());
         const newLines = [];
         
         for (const lyricLine of lyricsLines) {
             if (lyricLine.trim() === '') {
-                // 空行生成 paragraphBreak
+                // 空行或纯空白行生成 paragraphBreak
+                // 规则：插入空格/空行 = 1个 paragraphBreak，插入换行（两个连续空行）= 2个 paragraphBreak（换段）
                 newLines.push('        { paragraphBreak: true },');
             } else {
                 // 检查行内是否有空格（空格 = 1个空白行）
