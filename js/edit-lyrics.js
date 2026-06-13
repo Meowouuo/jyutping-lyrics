@@ -598,9 +598,20 @@ function updateEditList() {
     
     // 显示删除行项
     deletions.forEach((item, idx) => {
-        // 删除空白行特殊处理：不显示行号
+        // 删除空白行：计算行号（paragraphBreak 在后端计入行号）
         if (item.isParagraphBreak) {
-            html += `<div class="edit-list-item"><span class="edit-list-tag delete">删除</span> [空白行] <button onclick="removeDeletion(${idx})" class="edit-list-remove">删除</button></div>`;
+            let displayLine = 0;
+            for (let i = 0; i < item.lineIndex; i++) {
+                if (song.lyrics[i].paragraphBreak) {
+                    displayLine++;
+                    continue;
+                }
+                if (!song.lyrics[i].chars) continue;
+                const segs = getLineSegments(song.lyrics[i]);
+                displayLine += segs.length;
+            }
+            displayLine++;
+            html += `<div class="edit-list-item"><span class="edit-list-tag delete">删除</span> 第${displayLine}行 [空白行] <button onclick="removeDeletion(${idx})" class="edit-list-remove">删除</button></div>`;
             count++;
             return;
         }
@@ -1409,9 +1420,21 @@ function submitEdit() {
             // 将删除记录转换为提交格式（计算displayLine）
             // paragraphBreak 不计入行号，与前端渲染逻辑一致
             submitData.deletions = deletions.map(d => {
-                // 删除空白行直接返回，不需要计算行号
+                // 删除空白行：计算行号（paragraphBreak 在后端计入行号）
                 if (d.isParagraphBreak) {
-                    return { line: null, originalText: d.originalText, isParagraphBreak: true };
+                    let displayLine = 0;
+                    for (let i = 0; i < d.lineIndex; i++) {
+                        if (song.lyrics[i].paragraphBreak) {
+                            displayLine++;
+                            continue;
+                        }
+                        if (!song.lyrics[i].chars) continue;
+                        const segs = getLineSegments(song.lyrics[i]);
+                        displayLine += segs.length;
+                    }
+                    // paragraphBreak 本身也占一行号
+                    displayLine++;
+                    return { line: displayLine, originalText: d.originalText, isParagraphBreak: true };
                 }
                 
                 let displayLine = 0;
