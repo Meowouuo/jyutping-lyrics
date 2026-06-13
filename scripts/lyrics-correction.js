@@ -529,20 +529,58 @@ function processLineByLine(content, body, songTitle) {
                 const afterChars = charsArray.slice(arrayEnd + 1);
                 const afterJp = originalJp.slice(arrayEnd + 1);
                 
-                // 安全检查：确保替换后的内容不会导致重复
-                // 例如：original="主角是Me"，new="主角是Me And You"，currentChars="最爱的 主角是Me And You"
-                // 如果 new 已经包含了 afterChars 的内容，就不再追加 afterChars
+                // 安全检查：确保替换后的内容不会导致重复或重叠
+                // 场景1：original="主角是Me"，new="主角是Me And You"，currentChars="最爱的 主角是Me And You"
+                //   → new 已包含 afterChars，不再追加 afterChars
+                // 场景2：original="最爱的"，new="最爱的主角是"，currentChars="最爱的 主角是Me And You"
+                //   → new 结尾与 afterChars 开头重叠（"主角是"），需要去除重叠部分
+                let finalAfterChars = afterChars;
+                let finalAfterJp = afterJp;
                 const newCharsStr = newSegmentChars.map(c => c.replace(/"/g, '')).join('');
-                const afterCharsStr = afterChars.map(c => c.replace(/"/g, '')).join('');
+                let afterCharsStr = afterChars.map(c => c.replace(/"/g, '')).join('');
                 
-                if (afterCharsStr && newCharsStr.endsWith(afterCharsStr)) {
-                    // 新内容已经包含了 afterChars，不再重复追加
-                    newChars = [...beforeChars, ...newSegmentChars].join(', ');
-                    newJp = [...beforeJp, ...newSegmentJp].join(', ');
-                } else {
-                    newChars = [...beforeChars, ...newSegmentChars, ...afterChars].join(', ');
-                    newJp = [...beforeJp, ...newSegmentJp, ...afterJp].join(', ');
+                // 步骤1：如果 afterChars 以空格开头，且 newCharsStr 不以空格结尾，先去掉开头的空格
+                // 这样可以正确检测跨空格的重叠（如 "最爱的主角是" 与 " 主角是Me"）
+                let trimmedSpace = false;
+                if (afterCharsStr.startsWith(' ') && !newCharsStr.endsWith(' ')) {
+                    finalAfterChars = afterChars.slice(1);
+                    finalAfterJp = afterJp.slice(1);
+                    afterCharsStr = finalAfterChars.map(c => c.replace(/"/g, '')).join('');
+                    trimmedSpace = true;
                 }
+                
+                // 步骤2：检查 newCharsStr 是否完全包含 afterCharsStr（场景1）
+                if (afterCharsStr && newCharsStr.endsWith(afterCharsStr)) {
+                    // 新内容已经完整包含了 afterChars，不再追加
+                    finalAfterChars = [];
+                    finalAfterJp = [];
+                } else {
+                    // 步骤3：检查 newCharsStr 结尾是否与 afterCharsStr 开头有重叠（场景2）
+                    // 从最长可能的重叠开始检查，找到最长的匹配
+                    let overlapLen = 0;
+                    const maxOverlap = Math.min(newCharsStr.length, afterCharsStr.length);
+                    for (let len = maxOverlap; len > 0; len--) {
+                        if (newCharsStr.endsWith(afterCharsStr.substring(0, len))) {
+                            overlapLen = len;
+                            break;
+                        }
+                    }
+                    
+                    if (overlapLen > 0) {
+                        // 去掉重叠部分
+                        finalAfterChars = finalAfterChars.slice(overlapLen);
+                        finalAfterJp = finalAfterJp.slice(overlapLen);
+                    }
+                    
+                    // 步骤4：如果之前去掉了空格且有重叠，需要补回一个空格作为分隔
+                    if (trimmedSpace && overlapLen > 0) {
+                        finalAfterChars = ['" "', ...finalAfterChars];
+                        finalAfterJp = ['""', ...finalAfterJp];
+                    }
+                }
+                
+                newChars = [...beforeChars, ...newSegmentChars, ...finalAfterChars].join(', ');
+                newJp = [...beforeJp, ...newSegmentJp, ...finalAfterJp].join(', ');
             }
         } else {
             // 整行编辑：重新匹配整行粤拼
