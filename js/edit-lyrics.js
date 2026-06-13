@@ -1517,7 +1517,7 @@ function submitEdit() {
                         displayLine += segBefore;
                     }
                 }
-                return { line: displayLine, originalText: d.originalText };
+                return { line: displayLine, originalText: d.originalText, segStart: d.segStart, segEnd: d.segEnd };
             });
             break;
     }

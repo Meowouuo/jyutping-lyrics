@@ -844,17 +844,28 @@ function parseDeletions(body) {
     const lines = body.split('\n');
     
     for (const line of lines) {
-        // 匹配表格行：| 第X行 | 原歌词 |
+        // 匹配表格行：| 第X行 | 原歌词 |（可能包含 [删除:起点-终点] 或 [空白行] 标记）
         const match = line.match(/\|\s*第?(\d+)行?\s*\|\s*([^|]+)\|/);
         if (match) {
             const [, lineNum, originalText] = match;
             const trimmedText = originalText.trim();
             // 识别 [空白行] 标记
             const isBlankLine = trimmedText.includes('[空白行]');
+            // 识别 [删除:起点-终点] 标记（部分删除）
+            const segMatch = trimmedText.match(/\[删除:(\d+)-(\d+)\]/);
+            const isPartialDelete = !!segMatch;
+            const segStart = segMatch ? parseInt(segMatch[1]) : null;
+            const segEnd = segMatch ? parseInt(segMatch[2]) : null;
+            // 去掉标记后的纯歌词文本
+            const cleanText = trimmedText.replace(/\[删除:\d+-\d+\]/, '').trim();
+            
             deletions.push({
                 line: parseInt(lineNum.trim()),
-                originalText: trimmedText,
-                isBlankLine: isBlankLine
+                originalText: cleanText,
+                isBlankLine: isBlankLine,
+                isPartialDelete: isPartialDelete,
+                segStart: segStart,
+                segEnd: segEnd
             });
         }
     }
@@ -999,9 +1010,54 @@ function processDeletions(content, body, songTitle) {
             continue;
         }
         
-        // 删除该行
-        lines.splice(targetIndex, 1);
-        appliedCount++;
+        if (del.isPartialDelete && del.segStart !== null && del.segEnd !== null) {
+            // 部分删除：只删除 chars 和 jp 数组中指定范围的字符
+            // 收集 chars/jp 数组内容（可能在同一行或跨多行）
+            let lineContent = '';
+            let startLine = targetIndex;
+            let endLine = targetIndex;
+            
+            // 找到包含 chars 和 jp 的完整行范围
+            for (let i = targetIndex; i < lines.length; i++) {
+                lineContent += lines[i];
+                if (lines[i].includes('chars:')) startLine = i;
+                // 检查是否已经包含了完整的对象（以 }, 或 } 结尾）
+                if (lines[i].trim().endsWith('},') || lines[i].trim().endsWith('}')) {
+                    endLine = i;
+                    break;
+                }
+            }
+            
+            // 解析 chars 和 jp 数组
+            const charsMatch = lineContent.match(/chars:\s*\[([\s\S]*?)\]/);
+            const jpMatch = lineContent.match(/jp:\s*\[([\s\S]*?)\]/);
+            
+            if (charsMatch && jpMatch) {
+                const charsItems = charsMatch[1].match(/"([^"]*)"/g) || [];
+                const jpItems = jpMatch[1].match(/"([^"]*)"/g) || [];
+                
+                // 删除指定范围的字符
+                const newCharsItems = charsItems.filter((_, idx) => idx < del.segStart || idx > del.segEnd);
+                const newJpItems = jpItems.filter((_, idx) => idx < del.segStart || idx > del.segEnd);
+                
+                // 重新构建文件行（保持原有缩进格式）
+                const indent = lines[startLine].match(/^(\s*)/)[1];
+                let newLine = indent + '{ chars: [' + newCharsItems.join(', ') + '], jp: [' + newJpItems.join(', ') + '] },';
+                
+                // 替换从 startLine 到 endLine 的行
+                lines.splice(startLine, endLine - startLine + 1, newLine);
+                
+                appliedCount++;
+            } else {
+                // 解析失败，回退到整行删除
+                lines.splice(targetIndex, 1);
+                appliedCount++;
+            }
+        } else {
+            // 整行删除
+            lines.splice(targetIndex, 1);
+            appliedCount++;
+        }
     }
     
     if (appliedCount === 0) {

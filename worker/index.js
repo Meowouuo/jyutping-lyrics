@@ -570,8 +570,14 @@ function buildDeleteBody({ songName, deletions }) {
 |------|--------|
 `;
   deletions.forEach(d => {
-    body += `| 第${d.line}行 | ${d.originalText} |
+    // 部分删除：在原歌词中用 [删除:起点-终点] 标记 segment 范围
+    if (d.segStart !== null && d.segStart !== undefined && d.segEnd !== null && d.segEnd !== undefined) {
+      body += `| 第${d.line}行 | ${d.originalText} [删除:${d.segStart}-${d.segEnd}] |
 `;
+    } else {
+      body += `| 第${d.line}行 | ${d.originalText} |
+`;
+    }
   });
   body += `
 ---
