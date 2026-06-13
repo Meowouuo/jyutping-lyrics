@@ -461,8 +461,8 @@ function updateEditList() {
         let prevWord = '';  // 跨行传递 prevWord
         // 遍历之前的所有歌词行
         for (let i = 0; i < item.lineIndex; i++) {
-            // 跳过段落分隔符
-            if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
+            // 跳过段落分隔符（paragraphBreak 不计入行号，与前端渲染逻辑一致）
+            if (song.lyrics[i].paragraphBreak) { continue; }
             if (!song.lyrics[i].chars) continue;
             
             // 统计这行的segment数（与前端渲染逻辑一致）
@@ -598,10 +598,18 @@ function updateEditList() {
     
     // 显示删除行项
     deletions.forEach((item, idx) => {
+        // 删除空白行特殊处理：不显示行号
+        if (item.isParagraphBreak) {
+            html += `<div class="edit-list-item"><span class="edit-list-tag delete">删除</span> [空白行] <button onclick="removeDeletion(${idx})" class="edit-list-remove">删除</button></div>`;
+            count++;
+            return;
+        }
+        
         let displayLine = 0;
         let prevWord = '';  // 跨行传递 prevWord
         for (let i = 0; i < item.lineIndex; i++) {
-            if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
+            // paragraphBreak 不计入行号，与前端渲染逻辑一致
+            if (song.lyrics[i].paragraphBreak) { continue; }
             if (!song.lyrics[i].chars) continue;
             let segments = 1;
             let inBrackets = 0;
@@ -1292,9 +1300,10 @@ function submitEdit() {
             // 将编辑记录转换为提交格式
             submitData.corrections = editedLyrics.map(e => {
                 // 计算displayLine（基于segment的行号，与渲染逻辑一致）
+                // paragraphBreak 不计入行号，与前端渲染逻辑一致
                 let displayLine = 0;
                 for (let i = 0; i < e.lineIndex; i++) {
-                    if (song.lyrics[i].paragraphBreak) { displayLine++; continue; }
+                    if (song.lyrics[i].paragraphBreak) { continue; }
                     if (!song.lyrics[i].chars) continue;
                     
                     let segments = 1;
@@ -1398,12 +1407,17 @@ function submitEdit() {
             // 删除行模式：添加删除列表
             if (deletions.length === 0 && Object.keys(editedMeta).length === 0) return;  // 没有修改则不提交
             // 将删除记录转换为提交格式（计算displayLine）
+            // paragraphBreak 不计入行号，与前端渲染逻辑一致
             submitData.deletions = deletions.map(d => {
+                // 删除空白行直接返回，不需要计算行号
+                if (d.isParagraphBreak) {
+                    return { line: null, originalText: d.originalText, isParagraphBreak: true };
+                }
+                
                 let displayLine = 0;
                 for (let i = 0; i < d.lineIndex; i++) {
-                    // 空白行也计入行号（与后端一致）
+                    // paragraphBreak 不计入行号，与前端渲染逻辑一致
                     if (song.lyrics[i].paragraphBreak) {
-                        displayLine++;
                         continue;
                     }
                     if (!song.lyrics[i].chars) continue;
