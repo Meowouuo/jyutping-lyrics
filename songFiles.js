@@ -115,4 +115,5 @@ const songFiles = [
     { id: 806, title: "落花流水", artist: "陈奕迅", lyricist: "黄伟文", composer: "郭伟亮/陈奕迅", file: "lyrics/落花流水.js" },
     { id: 818, title: "大个女", artist: "陈奕迅", lyricist: "林夕", composer: "江志仁", file: "lyrics/大个女.js" },
     { id: 820, title: "于心有愧", artist: "陈奕迅", lyricist: "林夕", composer: "钟达茵", file: "lyrics/于心有愧.js" },
+    { id: 865, title: "墙纸", artist: "容祖儿", lyricist: "黄伟文", composer: "方大同", file: "lyrics/墙纸.js" },
 ];
