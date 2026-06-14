@@ -119,4 +119,5 @@ const songFiles = [
     { id: 897, title: "年度之歌", artist: "谢安琪", lyricist: "黄伟文", composer: "Christopher Chak", file: "lyrics/年度之歌.js" },
     { id: 899, title: "最冷一天", artist: "陈奕迅", lyricist: "林夕", composer: "陈小霞", file: "lyrics/最冷一天.js" },
     { id: 901, title: "就算世界无童话", artist: "卫兰", lyricist: "林夕", composer: "雷颂德", file: "lyrics/就算世界无童话.js" },
+    { id: 905, title: "零时十分", artist: "林子祥", lyricist: "林振强", composer: "林子祥", file: "lyrics/零时十分.js" },
 ];
