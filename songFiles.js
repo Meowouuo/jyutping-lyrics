@@ -116,4 +116,7 @@ const songFiles = [
     { id: 818, title: "大个女", artist: "陈奕迅", lyricist: "林夕", composer: "江志仁", file: "lyrics/大个女.js" },
     { id: 820, title: "于心有愧", artist: "陈奕迅", lyricist: "林夕", composer: "钟达茵", file: "lyrics/于心有愧.js" },
     { id: 865, title: "墙纸", artist: "容祖儿", lyricist: "黄伟文", composer: "方大同", file: "lyrics/墙纸.js" },
+    { id: 897, title: "年度之歌", artist: "谢安琪", lyricist: "黄伟文", composer: "Christopher Chak", file: "lyrics/年度之歌.js" },
+    { id: 899, title: "最冷一天", artist: "陈奕迅", lyricist: "林夕", composer: "陈小霞", file: "lyrics/最冷一天.js" },
+    { id: 901, title: "就算世界无童话", artist: "卫兰", lyricist: "林夕", composer: "雷颂德", file: "lyrics/就算世界无童话.js" },
 ];
