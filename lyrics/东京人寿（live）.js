@@ -44,6 +44,7 @@
             { chars: ["的","偶","然","来","尽","兴"], jp: ["dik1","ngau5","jin4","loi4","zeon6","hing1"] },
             { chars: ["随","意","浪","费","着","美","景"], jp: ["ceoi4","ji3","long6","fai3","zoek6","mei5","ging2"] },
             { chars: ["才","是","对","它","不","敬"], jp: ["coi4","si6","deoi3","taa1","bat1","ging3"] },
+        { paragraphBreak: true },
             { chars: ["没","有","资","格","说","感","性"], jp: ["mut6","jau5","zi1","gaak3","syut3","gam2","sing3"] },
             { chars: ["但","最","高","兴","那","刻","会","现","形"], jp: ["daan6","zeoi3","gou1","hing1","naa5","hak1","wui6","jin6","jing4"] },
             { chars: ["常","在","怀","疑","着"], jp: ["soeng4","zoi6","waai4","ji4","zoek6"] },
