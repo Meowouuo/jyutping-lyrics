@@ -122,7 +122,8 @@ function processJyutpingCorrection() {
                     // 去除引号，得到纯字符数组
                     const charsArray = chars.map(c => c.replace(/"/g, ''));
                     // 调用 countSegments 计算 segment 数量
-                    segments = countSegments(charsArray);
+                    // countSegments 返回 {segments, prevWord} 对象，需要解构取 segments
+                    segments = countSegments(charsArray).segments;
                 }
                 // 检查目标行号是否落在当前行的 segment 范围内
                 // 例如：当前行从 lineCount 开始，包含 segments 个 segment
