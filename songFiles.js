@@ -123,4 +123,5 @@ const songFiles = [
     { id: 910, title: "邮差", artist: "王菲", lyricist: "林夕", composer: "Adrian Chen", file: "lyrics/邮差.js" },
     { id: 917, title: "失恋太少", artist: "陈奕迅", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/失恋太少.js" },
     { id: 923, title: "我好想你·一 一", artist: "王菀之", lyricist: "王菀之", composer: "吴青峰", file: "lyrics/我好想你·一 一.js" },
+    { id: 927, title: "心乱如麻", artist: "卫兰", lyricist: "林夕", composer: "雷颂德", file: "lyrics/心乱如麻.js" },
 ];
