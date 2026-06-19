@@ -121,4 +121,5 @@ const songFiles = [
     { id: 901, title: "就算世界无童话", artist: "卫兰", lyricist: "林夕", composer: "雷颂德", file: "lyrics/就算世界无童话.js" },
     { id: 905, title: "零时十分", artist: "林子祥", lyricist: "林振强", composer: "林子祥", file: "lyrics/零时十分.js" },
     { id: 910, title: "邮差", artist: "王菲", lyricist: "林夕", composer: "Adrian Chen", file: "lyrics/邮差.js" },
+    { id: 917, title: "失恋太少", artist: "陈奕迅", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/失恋太少.js" },
 ];
