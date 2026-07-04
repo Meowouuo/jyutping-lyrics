@@ -129,4 +129,5 @@ const songFiles = [
     { id: 939, title: "留白", artist: "王菀之", lyricist: "林夕", composer: "常石磊", file: "lyrics/留白.js" },
     { id: 941, title: "末日", artist: "王菀之", lyricist: "黄伟文", composer: "王菀之", file: "lyrics/末日.js" },
     { id: 945, title: "画意", artist: "王菀之", lyricist: "林夕", composer: "王菀之", file: "lyrics/画意.js" },
+    { id: 949, title: "下次爱你", artist: "王菀之", lyricist: "林夕", composer: "王菀之", file: "lyrics/下次爱你.js" },
 ];
