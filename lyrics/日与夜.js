@@ -14,6 +14,8 @@
         lyrics: [
             { paragraphBreak: true },
             { paragraphBreak: true },
+        { paragraphBreak: true },
+        { chars: ["与", "你", "约", "错", "终", "点", "命", "运", "都", "改", "编"], jp: ["jyu5", "nei5", "joek3", "co3", "zung1", "dim2", "ming6", "wan6", "dou1", "goi2", "pin1"] },
             { chars: ["我","爱","你","快","了","一","点"], jp: ["ngo5","ngoi3","nei5","faai3","liu5","jat1","dim2"] },
             { chars: ["你","发","现","慢","了","点"], jp: ["nei5","faat3","jin6","maan6","liu5","dim2"] },
             { chars: ["某","天","我","吻","过","你","腮","边"], jp: ["mau5","tin1","ngo5","man5","gwo3","nei5","soi1","bin1"] },

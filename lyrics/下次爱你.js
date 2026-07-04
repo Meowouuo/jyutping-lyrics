@@ -1,0 +1,75 @@
+// 歌曲：下次爱你
+
+(function() {
+    const song = {
+        id: 949,
+        title: "下次爱你",
+        titleJyutping: ["haa6","ci3","ngoi3","nei5"],
+        artist: "王菀之",
+        artistJyutping: ["wong4","jyun2","zi1"],
+        lyricist: "林夕",
+        lyricistJyutping: ["lam4","zik6"],
+        composer: "王菀之",
+        composerJyutping: ["wong4","jyun2","zi1"],
+        lyrics: [
+            { chars: ["分","得","这","么","开"], jp: ["fan1","dak1","ze5","mo1","hoi1"] },
+            { chars: ["下","次","要","抱","得","紧"], jp: ["haa6","ci3","jiu3","pou5","dak1","gan2"] },
+            { chars: ["讲","得","这","么","多"], jp: ["gong2","dak1","ze5","mo1","do1"] },
+            { chars: ["下","次","要","听","真"], jp: ["haa6","ci3","jiu3","ting1","zan1"] },
+            { chars: ["你","我","想","手","牵","手","欣","赏","那","套","歌","剧"], jp: ["nei5","ngo5","soeng2","sau2","hin1","sau2","jan1","soeng2","naa5","tou3","go1","kek6"] },
+            { chars: ["歌","手","都","更","改"], jp: ["go1","sau2","dou1","gang1","goi2"] },
+            { chars: ["或","会","更","吸","引"], jp: ["waak6","wui6","gang1","kap1","jan5"] },
+            { paragraphBreak: true },
+            { chars: ["不","想","吵","都","吵","了"], jp: ["bat1","soeng2","caau2","dou1","caau2","liu5"] },
+            { chars: ["下","次","留","力","哑","忍"], jp: ["haa6","ci3","lau4","lik6","aa2","jan2"] },
+            { chars: ["伤","风","一","早","好","了"], jp: ["soeng1","fung1","jat1","zou2","hou2","liu5"] },
+            { chars: ["下","次","再","关","心"], jp: ["haa6","ci3","zoi3","gwaan1","sam1"] },
+            { chars: ["从","前","讲","好","的","欧","洲","之","旅","再","等","等"], jp: ["cung4","cin4","gong2","hou2","dik1","au1","zau1","zi1","leoi5","zoi3","dang2","dang2"] },
+            { chars: ["懂","得","怎","么","等"], jp: ["dung2","dak1","zam2","mo1","dang2"] },
+            { chars: ["定","会","更","相","衬"], jp: ["ding6","wui6","gang1","soeng1","can3"] },
+            { paragraphBreak: true },
+            { chars: ["没","有","足","够","眼","泪","无","谓","乱","爱","你"], jp: ["mut6","jau5","zuk1","gau3","ngaan5","leoi6","mou4","wai6","lyun6","ngoi3","nei5"] },
+            { chars: ["我","要","预","备"], jp: ["ngo5","jiu3","jyu6","bei6"] },
+            { chars: ["受","伤","的","勇","气"], jp: ["sau6","soeng1","dik1","jung5","hei3"] },
+            { chars: ["大","惊","小","怪","只","因","未","惯","空","欢","喜"], jp: ["daai6","ging1","siu2","gwaai3","zi2","jan1","mei6","gwaan3","hung1","fun1","hei2"] },
+            { chars: ["若","我","心","似","铁","石","然","后","遇","上","你"], jp: ["joek6","ngo5","sam1","ci5","tit3","sek6","jin4","hau6","jyu6","soeng5","nei5"] },
+            { chars: ["天","崩","地","陷"], jp: ["tin1","bang1","dei6","haam6"] },
+            { chars: ["已","不","足","为","奇"], jp: ["ji5","bat1","zuk1","wai4","kei4"] },
+            { chars: ["明","白","一","起","不","过","是"], jp: ["ming4","baak6","jat1","hei2","bat1","gwo3","si6"] },
+            { chars: ["无","数","次","对","不","起"], jp: ["mou4","sou3","ci3","deoi3","bat1","hei2"] },
+            { paragraphBreak: true },
+            { chars: ["今","天","装","开","心"], jp: ["gam1","tin1","zong1","hoi1","sam1"] },
+            { chars: ["下","次","会","更","逼","真"], jp: ["haa6","ci3","wui6","gang1","bik1","zan1"] },
+            { chars: ["今","天","想","休","息"], jp: ["gam1","tin1","soeng2","jau1","sik1"] },
+            { chars: ["下","次","再","伤","心"], jp: ["haa6","ci3","zoi3","soeng1","sam1"] },
+            { chars: ["你","我","的","身","边","都","只","得","你","我","的","话"], jp: ["nei5","ngo5","dik1","san1","bin1","dou1","zi2","dak1","nei5","ngo5","dik1","waa6"] },
+            { chars: ["得","一","种","身","分"], jp: ["dak1","jat1","zung2","san1","fan1"] },
+            { chars: ["定","会","更","相","衬"], jp: ["ding6","wui6","gang1","soeng1","can3"] },
+            { paragraphBreak: true },
+            { chars: ["没","有","足","够","眼","泪","无","谓","乱","爱","你"], jp: ["mut6","jau5","zuk1","gau3","ngaan5","leoi6","mou4","wai6","lyun6","ngoi3","nei5"] },
+            { chars: ["我","要","预","备"], jp: ["ngo5","jiu3","jyu6","bei6"] },
+            { chars: ["受","伤","的","勇","气"], jp: ["sau6","soeng1","dik1","jung5","hei3"] },
+            { chars: ["大","惊","小","怪","只","因","未","惯","空","欢","喜"], jp: ["daai6","ging1","siu2","gwaai3","zi2","jan1","mei6","gwaan3","hung1","fun1","hei2"] },
+            { chars: ["若","我","心","似","铁","石","然","后","遇","上","你"], jp: ["joek6","ngo5","sam1","ci5","tit3","sek6","jin4","hau6","jyu6","soeng5","nei5"] },
+            { chars: ["天","崩","地","陷"], jp: ["tin1","bang1","dei6","haam6"] },
+            { chars: ["已","不","足","为","奇"], jp: ["ji5","bat1","zuk1","wai4","kei4"] },
+            { chars: ["明","白","不","敢","想","的","不","必","记","起"], jp: ["ming4","baak6","bat1","gam2","soeng2","dik1","bat1","bit1","gei3","hei2"] },
+            { paragraphBreak: true },
+            { chars: ["下","次","等","我","眼","泪","流","尽","又","爱","你"], jp: ["haa6","ci3","dang2","ngo5","ngaan5","leoi6","lau4","zeon6","jau6","ngoi3","nei5"] },
+            { chars: ["我","会","预","备"], jp: ["ngo5","wui6","jyu6","bei6"] },
+            { chars: ["受","伤","的","勇","气"], jp: ["sau6","soeng1","dik1","jung5","hei3"] },
+            { chars: ["用","这","一","次","练","习","麻","木","扮","分","离"], jp: ["jung6","ze5","jat1","ci3","lin6","zaap6","maa4","muk6","baan6","fan1","lei4"] },
+            { chars: ["待","我","相","信","爱","是","承","受","便","找","你"], jp: ["doi6","ngo5","soeng1","seon3","ngoi3","si6","sing4","sau6","bin6","zaau2","nei5"] },
+            { chars: ["惊","天","动","地"], jp: ["ging1","tin1","dung6","dei6"] },
+            { chars: ["再","不","足","为","奇"], jp: ["zoi3","bat1","zuk1","wai4","kei4"] },
+            { chars: ["明","白","一","起","不","过","是"], jp: ["ming4","baak6","jat1","hei2","bat1","gwo3","si6"] },
+            { chars: ["明","白","不","一","起","也","是"], jp: ["ming4","baak6","bat1","jat1","hei2","jaa5","si6"] },
+            { chars: ["无","数","次","对","不","起"], jp: ["mou4","sou3","ci3","deoi3","bat1","hei2"] }
+        ]
+    };
+    // 【方案A】通过 __songPush 接口注册歌曲数据
+    // loadSongLyrics() 会将 __songPush 替换为当前歌曲的唯一数组
+    if (typeof window !== 'undefined' && window.__songPush) {
+        window.__songPush(song);
+    }
+})();

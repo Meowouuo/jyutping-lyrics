@@ -19,7 +19,7 @@
             { chars: ["沿","路","一","起","走","半","哩","长","街"], jp: ["jyun4","lou6","jat1","hei2","zau2","bun3","li1","coeng4","gaai1"] },
             { chars: ["还","记","得","街","灯","照","出","一","脸","黄"], jp: ["waan4","gei3","dak1","gaai1","dang1","ziu3","ceot1","jat1","lim5","wong4"] },
             { chars: ["还","燃","亮","那","份","微","温","的","便","当"], jp: ["waan4","jin4","loeng6","naa5","fan6","mei4","wan1","dik1","bin6","dong1"] },
-            { chars: ["剪","影","的","你","轮","廓"], jp: ["zin2","jing2","dik1","nei5","leon4","gwok3"] },
+            { chars: ["剪","影","的","你","轮","廓"], jp: ["zin2", "jing2", "dik1", "nei5", "leon4", "kwok3"] },
             { chars: ["太","好","看"], jp: ["taai3","hou2","hon3"] },
             { chars: ["凝","住","眼","泪","才","敢","细","看"], jp: ["jing4","zyu6","ngaan5","leoi6","coi4","gam2","sai3","hon3"] },
             { paragraphBreak: true },
