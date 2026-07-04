@@ -105,16 +105,27 @@ function processJyutpingCorrection() {
 
         // 遍历文件的所有行，找到目标逻辑行号对应的物理行
         for (let i = 0; i < lines.length; i++) {
-            // 段落分隔符也计入行号（与前端一致）
+            // 段落分隔符不计入行号（与前端渲染逻辑一致）
             if (lines[i].includes('paragraphBreak')) {
-                lineCount++;
                 continue;
             }
-            // 检查当前行是否是歌词数据行（同时包含 chars 和 jp 字段）
-            if (lines[i].includes('chars:') && lines[i].includes('jp:')) {
+            // 检查当前行是否是歌词数据行（包含 chars 字段）
+            // 支持跨行格式：chars 和 jp 可能不在同一行
+            if (lines[i].includes('chars:')) {
                 // 计算当前歌词行包含多少个 segment（用于逻辑行号累加）
                 // 书名号《》和括号内的空格不作为 segment 分割依据
-                const charsMatch = lines[i].match(/chars:\s*\[([^\]]+)\]/);
+                // 跨行收集 chars 数组内容（处理 chars 和 jp 不在同一行的歌词格式）
+                let charsContent = '';
+                let j = i;
+                while (j < lines.length && !lines[j].includes(']')) {
+                    charsContent += lines[j];
+                    j++;
+                }
+                if (j < lines.length) {
+                    charsContent += lines[j];
+                }
+                
+                const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
                 let segments = 1;  // 默认1个segment
                 if (charsMatch) {
                     // 使用正则提取 chars 数组中的所有带引号的字符
@@ -129,7 +140,7 @@ function processJyutpingCorrection() {
                 // 例如：当前行从 lineCount 开始，包含 segments 个 segment
                 // 如果 lineNum 在 [lineCount, lineCount + segments) 范围内，则找到目标行
                 if (lineNum >= lineCount && lineNum < lineCount + segments) {
-                    lyricsLineIndex = i;  // 记录物理行索引
+                    lyricsLineIndex = i;  // 记录物理行索引（chars 开始的那一行）
                     break;                // 找到后立即退出循环
                 }
                 lineCount += segments;  // 累加 segment 数量
@@ -144,21 +155,85 @@ function processJyutpingCorrection() {
         }
 
         // 已找到目标行，开始提取和替换粤拼数据
-        const line = lines[lyricsLineIndex];
-        // 使用正则表达式提取 jp 数组的内容部分（方括号内的字符串）
-        const jpArrayMatch = line.match(/jp:\s*\[([^\]]+)\]/);
-        if (!jpArrayMatch) {
-            // 无法提取 jp 数组，说明该行格式异常，记录为失败
-            failedRows.push(row);
-            continue;  // 跳过该行
+        // 支持跨行格式：chars 和 jp 可能分布在多行
+        // 跨行收集 chars 数组内容
+        let charsContent = '';
+        let j = lyricsLineIndex;
+        while (j < lines.length && !lines[j].includes(']')) {
+            charsContent += lines[j];
+            j++;
         }
-
-        // 解析 jp 数组：将逗号分隔的字符串拆分为粤拼数组
-        // 每个元素去除首尾空格和引号，得到纯净的粤拼字符串
-        const jpArray = jpArrayMatch[1].split(',').map(j => j.trim().replace(/"/g, ''));
-        // 同时解析 chars 数组，用于后续按字符位置精确匹配
-        const charsArrayMatch = line.match(/chars:\s*\[([^\]]+)\]/);
-        const charsArray = charsArrayMatch ? charsArrayMatch[1].split(',').map(c => c.trim().replace(/"/g, '')) : [];
+        if (j < lines.length) {
+            charsContent += lines[j];
+        }
+        
+        const charsMatch = charsContent.match(/chars:\s*\[([\s\S]*?)\]/);
+        if (!charsMatch) {
+            failedRows.push(row);
+            continue;
+        }
+        
+        // 解析 chars 数组
+        const charsArray = charsMatch[1].match(/"([^"]*)"/g) || [];
+        const chars = charsArray.map(c => c.replace(/"/g, ''));
+        
+        // 从 chars 结束后的位置开始，找到对应的 jp 块（可能跨多行）
+        // 注意：jp 可能在 chars 的同一行（单行格式），也可能在下一行（跨行格式）
+        let jpStartLine = -1;
+        let jpEndLine = -1;
+        let jpContent = '';
+        // 先检查 chars 的结束行是否同时包含 jp:
+        let searchStart = j;
+        if (!lines[j].includes('jp:')) {
+            searchStart = j + 1;  // jp 在 chars 结束后的下一行
+        }
+        for (let k = searchStart; k < lines.length; k++) {
+            if (lines[k].includes('jp:')) {
+                jpStartLine = k;
+                let m = k;
+                // 跨行收集 jp 数组内容
+                // 注意：需要区分 chars 的 ] 和 jp 数组的 ]
+                // 规则：对于包含 jp: 的行，只检查 jp: 之后的 ]
+                while (m < lines.length) {
+                    const line = lines[m];
+                    const jpIdx = line.indexOf('jp:');
+                    if (jpIdx > -1) {
+                        // 包含 jp: 的行，只检查 jp: 之后的 ]
+                        const afterJp = line.substring(jpIdx);
+                        if (afterJp.includes(']')) {
+                            jpContent += line;
+                            jpEndLine = m;
+                            break;
+                        }
+                    } else {
+                        // 不包含 jp: 的行，直接检查 ]
+                        if (line.includes(']')) {
+                            jpContent += line;
+                            jpEndLine = m;
+                            break;
+                        }
+                    }
+                    jpContent += line;
+                    m++;
+                }
+                break;
+            }
+        }
+        
+        if (jpStartLine === -1 || jpEndLine === -1) {
+            // 无法找到 jp 块
+            failedRows.push(row);
+            continue;
+        }
+        
+        // 解析 jp 数组
+        const jpMatch = jpContent.match(/jp:\s*\[([\s\S]*?)\]/);
+        if (!jpMatch) {
+            failedRows.push(row);
+            continue;
+        }
+        const jpArray = jpMatch[1].match(/"([^"]*)"/g) || [];
+        const jp = jpArray.map(j => j.replace(/"/g, ''));
 
         // 找到需要修改的字的位置，执行粤拼替换
         // 繁体→简体转换：确保用户输入的繁体字能与文件中的简体字匹配
@@ -192,11 +267,25 @@ function processJyutpingCorrection() {
             // 将修改后的 jp 数组重新序列化为字符串格式
             // 每个粤拼用双引号包裹，逗号分隔
             const newJpStr = jpArray.map(j => `"${j}"`).join(', ');
-            // 使用正则替换原行中的整个 jp 数组
-            lines[lyricsLineIndex] = line.replace(
-                /jp:\s*\[[^\]]+\]/,
-                `jp: [${newJpStr}]`
-            );
+            
+            // 获取 jp 开始行的原始内容，提取 jp: 之前的缩进/前缀
+            const jpStartLineContent = lines[jpStartLine];
+            const prefixMatch = jpStartLineContent.match(/^(.*?)jp:\s*\[/);
+            const prefix = prefixMatch ? prefixMatch[1] : '';
+            
+            // 构造新的 jp 行（保持原有的缩进和前置内容）
+            const newJpLine = prefix + `jp: [${newJpStr}]`;
+            
+            // 替换多行 jp 块为单行 jp
+            // 删除从 jpStartLine 到 jpEndLine 的所有行，插入新行
+            if (jpStartLine === jpEndLine) {
+                // 单行格式：直接替换该行
+                lines[jpStartLine] = newJpLine;
+            } else {
+                // 跨行格式：删除多行，插入单行
+                lines.splice(jpStartLine, jpEndLine - jpStartLine + 1, newJpLine);
+            }
+            
             // 将修改后的行数组重新合并为完整的文件内容字符串
             content = lines.join('\n');
             appliedCount++;  // 成功计数器加 1
