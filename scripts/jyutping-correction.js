@@ -244,10 +244,11 @@ function processJyutpingCorrection() {
         if (simplifiedChar) {
             // 方式1：按字+原粤拼双重匹配（优先使用，更精确）
             // 同时匹配字符和原粤拼，避免误改同音不同字的粤拼
-            for (let i = 0; i < charsArray.length; i++) {
-                if (charsArray[i] === simplifiedChar && jpArray[i] === originalJp) {
+            // 注意：使用 chars 和 jp（已去除引号），不是 charsArray/jpArray（仍带引号）
+            for (let i = 0; i < chars.length; i++) {
+                if (chars[i] === simplifiedChar && jp[i] === originalJp) {
                     // 字符和粤拼都匹配，执行替换
-                    jpArray[i] = newJp;
+                    jpArray[i] = `"${newJp}"`;  // 替换为带引号的新粤拼
                     modified = true;
                     break;  // 只替换第一个匹配项，避免重复修改
                 }
@@ -255,9 +256,9 @@ function processJyutpingCorrection() {
         } else {
             // 方式2：仅按原粤拼匹配（用户未指定字符时的降级方案）
             // 查找 jp 数组中第一个与原粤拼相同的元素
-            const idx = jpArray.indexOf(originalJp);
+            const idx = jp.indexOf(originalJp);
             if (idx > -1) {
-                jpArray[idx] = newJp;  // 替换为新粤拼
+                jpArray[idx] = `"${newJp}"`;  // 替换为带引号的新粤拼
                 modified = true;
             }
         }
@@ -265,8 +266,8 @@ function processJyutpingCorrection() {
         // 根据修改结果更新文件内容
         if (modified) {
             // 将修改后的 jp 数组重新序列化为字符串格式
-            // 每个粤拼用双引号包裹，逗号分隔
-            const newJpStr = jpArray.map(j => `"${j}"`).join(', ');
+            // jpArray 的元素已经是带引号的字符串（如 "pei5"），直接 join 即可
+            const newJpStr = jpArray.join(', ');
             
             // 获取 jp 开始行的原始内容，提取 jp: 之前的缩进/前缀
             const jpStartLineContent = lines[jpStartLine];
