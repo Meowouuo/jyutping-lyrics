@@ -128,4 +128,5 @@ const songFiles = [
     { id: 935, title: "乱世情侣", artist: "古巨基", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/乱世情侣.js" },
     { id: 939, title: "留白", artist: "王菀之", lyricist: "林夕", composer: "常石磊", file: "lyrics/留白.js" },
     { id: 941, title: "末日", artist: "王菀之", lyricist: "黄伟文", composer: "王菀之", file: "lyrics/末日.js" },
+    { id: 945, title: "画意", artist: "王菀之", lyricist: "林夕", composer: "王菀之", file: "lyrics/画意.js" },
 ];
