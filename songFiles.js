@@ -125,4 +125,5 @@ const songFiles = [
     { id: 923, title: "我好想你·一 一", artist: "王菀之", lyricist: "王菀之", composer: "吴青峰", file: "lyrics/我好想你·一 一.js" },
     { id: 927, title: "心乱如麻", artist: "卫兰", lyricist: "林夕", composer: "雷颂德", file: "lyrics/心乱如麻.js" },
     { id: 931, title: "花洒", artist: "古巨基", lyricist: "王菀之", composer: "林夕", file: "lyrics/花洒.js" },
+    { id: 935, title: "乱世情侣", artist: "古巨基", lyricist: "林夕", composer: "陈辉阳", file: "lyrics/乱世情侣.js" },
 ];
