@@ -132,4 +132,6 @@ const songFiles = [
     { id: 949, title: "下次爱你", artist: "王菀之", lyricist: "林夕", composer: "王菀之", file: "lyrics/下次爱你.js" },
     { id: 958, title: "苦瓜", artist: "陈奕迅", lyricist: "黄伟文", composer: "章霈迎", file: "lyrics/苦瓜.js" },
     { id: 962, title: "透视", artist: "莫文蔚", lyricist: "周耀辉", composer: "谢霆锋", file: "lyrics/透视.js" },
+    { id: 969, title: "与我常在", artist: "陈奕迅", lyricist: "林夕", composer: "林健华", file: "lyrics/与我常在.js" },
+    { id: 971, title: "最佳损友", artist: "陈奕迅", lyricist: "黄伟文", composer: "Eric Kwok", file: "lyrics/最佳损友.js" },
 ];
