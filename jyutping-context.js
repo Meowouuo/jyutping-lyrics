@@ -11,6 +11,7 @@ const JYUTPING_CONTEXT_RULES = {
     "被窝": { "被": "pei5" },
     "被子": { "被": "pei5" },
     "被单": { "被": "pei5" },
+    "汹涌": { "汹": "hung1", "涌": "jung2" },
 };
 
 /**
