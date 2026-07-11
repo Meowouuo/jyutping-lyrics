@@ -134,4 +134,6 @@ const songFiles = [
     { id: 962, title: "透视", artist: "莫文蔚", lyricist: "周耀辉", composer: "谢霆锋", file: "lyrics/透视.js" },
     { id: 969, title: "与我常在", artist: "陈奕迅", lyricist: "林夕", composer: "林健华", file: "lyrics/与我常在.js" },
     { id: 971, title: "最佳损友", artist: "陈奕迅", lyricist: "黄伟文", composer: "Eric Kwok", file: "lyrics/最佳损友.js" },
+    { id: 975, title: "留低锁匙（live）", artist: "张敬轩", lyricist: "李敏", composer: "许茹芸", file: "lyrics/留低锁匙（live）.js" },
+    { id: 977, title: "Medely：井+留白（live）", artist: "张敬轩/王菀之", lyricist: "黄伟文/林夕", composer: "张敬轩/常石磊", file: "lyrics/Medely：井+留白（live）.js" },
 ];
